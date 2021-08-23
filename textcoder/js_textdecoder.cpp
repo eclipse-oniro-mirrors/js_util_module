@@ -112,7 +112,6 @@ napi_value TextDecoder::Decode(napi_value src, bool iflag)
     const char* tempCh = tepStr.c_str();
     char* rstCh = const_cast<char*>(tempCh);
     napi_value resultStr = nullptr;
-    HILOG_ERROR("textcoder strlen(rstCh): %{public}d", strlen(rstCh));
     NAPI_CALL(env_, napi_create_string_utf8(env_, rstCh, strlen(rstCh), &resultStr));
     if (arr != nullptr) {
         delete[] arr;
