@@ -58,6 +58,7 @@ TextDecoder::TextDecoder(napi_env env, std::string buff, std::vector<int> option
 
 napi_value TextDecoder::Decode(napi_value src, bool iflag)
 {
+    HILOG_INFO("textcoder Decode start");
     uint32_t flags = 0;
     flags |= iflag ? 0 : FLUSH_FLG;
     UBool flush = ((flags & FLUSH_FLG)) == FLUSH_FLG;
@@ -75,7 +76,7 @@ napi_value TextDecoder::Decode(napi_value src, bool iflag)
     UChar* arr = nullptr;
     if (limit > 0) {
         arr = new UChar[limit + 1];
-        if (memset_s(arr, len + sizeof(UChar), 0x0, len + sizeof(UChar)) != 0) {
+        if (memset_s(arr, len + sizeof(UChar), 0, len + sizeof(UChar)) != 0) {
             HILOG_ERROR("decode arr memset_s failed");
             if (arr != nullptr) {
                 delete[] arr;
