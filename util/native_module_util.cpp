@@ -275,7 +275,7 @@ namespace OHOS::Util {
         void* data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
-        bool iStream = true;
+        bool iStream = false;
         TextDecoder* textDecoder = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&textDecoder));
         napi_value valStr = nullptr;
