@@ -54,6 +54,8 @@ ohos_shared_library("util") {
   }
   subsystem_name = "ccruntime"
   part_name = "jsapi_util"
+
+  relative_install_dir = "module"
 }
 
 group("util_packages") {
