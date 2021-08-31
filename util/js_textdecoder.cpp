@@ -15,14 +15,16 @@
 
 #include "js_textdecoder.h"
 #include <algorithm>
+#include <codecvt>
+
+#include <locale>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <codecvt>
-#include <locale>
-#include "utils/log.h"
-#include "unicode/unistr.h"
+
 #include "securec.h"
+#include "unicode/unistr.h"
+#include "utils/log.h"
 
 TextDecoder::TextDecoder(napi_env env, std::string buff, std::vector<int> optionVec)
     : env_(env), label_(0), encStr_(buff), tranTool_(nullptr, nullptr)
@@ -109,7 +111,7 @@ napi_value TextDecoder::Decode(napi_value src, bool iflag)
         arrDat = &arr[2]; // 2: Obtains the 2 value of the array.
     }
     std::u16string tempStr16(arrDat);
-    std::string tepStr = std::wstring_convert< std::codecvt_utf8_utf16<char16_t>, char16_t > {}.to_bytes(tempStr16);
+    std::string tepStr = std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.to_bytes(tempStr16);
     const char* tempCh = tepStr.c_str();
     char* rstCh = const_cast<char*>(tempCh);
     napi_value resultStr = nullptr;

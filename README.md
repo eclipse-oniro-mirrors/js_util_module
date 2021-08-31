@@ -89,11 +89,11 @@ helpfunction模块，涉及4个接口。
 
 1.function printf(format: string, ...args: Object[]): string;
 
-    printf（）方法使用第一个参数作为格式字符串（其可以包含零个或多个格式说明符）来返回格式化的字符串。 
+    printf（）方法使用第一个参数作为格式字符串（其可以包含零个或多个格式说明符）来返回格式化的字符串。
 
 每个说明符都替换为来自相应参数的转换后的值。 支持的说明符有：
 
-    %s: String 将用于转换除 BigInt、Object 和 -0 之外的所有值。 
+    %s: String 将用于转换除 BigInt、Object 和 -0 之外的所有值。
 
     %d: Number 将用于转换除 BigInt 和 Symbol 之外的所有值。
 
@@ -103,13 +103,13 @@ helpfunction模块，涉及4个接口。
 
     %j: JSON。 如果参数包含循环引用，则替换为字符串 '[Circular]'。
 
-    %o: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。 
+    %o: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。
     
-        类似于具有选项 { showHidden: true, showProxy: true } 的 util.inspect()。 
+        类似于具有选项 { showHidden: true, showProxy: true } 的 util.inspect()。
 
         这将显示完整的对象，包括不可枚举的属性和代理。
 
-    %O: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。 
+    %O: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。
 
         类似于没有选项的 util.inspect()。 这将显示完整的对象，但不包括不可枚举的属性和代理。
 
@@ -133,13 +133,13 @@ helpfunction模块，涉及4个接口。
 
          // 返回: 'foo:bar baz'
 
-    如果第一个参数不包含有效的格式说明符，则  printf（） 返回以空格分隔的所有参数的串联的字符串：
+    如果第一个参数不包含有效的格式说明符，则printf（）返回以空格分隔的所有参数的串联的字符串:
 
          printf(1, 2, 3);
 
         // 返回: '1 2 3'
 
-    如果只有一个参数传给  printf（），则它会按原样返回，不进行任何格式化：
+    如果只有一个参数传给printf（），则它会按原样返回，不进行任何格式化：
 
          util.format('%% %s');
 
@@ -167,9 +167,9 @@ helpfunction模块，涉及4个接口。
 
 以printf、geterrorstring为例：
 
-import  util  from '@ohos.util'
+import util from '@ohos.util'
 
-1.printf() 
+1.printf()
 
 {
         var format = "%%%o%%%i%s";
@@ -183,7 +183,7 @@ import  util  from '@ohos.util'
         var result = util.printf(format,value,value1,value2);
 }
 
-2.geterrorstring() 
+2.geterrorstring()
 
 {
         var errnum = 13;

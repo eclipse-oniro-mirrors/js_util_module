@@ -17,152 +17,318 @@ const helpUtil = requireInternal('util');
 let TextEncoder = helpUtil.TextEncoder;
 let TextDecoder = helpUtil.TextDecoder;
 
-function switchLittleObject(str, obj, count)
+function switchLittleObject(enter, obj, count)
 {
-    if (obj instanceof Array) {
-        str += ' [ ' + arrayToString(obj, count) + '[length]: ' + obj.length + ' ],\n  ';
-        str = str.substr(0, str.length - 4);
-    }
-    else if (typeof obj === 'object') {
-        count++;
+    var str = '';
+    if (obj === null) {
+        str += obj;
+    } else if (obj instanceof Array) {
+        str += '[ ' + arrayToString(enter, obj, count) + '[length]: ' + obj.length + ' ]';
+    } else if (typeof obj === 'function') {
+        str += '{ [Function: ' + obj.name + ']' + enter
+            + '[length]: ' + obj.length + ',' + enter
+            + '[name] :\'' + obj.name + '\',' + enter
+            + '[prototype]: ' + obj.name + ' { [constructor]: [Circular] } }';
+    } else if (typeof obj === 'object') {
         str += '{ ';
         var i = 0;
         for (i in obj) {
-            str += switchLittleValue(i, obj[i], count);
+            str += switchLittleValue(enter, i, obj, count);
         }
-        str = str.substr(0, str.length - 4);
-        str = str + ' }';
-    } else if (typeof obj === 'function') {
-        str += '{ ';
-        str += '[Function: ' + obj.name + ']\n  ' + '[length]: '
-        + obj.length + ',\n' + '  [name] :\'' + obj.name + '\',\n' + '  [prototype]: ' + obj.name
-        + ' { [constructor]: [Circular] },\n  ';
-        str = str.substr(0, str.length - 4);
-        str = str + ' }';
+        if (i === 0) {
+            return obj;
+        }
+        str = str.substr(0, str.length - enter.length - 1);
+        str += ' }';
     } else if (typeof obj === 'string') {
-        str += '\'' + obj + '\'' + '\n  ';
-    } else if (typeof obj === 'number') {
-        str += obj.toString();
-    }
-    return str;
-}
-
-function switchLittleValue(protoName, obj, count) {
-    var str = '';
-    if (obj === null) {
-        str += protoName + ': null,\n  ';
-    } else if (obj instanceof Array) {
-        str += protoName + ': [ ' + arrayToString(obj, count) + '[length]: ' + obj.length + ' ],\n  ';
-    } else if (typeof obj === 'object') {
-        str += protoName + ': \n  ';
-        var temp = '';
-        str += switchLittleObject(temp, obj, count) + ',\n  ';
-    } else if (typeof obj === 'function') {
-        str += '{ [Function: ' + obj.name + ']\n ' + '[length]: ' + obj.length + ',\n'
-            + '  [name] :\'' + obj.name + '\'';
-        if (count === 1) {
-            str += ',\n  [prototype]: ' + obj.name + '{ [constructor]: [Circular] } },\n  ';
-        } else {
-            str += ',\n  [prototype]: ' + '[' + obj.name + '] },\n  ';
-        }
+        str += '\'' + obj + '\'';
     } else {
-        if (typeof obj === 'string') {
-            str += protoName + ': \'' + obj + '\',\n  ';
-        } else if (typeof obj === 'number') {
-            str += protoName + ': ' + obj + ',\n  ';
+        str += obj;
+    }
+    return str;
+}
+
+function switchLittleValue(enter, protoName, obj, count)
+{
+    var str = '';
+    if (obj[protoName] === null) {
+        str += protoName + ': null,' + enter;
+    } else if (obj[protoName] instanceof Array) {
+        str += protoName + ':' + enter
+            + '[ ' + arrayToString(enter + '  ', obj[protoName], count) + '[length]: '
+            + obj[protoName].length + ' ],' + enter;
+    } else if (typeof obj[protoName] === 'object') {
+        if (obj[protoName] === obj) {
+            str += protoName + ': [Circular]' + enter;
+        } else {
+            str += protoName + ':' + enter;
+            str += switchLittleObject(enter + '  ', obj[protoName], count + 1) + ',' + enter;
+        }
+    } else if (typeof obj[protoName] === 'function') {
+        var space = enter;
+        if (obj[protoName].name !== '') {
+            str += obj[protoName].name + ':' + space;
+        }
+        space += '  ';
+        str += '{ [Function: ' + obj[protoName].name + ']' + space
+            + '[length]: ' + obj[protoName].length + ',' + space
+            + '[name] :\'' + obj[protoName].name + '\',' + space
+            + '[prototype]: ' + obj[protoName].name
+            + ' { [constructor]: [Circular] } },' + enter; 
+    } else {
+        if (typeof obj[protoName] === 'string') {
+            str += protoName + ': \'' + obj[protoName] + '\',' + enter;
+        } else {
+            str += protoName + ': ' + obj[protoName] + ',' + enter;
         }
     }
     return str;
 }
 
-function arrayToString(arr, count)
+function arrayToString(enter, arr, count)
 {
     var str = '';
     if (!arr.length) {
         return '';
     }
     var i = 0;
+    var arrayEnter = ', ';
+    for (i in arr) {
+        if (arr[i] !== null && (typeof arr[i] === 'function' || typeof arr[i] === 'object') && count <= 2) {
+            arrayEnter += enter;
+            break;
+        }
+    }
+    i = 0;
     for (i in arr) {
         if (typeof arr[i] === 'string') {
-            str += '\'' + arr[i].toString() + '\', ';
+            str += '\'' + arr[i].toString() + '\'' + arrayEnter;
         } else if (typeof arr[i] === 'object') {
-            var temp = '';
-            str += '\n  ' + switchLittleObject(temp, arr[i], count);
-            str += ',\n  ';
+            str += switchLittleObject(enter + '  ', arr[i], count + 1);
+            str += arrayEnter;
         } else if (typeof arr[i] === 'function') {
+            var space = enter;
+            space += '  ';
             var end = '';
             if (arr[i].name !== '') {
-                str += '{ [Function: ' + arr[i].name + ']\n  ';
-                end = ' [' + arr[i].name + '] },\n  ';
+                str += '{ [Function: ' + arr[i].name + ']' + space;
+                end = arr[i].name + ' { [constructor]: [Circular] } }' + arrayEnter;
             } else {
-                str += '{ [Function]\n  ';
-                end = '[Object] },\n  ';
+                str += '{ [Function]' + space;
+                end = '{ [constructor]: [Circular] } }' + arrayEnter;
             }
             str += '[length]: '
-                + arr[i].length + ',\n' + '  [name] :\'' + arr[i].name
-                + '\',\n' + ',\n  [prototype]: ' + end;
+                + arr[i].length + ',' + space
+                + '[name] :\'' + arr[i].name + '\',' + space
+                + '[prototype]: ' + end;
         } else {
-            str += arr[i].toString() + ', ';
+            str += arr[i] + arrayEnter;
         }
     }
     return str;
 }
 
-function switchBigObject(obj)
+function switchBigObject(enter, obj, count)
 {
     var str = '';
-    if (obj instanceof Array) {
-        str += '[ ';
-        var i = 0;
-        for (i in obj) {
-            if (typeof obj[i] === 'string') {
-                str += '\'' + obj[i] + '\', ';
-            } else if (typeof obj[i] === 'number') {
-                str += obj[i] + ', ';
-            }
-        }
-        str = str.substr(0, str.length - 2);
-        str += ' ] ,';
+    if (obj === null) {
+        str += obj;
+    } else if (obj instanceof Array) {
+        str += '[ ' + arrayToBigString(enter, obj, count) + ' ]';
     } else if (typeof obj === 'function') {
-        str += '[Function: ' + obj.name + '],\n';
-    } else if (typeof obj === 'string') {
-        str += '\'' + obj + '\' ,';
-    } else if (typeof obj === 'number') {
-        str += obj.toString() + ' ,';
+        str += '{ [Function: ' + obj.name + '] }';
     } else if (typeof obj === 'object') {
         str += '{ ';
         var i = 0;
         for (i in obj) {
-            if (typeof obj[i] === 'function') {
-                str += i + ': [Function: ' + obj[i].name + '] ,';
-            } else if (typeof obj[i] === 'string') {
-                str += i + ': \'' + obj[i] + '\' ,';
-            } else if (typeof obj[i] === 'number') {
-                str += i + ': ' + obj[i].toString() + ' ,';
-            } else if (obj[i] instanceof Array) {
-                str += '[ ';
-                var i = 0;
-                var j = 0;
-                for (i in obj[i]) {
-                    if (typeof obj[i][j] === 'string') {
-                        str += '\'' + obj[i][j] + '\', ';
-                    } else if (typeof obj[i][j] === 'number') {
-                        str += obj[i][j] + ', ';
-                    }
-                }
-                str = str.substr(0, str.length - 2);
-                str += ' ] ,';
-            } else if (typeof obj[i] === 'boolean') {
-                str += obj[i].toString() + ',';
+            str += switchBigValue(enter, i, obj, count);
+        }
+        if (i === 0) {
+            return obj;
+        }
+        str = str.substr(0, str.length - enter.length - 1);
+        str += ' }';
+    } else if (typeof obj === 'string') {
+        str += '\'' + obj + '\'';
+    } else {
+        str += obj;
+    }
+    return str;
+}
+
+function switchBigValue(enter, protoName, obj, count)
+{
+    var str = '';
+    if (obj[protoName] === null) {
+        str += protoName + ': null,' + enter;
+    } else if (obj[protoName] instanceof Array) {
+        str += protoName + ':' + enter
+            + '[ ' + arrayToBigString(enter + '  ', obj[protoName], count) + ' ],' + enter;
+    } else if (typeof obj[protoName] === 'object') {
+        if (obj[protoName] === obj) {
+            str += protoName + ': [Circular]' + enter;
+        } else {
+            str += protoName + ':' + enter;
+            str += switchBigObject(enter + '  ', obj[protoName], count + 1) + ',' + enter;
+        }
+    } else if (typeof obj[protoName] === 'function') {
+        if (obj[protoName].name !== '') {
+            str += obj[protoName].name + ': ';
+        }
+        str += '[Function: ' + obj[protoName].name + '],' + enter;
+    } else {
+        if (typeof obj[protoName] === 'string') {
+            str += protoName + ': \'' + obj[protoName] + '\',' + enter;
+        } else {
+            str += protoName + ': ' + obj[protoName] + ',' + enter;
+        }
+    }
+    return str;
+}
+
+function arrayToBigString(enter, arr, count)
+{
+    var str = '';
+    if (!arr.length) {
+        return '';
+    }
+    var i = 0;
+    var arrayEnter = ', ';
+    for (i in arr) {
+        if (arr[i] !== null && (typeof arr[i] === 'object') && count <= 2) {
+            arrayEnter += enter;
+            break;
+        }
+    }
+    i = 0;
+    for (i in arr) {
+        if (typeof arr[i] === 'string') {
+            str += '\'' + arr[i] + '\'' + arrayEnter;
+        } else if (typeof arr[i] === 'object') {
+            str += switchBigObject(enter + '  ', arr[i], count + 1);
+            str += arrayEnter;
+        } else if (typeof arr[i] === 'function') {
+            var end = '';
+            if (arr[i].name !== '') {
+                str += '[Function: ' + arr[i].name + ']' + arrayEnter;
+            } else {
+                str += '[Function]' + arrayEnter;
+            }
+        } else {
+            str += arr[i] + arrayEnter;
+        }
+    }
+    str = str.substr(0, str.length - arrayEnter.length);
+    return str;
+}
+
+function switchIntValue(value)
+{
+    var str = '';
+    if (value === '') {
+        str += 'NaN';
+    } else if (typeof value === 'bigint') {
+        str += value + 'n';
+    } else if (typeof value === 'symbol') {
+        str += 'NaN';
+    } else if (typeof value === 'number') {
+        str += parseInt(value, 10); // 10:The function uses decimal.
+    } else if (value instanceof Array) {
+        if (typeof value[0] === 'number') {
+            str += parseInt(value[0], 10); // 10:The function uses decimal.
+        } else if (typeof value[0] === 'string') {
+            if (isNaN(value[0])) {
+                str += 'NaN';
+            } else {
+                str += parseInt(value[0], 10); // 10:The function uses decimal.
             }
         }
-        str = str.substr(0, str.length - 1);
-        str += '},';
-    } else if (typeof obj === 'boolean') {
-        str += obj.toString() + ',';
+    } else if (typeof value === 'string') {
+        if (isNaN(value)) {
+            str += 'NaN';
+        } else {
+            str += parseInt(value, 10); // 10:The function uses decimal.
+        }
+    } else {
+        str += 'NaN';
     }
-    str = str.substr(0, str.length - 1);
-    str = str + '\n';
+    return str;
+}
+
+function switchFloatValue(value)
+{
+    var str = '';
+    if (value === '') {
+        str += 'NaN';
+    } else if (typeof value === 'symbol') {
+        str += 'NaN';
+    } else if (typeof value === 'number') {
+        str += value;
+    } else if (value instanceof Array) {
+        if (typeof value[0] === 'number') {
+            str += parseFloat(value);
+        } else if (typeof value[0] === 'string') {
+            if (isNaN(value[0])) {
+                str += 'NaN';
+            } else {
+                str += parseFloat(value[0]);
+            }
+        }
+    } else if (typeof value === 'string') {
+        if (isNaN(value)) {
+            str += 'NaN';
+        } else {
+            str += parseFloat(value);
+        }
+    } else if (typeof value === 'bigint') {
+        str += value;
+    } else {
+        str += 'NaN';
+    }
+    return str;
+}
+
+function switchNumberValue(value)
+{
+    var str = '';
+    if (value === '') {
+        str += '0';
+    } else if (typeof value === 'symbol') {
+        str += 'NaN';
+    } else if (typeof value === 'number') {
+        str += value;
+    } else if (value instanceof Array) {
+        str += 'NaN';
+    } else if (typeof value === 'string') {
+        if (isNaN(value)) {
+            str += 'NaN';
+        } else {
+            str += Number(value);
+        }
+    } else if (typeof value === 'bigint') {
+        str += value.toString() + 'n';
+    } else {
+        str += 'NaN';
+    }
+    return str;
+}
+
+function switchStringValue(value)
+{
+    var str = '';
+    if (typeof value === 'undefined') {
+        str += 'undefined';
+    } else if (typeof value === 'object') {
+        if (value === null) {
+            str += 'null';
+        } else {
+            str += value;
+        }
+    } else if (typeof value === 'symbol') {
+        str += value.toString();
+    } else {
+        str += value;
+    }
     return str;
 }
 
@@ -176,63 +342,20 @@ function printf(formatString, ...valueString)
     var arrLength = arr.length;
     var i = 0;
     for (; i < valueLength && i < arrLength; i++) {
-        let inputType = typeof valueString[i];
         if (arr[i] === 'o') {
-            var str = '';
-            var count = 0;
-            switchString.push(switchLittleObject(str, valueString[i], count));
+            switchString.push(switchLittleObject('\n  ', valueString[i], 1));
         } else if (arr[i] === 'O') {
-            switchString.push(switchBigObject(valueString[i]));
+            switchString.push(switchBigObject('\n  ', valueString[i], 1));
         } else if (arr[i] === 'i') {
-            if (inputType === 'number') {
-                switchString.push(parseInt(valueString[i], 10).toString()); // 10:The function uses decimal.
-            } else if (valueString[i] instanceof Array) {
-                if (typeof valueString[i][0] === 'number') {
-                    switchString.push(parseInt(valueString[i][0], 10).toString()); // 10:The function uses decimal.
-                } else if (typeof valueString[i][0] === 'string') {
-                    if (isNaN(valueString[i][0])) {
-                        switchString.push('NaN');
-                    } else {
-                        switchString.push(parseInt(valueString[i][0], 10).toString()); // 10:The function uses decimal.
-                    }
-                }
-            } else if (typeof valueString[i] === 'string') {
-                if (isNaN(valueString[i])) {
-                    switchString.push('NaN');
-                } else {
-                    switchString.push(parseInt(valueString[i], 10).toString()); // 10:The function uses decimal.
-                }
-            } else {
-                switchString.push('NaN');
-            }
+            switchString.push(switchIntValue(valueString[i]));
         } else if (arr[i] === 'j') {
             switchString.push(JSON.stringify(valueString[i]));
         } else if (arr[i] === 'd') {
-            if (inputType === 'number') {
-                switchString.push(valueString[i].toString());
-            } else if (inputType === 'boolean') {
-                if (valueString[i] === false) {
-                    switchString.push('0');
-                } else {
-                    switchString.push('1');
-                }
-            } else {
-                switchString.push('NaN');
-            }
+            switchString.push(switchNumberValue(valueString[i]));
         } else if (arr[i] === 's') {
-            if (inputType === 'string') {
-                switchString.push(valueString[i]);
-            } else if (valueString[i] instanceof Array) {
-                var k = 0;
-                var strLength = valueString[i].length;
-                for (; k < strLength; k++) {
-                    switchString.push(valueString[i][k].toString());
-                }
-            } else if (inputType === 'object') {
-                switchString.push('[object Object]');
-            } else {
-                switchString.push(valueString[i].toString());
-            }
+            switchString.push(switchStringValue(valueString[i]));
+        } else if (arr[i] === 'f') {
+            switchString.push(switchFloatValue(valueString[i]));
         } else if (arr[i] === 'c') {
             switchString.push(valueString[i].toString());
         }
