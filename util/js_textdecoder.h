@@ -16,9 +16,9 @@
 #ifndef FOUNDATION_CCRUNTIME_TEXTCODER_JS_TEXTDECODER_H
 #define FOUNDATION_CCRUNTIME_TEXTCODER_JS_TEXTDECODER_H
 
+#include <memory.h>
 #include <string>
 #include <vector>
-#include <memory.h>
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "unicode/ucnv.h"

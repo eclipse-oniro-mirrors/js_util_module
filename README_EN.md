@@ -1,87 +1,6 @@
-# js_util_module
+# js_ util_ module
 
-#### 1、Introduction to TextEncoder
-
-The TextEncoder represents a text encoder, accepts character strings as input, encodes in UTF-8 format, and outputs UTF-8 byte stream.
-
-Interface introduction:
-
-1.readonly encoding : string
-
-Get the encoding format, only UTF-8 is supported.
-
-2.encode(input : string) : Uint8Array
-
-Input stirng string, encode and output UTF-8 byte stream.
-
-3.encodeInto(input : string, dest : Uint8Array) : {read : number, written : number}
-
-Enter the stirng string, dest represents the storage location after encoding, and returns an object, read represents the number of characters that have been encoded,
-and written represents the size of bytes occupied by the encoded characters.
-
-Method of use:
-
-import util from '@ohos.util'
-
-var textEncoder = new util.TextEncoder();
-
-var result = textEncoder.encode('abc');
-
-var dest = new Uint8Array(6);
-
-var obj = textEncoder.encodeInto('abc', dest);
-
-var getEncoding = textEncoder.encoding();
-
-#### 2、Introduction to TextDecoder
-
-The TextDecoder interface represents a text decoder. The decoder takes a byte stream as input and outputs a stirng string.
-
-Interface introduction:
-
-1.constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean})
-
-Constructor, the first parameter encoding indicates the format of decoding.
-
-The second parameter represents some attributes.
-
-Fatal in the attribute indicates whether an exception is thrown, and ignoreBOM indicates whether to ignore the bom flag.
-
-2.readonly encoding : string
-
-Get the set decoding format
-
-3.readonly fatal : boolean
-
-Get the setting that throws the exception
-
-4.readonly ignoreBOM : boolean
-
-Get whether to ignore the setting of the bom flag
-
-5.decode(input : ArrayBuffer | ArrayBufferView, options? : {stream? : false}) : string
-
-Input the data to be decoded, and solve the corresponding string character string.
-
-The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false.
-
-Method of use:
-
-import util from '@ohos.util'
-
-var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
-
-var getEncoding = textDecoder.encoding();
-
-var fatalStr = textDecoder.fatal();
-
-var ignoreBom = textDecoder.ignoreBOM();
-
-var input = new Uint8Array([96, 97, 98]);
-
-var result = textDecoder.decode(input, {stream : true});
-
-#### 3、 Introduction to helpfunction
+####1、 Introduction to helpfunction
 
 It is mainly used to callback and promise functions, output error code information, and format a printf-like string.
 
@@ -136,9 +55,10 @@ Interface introduction:
 
 Take printf and geterrorstring as examples:
 
-1.printf()
+1.printf() 
 
 {
+
         var format = "%%%o%%%i%s";
 
         var value =  function aa(){};
@@ -148,12 +68,19 @@ Take printf and geterrorstring as examples:
         var value2 = "qwer";
 
         var result = util.printf(format,value,value1,value2);
+
+        console.log("-----SK-----printf---result---+["  +result +"]");
+        
 }
 
-2.geterrorstring()
+2.geterrorstring() 
 
 {
+
         var errnum = 13;
 
         var result = util.geterrorstring(errnum);
+
+        console.log("-----SK------  = " + result);
+        
 }

@@ -19,9 +19,9 @@
 #include "js_textdecoder.h"
 #include "js_textencoder.h"
 
-#include "utils/log.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "utils/log.h"
 
 extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
@@ -60,11 +60,10 @@ namespace OHOS::Util {
                 }
             }
         }
-        if (j < valueSize) {
-            while (j < valueSize) {
-                str += " " + value[j++];
-            }    
-        } else if (i < formatSize) {
+        while (j < valueSize) {
+            str += " " + value[j++];
+        }
+        if (i < formatSize) {
             str += format.substr(i);
         }
         return str;
@@ -74,14 +73,23 @@ namespace OHOS::Util {
     {
         size_t argc = 0;
         napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
-        napi_value *argv = new napi_value[argc];
+        napi_value *argv = nullptr;
+        if (argc > 0) {
+            argv = new napi_value[argc];
+        }
         napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
         char* format = nullptr;
         size_t formatsize = 0;
-        NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize));
-        format = new char[formatsize + 1];
-        NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize));
+        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+        if (formatsize > 0) {
+            format = new char[formatsize + 1];
+            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
+        }
         std::string str = format;
+        delete []format;
+        delete []argv;
+        argv = nullptr;
+        format = nullptr;
         std::string res;
         size_t strSize = str.size();
         for (size_t i = 0; i < strSize; ++i) {
@@ -98,21 +106,19 @@ namespace OHOS::Util {
                     res += "d ";
                 } else if (str[i + 1] == 's') {
                     res += "s ";
+                } else if (str[i + 1] == 'f') {
+                    res += "f ";
                 } else if (str[i + 1] == 'c') {
                     res += "c ";
                 }
                 i++;
-            } else if(str[i] == '%' && (i + 1 < strSize && str[i + 1] == '%')) {
+            } else if (str[i] == '%' && (i + 1 < strSize && str[i + 1] == '%')) {
                 i++;
             }
         }
         res = res.substr(0, res.size() - 1);
         napi_value result = nullptr;
-        NAPI_CALL(env, napi_create_string_utf8(env, res.c_str(), res.size(), &result));
-        delete []format;
-        delete []argv;
-        argv = nullptr;
-        format = nullptr;
+        napi_create_string_utf8(env, res.c_str(), res.size(), &result);
         return result;
     }
 
@@ -128,21 +134,28 @@ namespace OHOS::Util {
         napi_value result = nullptr;
         size_t argc = 0;
         napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
-        napi_value *argv = new napi_value[argc];
+        napi_value *argv = nullptr;
+        if (argc > 0) {
+            argv = new napi_value[argc];
+        }
         napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
         char* format = nullptr;
         size_t formatsize = 0;
-        NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize));
-        format = new char[formatsize + 1];
-        NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize));
+        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+        if (formatsize > 0) {
+            format = new char[formatsize + 1];
+        }
+        napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
         std::string printInfo;
         std::vector<std::string> value;
-        for (size_t i = 1; i < argc; i++) { 
+        for (size_t i = 1; i < argc; i++) {
             char* valueString = nullptr;
             size_t valuesize = 0;
-            NAPI_CALL(env, napi_get_value_string_utf8(env, argv[i], nullptr, 0, &valuesize));
-            valueString = new char[valuesize + 1];
-            NAPI_CALL(env, napi_get_value_string_utf8(env, argv[i], valueString, valuesize + 1, &valuesize));
+            napi_get_value_string_utf8(env, argv[i], nullptr, 0, &valuesize);
+            if (valuesize > 0) {
+                valueString = new char[valuesize + 1];
+            }
+            napi_get_value_string_utf8(env, argv[i], valueString, valuesize + 1, &valuesize);
             value.push_back(valueString);
             delete []valueString;
             valueString = nullptr;
@@ -260,7 +273,7 @@ namespace OHOS::Util {
                 }
             },
             nullptr, nullptr));
-        return  thisVar;
+        return thisVar;
     }
 
     static napi_value TextdecoderDecode(napi_env env, napi_callback_info info)
@@ -339,7 +352,6 @@ namespace OHOS::Util {
     // Encoder
     static napi_value TextEncoderConstructor(napi_env env, napi_callback_info info)
     {
-        HILOG_INFO("SK TextEncoderConstructor start");
         napi_value thisVar = nullptr;
         void* data = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, &data));
@@ -354,7 +366,6 @@ namespace OHOS::Util {
                 }
             },
             nullptr, nullptr));
-        HILOG_INFO("SK TextEncoderConstructor end");
         return thisVar;
     }
 
@@ -425,7 +436,6 @@ namespace OHOS::Util {
 
     static napi_value TextcoderInit(napi_env env, napi_value exports)
     {
-        HILOG_INFO("SK TextcoderInit start ");
         const char* textEncoderClassName = "TextEncoder";
         napi_value textEncoderClass = nullptr;
         static napi_property_descriptor textEncoderDesc[] = {
@@ -457,13 +467,11 @@ namespace OHOS::Util {
         };
 
         NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
-        HILOG_INFO("SK TextcoderInit end ");
         return exports;
     }
 
     static napi_value UtilInit(napi_env env, napi_value exports)
     {
-        HILOG_INFO("SK UtilInit start ");
         static napi_property_descriptor desc[] = {
             DECLARE_NAPI_FUNCTION("printf", Printf),
             DECLARE_NAPI_FUNCTION("geterrorstring", GetErrorString),
@@ -471,7 +479,6 @@ namespace OHOS::Util {
         };
         NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
         TextcoderInit(env, exports);
-        HILOG_INFO("SK UtilInit end ");
         return exports;
     }
 
