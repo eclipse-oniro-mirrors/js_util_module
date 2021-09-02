@@ -74,7 +74,7 @@ function switchLittleValue(enter, protoName, obj, count)
             + '[length]: ' + obj[protoName].length + ',' + space
             + '[name] :\'' + obj[protoName].name + '\',' + space
             + '[prototype]: ' + obj[protoName].name
-            + ' { [constructor]: [Circular] } },' + enter; 
+            + ' { [constructor]: [Circular] } },' + enter;
     } else {
         if (typeof obj[protoName] === 'string') {
             str += protoName + ': \'' + obj[protoName] + '\',' + enter;

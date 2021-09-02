@@ -26,7 +26,7 @@
 extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
 namespace OHOS::Util {
-    static std::string temp = "cdijoOs";
+    static std::string temp = "cdfijoOs";
     static std::string DealWithPrintf(const std::string &format, const std::vector<std::string> &value)
     {
         size_t i = 0;
