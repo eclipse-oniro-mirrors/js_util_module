@@ -228,9 +228,9 @@ namespace OHOS::Util {
         bool bResultFat = false;
         bool bResultIgnbom = false;
         NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrFatal, strlen(messageKeyStrFatal),
-                                                &messageKeyFatal));
+            &messageKeyFatal));
         NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrIgnorebom, strlen(messageKeyStrIgnorebom),
-                                                &messageKeyIgnorebom));
+            &messageKeyIgnorebom));
         NAPI_CALL(env, napi_get_property(env, valData, messageKeyFatal, &resultFatal));
         NAPI_CALL(env, napi_get_property(env, valData, messageKeyIgnorebom, &resultIgnorebom));
         napi_status naFat = napi_get_value_bool(env, resultFatal, &bResultFat);
