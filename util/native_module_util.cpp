@@ -69,27 +69,8 @@ namespace OHOS::Util {
         return str;
     }
 
-    static napi_value DealWithFormatString(napi_env env, napi_callback_info info)
+    static napi_value FormatString(napi_env env, std::string &str)
     {
-        size_t argc = 0;
-        napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
-        napi_value *argv = nullptr;
-        if (argc > 0) {
-            argv = new napi_value[argc];
-        }
-        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char* format = nullptr;
-        size_t formatsize = 0;
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
-        if (formatsize > 0) {
-            format = new char[formatsize + 1];
-            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
-        }
-        std::string str = format;
-        delete []format;
-        delete []argv;
-        argv = nullptr;
-        format = nullptr;
         std::string res;
         size_t strSize = str.size();
         for (size_t i = 0; i < strSize; ++i) {
@@ -122,6 +103,33 @@ namespace OHOS::Util {
         return result;
     }
 
+    static napi_value DealWithFormatString(napi_env env, napi_callback_info info)
+    {
+        size_t argc = 0;
+        napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
+        napi_value *argv = nullptr;
+        if (argc > 0) {
+            argv = new napi_value[argc];
+        }
+        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+        char* format = nullptr;
+        size_t formatsize = 0;
+        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+        if (formatsize > 0) {
+            format = new char[formatsize + 1];
+            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
+            std::string str = format;
+            delete []format;
+            delete []argv;
+            argv = nullptr;
+            format = nullptr;
+            return FormatString(env, str);
+        }
+        napi_value res = nullptr;
+        NAPI_CALL(env, napi_get_undefined(env, &res));
+        return res;
+    }
+
     static std::string PrintfString(const std::string &format, const std::vector<std::string> &value)
     {
         std::string printInfo;
@@ -144,29 +152,32 @@ namespace OHOS::Util {
         napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
         if (formatsize > 0) {
             format = new char[formatsize + 1];
-        }
-        napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
-        std::string printInfo;
-        std::vector<std::string> value;
-        for (size_t i = 1; i < argc; i++) {
-            char* valueString = nullptr;
-            size_t valuesize = 0;
-            napi_get_value_string_utf8(env, argv[i], nullptr, 0, &valuesize);
-            if (valuesize > 0) {
-                valueString = new char[valuesize + 1];
+            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
+            std::string printInfo;
+            std::vector<std::string> value;
+            for (size_t i = 1; i < argc; i++) {
+                char* valueString = nullptr;
+                size_t valuesize = 0;
+                napi_get_value_string_utf8(env, argv[i], nullptr, 0, &valuesize);
+                if (valuesize > 0) {
+                    valueString = new char[valuesize + 1];
+                }
+                napi_get_value_string_utf8(env, argv[i], valueString, valuesize + 1, &valuesize);
+                value.push_back(valueString);
+                delete []valueString;
+                valueString = nullptr;
             }
-            napi_get_value_string_utf8(env, argv[i], valueString, valuesize + 1, &valuesize);
-            value.push_back(valueString);
-            delete []valueString;
-            valueString = nullptr;
+            printInfo = PrintfString(format, value);
+            napi_create_string_utf8(env, printInfo.c_str(), printInfo.size(), &result);
+            delete []format;
+            delete []argv;
+            argv = nullptr;
+            format = nullptr;
+            return result;
         }
-        printInfo = PrintfString(format, value);
-        napi_create_string_utf8(env, printInfo.c_str(), printInfo.size(), &result);
-        delete []format;
-        delete []argv;
-        argv = nullptr;
-        format = nullptr;
-        return result;
+        napi_value res = nullptr;
+        NAPI_CALL(env, napi_get_undefined(env, &res));
+        return res;
     }
 
     static napi_value GetErrorString(napi_env env, napi_callback_info info)
@@ -206,6 +217,29 @@ namespace OHOS::Util {
         }
     }
 
+    static napi_value GetSecPara(napi_env env, napi_value valData, std::vector<int> &paraVec)
+    {
+        napi_value messageKeyFatal = nullptr;
+        const char* messageKeyStrFatal = "fatal";
+        napi_value messageKeyIgnorebom = nullptr;
+        const char* messageKeyStrIgnorebom = "ignoreBOM";
+        napi_value resultFatal = nullptr;
+        napi_value resultIgnorebom = nullptr;
+        bool bResultFat = false;
+        bool bResultIgnbom = false;
+        NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrFatal, strlen(messageKeyStrFatal),
+            &messageKeyFatal));
+        NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrIgnorebom, strlen(messageKeyStrIgnorebom),
+            &messageKeyIgnorebom));
+        NAPI_CALL(env, napi_get_property(env, valData, messageKeyFatal, &resultFatal));
+        NAPI_CALL(env, napi_get_property(env, valData, messageKeyIgnorebom, &resultIgnorebom));
+        napi_status naFat = napi_get_value_bool(env, resultFatal, &bResultFat);
+        napi_status naBom = napi_get_value_bool(env, resultIgnorebom, &bResultIgnbom);
+        SetVec(naFat, naBom, bResultFat, bResultIgnbom, paraVec);
+        return nullptr;
+    }
+
+
     static napi_value TextdecoderConstructor(napi_env env, napi_callback_info info)
     {
         size_t tempArgc = 0;
@@ -237,32 +271,14 @@ namespace OHOS::Util {
             }
             NAPI_CALL(env, napi_get_value_string_utf8(env, argv[0], type, typeLen + 1, &typeLen));
             // second para
-            napi_value messageKeyFatal = nullptr;
-            const char* messageKeyStrFatal = "fatal";
-            napi_value messageKeyIgnorebom = nullptr;
-            const char* messageKeyStrIgnorebom = "ignoreBOM";
-            napi_value resultFatal = nullptr;
-            napi_value resultIgnorebom = nullptr;
-            bool bResultFat = false;
-            bool bResultIgnbom = false;
-            NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrFatal, strlen(messageKeyStrFatal),
-                                                   &messageKeyFatal));
-            NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrIgnorebom, strlen(messageKeyStrIgnorebom),
-                &messageKeyIgnorebom));
-            NAPI_CALL(env, napi_get_property(env, argv[1], messageKeyFatal, &resultFatal));
-            NAPI_CALL(env, napi_get_property(env, argv[1], messageKeyIgnorebom, &resultIgnorebom));
-            napi_status  naFat = napi_get_value_bool(env, resultFatal, &bResultFat);
-            napi_status naBom = napi_get_value_bool(env, resultIgnorebom, &bResultIgnbom);
-            SetVec(naFat, naBom, bResultFat, bResultIgnbom, paraVec);
+            GetSecPara(env, argv[1], paraVec);
         }
         std::string enconding = "utf-8";
         if (type != nullptr) {
             enconding = type;
         }
-        if (type != nullptr) {
-            delete []type;
-            type = nullptr;
-        }
+        delete []type;
+        type = nullptr;
         auto objectInfo = new TextDecoder(env, enconding, paraVec);
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
@@ -495,8 +511,7 @@ namespace OHOS::Util {
 
     // util module register
     extern "C"
-    __attribute__((constructor))
-    void RegisterModule()
+    __attribute__((constructor)) void RegisterModule()
     {
         napi_module_register(&utilModule);
     }
