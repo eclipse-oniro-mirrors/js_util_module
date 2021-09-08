@@ -145,13 +145,13 @@ namespace OHOS::Util {
         napi_value *argv = nullptr;
         if (argc > 0) {
             argv = new napi_value[argc];
-        }
-        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char* format = nullptr;
-        size_t formatsize = 0;
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
-        if (formatsize > 0) {
-            format = new char[formatsize + 1];
+            napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+            char* format = nullptr;
+            size_t formatsize = 0;
+            napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+            if (formatsize > 0) {
+                format = new char[formatsize + 1];
+            }
             napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
             std::string printInfo;
             std::vector<std::string> value;
@@ -238,7 +238,6 @@ namespace OHOS::Util {
         SetVec(naFat, naBom, bResultFat, bResultIgnbom, paraVec);
         return nullptr;
     }
-
 
     static napi_value TextdecoderConstructor(napi_env env, napi_callback_info info)
     {
