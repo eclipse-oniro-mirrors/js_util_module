@@ -24,65 +24,66 @@
 #include "unicode/ucnv.h"
 
 using TransformToolPointer = std::unique_ptr<UConverter, void(*)(UConverter*)>;
-
-class TextDecoder {
-public:
-    enum ConverterFlags {
-        FLUSH_FLG = 0x1,
-        FATAL_FLG = 0x2,
-        IGNORE_BOM_FLG = 0x4,
-        UNICODE_FLG = 0x8,
-        BOM_SEEN_FLG = 0x10,
+namespace OHOS::Util {
+    class TextDecoder {
+    public:
+        enum ConverterFlags {
+            FLUSH_FLG = 0x1,
+            FATAL_FLG = 0x2,
+            IGNORE_BOM_FLG = 0x4,
+            UNICODE_FLG = 0x8,
+            BOM_SEEN_FLG = 0x10,
+        };
+    public:
+        TextDecoder(napi_env env, std::string buff, std::vector<int> optionVec);
+        virtual ~TextDecoder() {}
+        napi_value Decode(napi_value src, bool iflag);
+        napi_value GetEncoding() const;
+        napi_value GetFatal() const;
+        napi_value GetIgnoreBOM() const;
+        size_t GetMinByteSize() const;
+        void Reset() const;
+        UConverter *GetConverterPtr() const
+        {
+            return tranTool_.get();
+        }
+        bool IsBomFlag() const
+        {
+            uint32_t temp = label_ & BOM_SEEN_FLG;
+            if (temp == BOM_SEEN_FLG) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        bool IsUnicode() const
+        {
+            uint32_t temp = label_ & UNICODE_FLG;
+            if (temp == UNICODE_FLG) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        bool IsIgnoreBom() const
+        {
+            uint32_t temp = label_ & IGNORE_BOM_FLG;
+            if (temp == IGNORE_BOM_FLG) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        static void ConverterClose(UConverter* pointer)
+        {
+            ucnv_close(pointer);
+        }
+    private:
+        void FreedMemory(UChar *pData);
+        napi_env env_;
+        uint32_t label_;
+        std::string encStr_;
+        TransformToolPointer tranTool_;
     };
-public:
-    TextDecoder(napi_env env, std::string buff, std::vector<int> optionVec);
-    virtual ~TextDecoder() {}
-    napi_value Decode(napi_value src, bool iflag);
-    napi_value GetEncoding() const;
-    napi_value GetFatal() const;
-    napi_value GetIgnoreBOM() const;
-    size_t GetMinByteSize() const;
-    void Reset() const;
-    UConverter *GetConverterPtr() const
-    {
-        return tranTool_.get();
-    }
-    bool IsBomFlag() const
-    {
-        uint32_t temp = label_ & BOM_SEEN_FLG;
-        if (temp == BOM_SEEN_FLG) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    bool IsUnicode() const
-    {
-        uint32_t temp = label_ & UNICODE_FLG;
-        if (temp == UNICODE_FLG) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    bool IsIgnoreBom() const
-    {
-        uint32_t temp = label_ & IGNORE_BOM_FLG;
-        if (temp == IGNORE_BOM_FLG) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    static void ConverterClose(UConverter* pointer)
-    {
-        ucnv_close(pointer);
-    }
-private:
-    void FreedMemory(UChar *pData);
-    napi_env env_;
-    uint32_t label_;
-    std::string encStr_;
-    TransformToolPointer tranTool_;
-};
+}
 #endif /* FOUNDATION_CCRUNTIME_TEXTCODER_JS_TEXTDECODER_H */

@@ -20,20 +20,20 @@
 
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+namespace OHOS::Util {
+    class TextEncoder {
+    public:
+        explicit TextEncoder(napi_env env);
 
-class TextEncoder {
-public:
-    explicit TextEncoder(napi_env env);
+        virtual ~TextEncoder() {}
 
-    virtual ~TextEncoder() {}
+        napi_value GetEncoding() const;
+        napi_value Encode(napi_value src) const;
+        napi_value EncodeInto(napi_value src, napi_value dest) const;
 
-    napi_value GetEncoding() const;
-    napi_value Encode(napi_value src) const;
-    napi_value EncodeInto(napi_value src, napi_value dest) const;
-
-private:
-    napi_env env_;
-    std::string encoding_;
-};
-
+    private:
+        napi_env env_;
+        std::string encoding_;
+    };
+}
 #endif /* FOUNDATION_CCRUNTIME_TEXTCODER_JS_TEXTENCODER_H */
