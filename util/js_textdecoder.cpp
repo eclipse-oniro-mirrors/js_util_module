@@ -92,7 +92,8 @@ namespace OHOS::Util {
         }
         UChar* target = arr;
         size_t tarStartPos = (intptr_t)arr;
-        ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source, source + sourceLength, nullptr, flush, &codeflag);
+        ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source,
+                       source + sourceLength, nullptr, flush, &codeflag);
         size_t resultLength = 0;
         bool omitInitialBom = false;
         if (U_SUCCESS(codeflag)) {

@@ -313,7 +313,7 @@ HWTEST_F(NativeEngineTest, decoderUtf8001, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -357,7 +357,7 @@ HWTEST_F(NativeEngineTest, decoderUtf8002, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -401,7 +401,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le001, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -445,7 +445,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le002, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -494,7 +494,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le003, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -544,7 +544,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le004, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -588,7 +588,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16be001, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -637,7 +637,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16be002, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }
 
 /**
@@ -686,5 +686,5 @@ HWTEST_F(NativeEngineTest, decoderUtf16be003, testing::ext::TestSize.Level0)
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
-    } 
+    }
 }

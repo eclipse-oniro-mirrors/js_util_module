@@ -29,20 +29,20 @@ namespace OHOS::Util {
         static const size_t TRAGET_SIX = 6;
         static const size_t TRAGET_EIGHT = 8;
         const char base[] = {
-            65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,81, 82,
+            65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
             83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105,
             106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
             121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47, 61
         };
         const char base0[] = {
-            65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,81, 82,
+            65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
             83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105,
             106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
             121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 45, 95, 61
         };
     }
     Base64::Base64(napi_env env_) : env(env_) {}
-    
+
     /* base64 encode */
     napi_value Base64::Encode(napi_value src, napi_value flags)
     {
@@ -72,7 +72,7 @@ namespace OHOS::Util {
         FreeMemory(rets);
         return result;
     }
-    
+
     /* base64 encodeToString */
     napi_value Base64::EncodeToString(napi_value src, napi_value flags)
     {
@@ -113,7 +113,7 @@ namespace OHOS::Util {
         FreeMemory(rstring);
         return resultStr;
     }
-    
+
     unsigned char* Base64::EncodeAchieve(const unsigned char* input, size_t inputLen, size_t iflag)
     {
         size_t inp = 0;
@@ -136,7 +136,7 @@ namespace OHOS::Util {
             napi_throw_error(env, "-2", "outputLen is error !");
         }
         bosom = ret;
-        while (inp < inputLen) {  
+        while (inp < inputLen) {
             temp = 0;
             bitWise = 0;
             while (temp < TRAGET_THREE) {
@@ -164,7 +164,7 @@ namespace OHOS::Util {
         *bosom = '\0';
         return ret;
     }
-    
+
     /* base64 decode */
     napi_value Base64::Decode(napi_value src, napi_value flags)
     {
@@ -196,13 +196,13 @@ namespace OHOS::Util {
                 FreeMemory(inputString);
                 napi_throw_error(env, "-2", "prolen is error !");
             }
-            napi_get_value_string_utf8(env, src, inputString, prolen+1, &prolen);
+            napi_get_value_string_utf8(env, src, inputString, prolen + 1, &prolen);
             pret = DecodeAchieve(inputString, prolen, flag);
         } else if (type == napi_typedarray_type::napi_uint8_array) {
             inputDecode = static_cast<const char*>(resultData) + byteOffset;
             pret = DecodeAchieve(inputDecode, length, flag);
         }
-        void* data = nullptr;  
+        void* data = nullptr;
         napi_value arrayBuffer = nullptr;
         size_t bufferSize = decodeOutLen;
         NAPI_CALL(env, napi_create_arraybuffer(env, bufferSize, &data, &arrayBuffer));
@@ -218,7 +218,7 @@ namespace OHOS::Util {
         FreeMemory(pret);
         return result;
     }
-    
+
     unsigned char* Base64::DecodeAchieve(const char* input, size_t inputLen, size_t iflag)
     {
         retLen = (inputLen / TRAGET_FOUR) * TRAGET_THREE;
@@ -272,7 +272,7 @@ namespace OHOS::Util {
         *bosom = '\0';
         return retDecode;
     }
-    
+
     size_t Base64::DecodeOut(size_t equalCount, size_t retLen)
     {
         if (equalCount == 1) {
@@ -297,7 +297,7 @@ namespace OHOS::Util {
         }
         return retLen;
     }
-    
+
     /* Decoding lookup function */
     size_t Base64::Finds(char ch, size_t iflag)
     {
@@ -319,7 +319,7 @@ namespace OHOS::Util {
         }
         return couts;
     }
-    
+
     /* Memory cleanup function */
     void Base64::FreeMemory(const unsigned char* address)
     {

@@ -285,9 +285,9 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
             [](napi_env env, void* data, void* hint) {
-                auto objectInfo = (TextDecoder*)data;
-                if (objectInfo != nullptr) {
-                    delete objectInfo;
+                auto objInfo = (TextDecoder*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
                 }
             },
             nullptr, nullptr));
@@ -378,9 +378,9 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_wrap(
             env, thisVar, object,
             [](napi_env env, void* data, void* hint) {
-                auto object = (TextEncoder*)data;
-                if (object != nullptr) {
-                    delete object;
+                auto obj = (TextEncoder*)data;
+                if (obj != nullptr) {
+                    delete obj;
                 }
             },
             nullptr, nullptr));
@@ -467,9 +467,9 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
             [](napi_env env, void* data, void* hint) {
-                auto objectInfo = (RationalNumber*)data;
-                if (objectInfo != nullptr) {
-                    delete objectInfo;
+                auto objInfo = (RationalNumber*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
                 }
             },
             nullptr, nullptr));
@@ -694,15 +694,15 @@ namespace OHOS::Util {
         napi_wrap(
             env, thisVar, objectInfo,
             [](napi_env env, void* data, void* hint) {
-                auto objectInfo = (Base64*)data;
-                if (objectInfo != nullptr) {
-                    delete objectInfo;
+                auto objInfo = (Base64*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
                 }
             },
             nullptr, nullptr);
         return thisVar;
     }
-    
+
     static napi_value EncodeBase64(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -726,7 +726,7 @@ namespace OHOS::Util {
         napi_value result = object->Encode(args[0], args[1]);
         return result;
     }
-        
+
     static napi_value EncodeToString(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -767,7 +767,8 @@ namespace OHOS::Util {
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_typeof(env, args[0], &valuetype1));
         if (valuetype1 != napi_valuetype::napi_string) {
-            NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
+            NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length,
+                                                    &data, &arraybuffer, &byteOffset));
         }
         if ((valuetype1 != napi_valuetype::napi_string) && (valuetype0 != napi_typedarray_type::napi_uint8_array)) {
             napi_throw_error(env, nullptr, "The parameter type is incorrect");
@@ -780,8 +781,7 @@ namespace OHOS::Util {
         napi_value result = object->Decode(args[0], args[1]);
         return result;
     }
-        
-        
+
     static napi_value Base64Init(napi_env env, napi_value exports)
     {
         const char* base64ClassName = "Base64";
@@ -792,13 +792,13 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("decode", DecodeBase64),
         };
         NAPI_CALL(env, napi_define_class(env, base64ClassName, strlen(base64ClassName), Base64Constructor,
-                                        nullptr, sizeof(base64Desc) / sizeof(base64Desc[0]), base64Desc,
-                                        &base64Class));
+                                         nullptr, sizeof(base64Desc) / sizeof(base64Desc[0]), base64Desc,
+                                         &base64Class));
         static napi_property_descriptor desc[] = {
             DECLARE_NAPI_PROPERTY("Base64", base64Class)
-        };   
+        };
         NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
-        return exports;  
+        return exports;
     }
 
     static napi_value UtilInit(napi_env env, napi_value exports)

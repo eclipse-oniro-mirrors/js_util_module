@@ -47,8 +47,10 @@ namespace OHOS::Util {
             result = GetCommonDivisor(num1, num2);
             int gnum = 0;
             napi_get_value_int32(env_, result, &gnum);
-            mnum = num / gnum;
-            mden = den / gnum;
+            if (gnum != 0) {
+                mnum = num / gnum;
+                mden = den / gnum;
+            }
         }
     }
 
@@ -84,7 +86,7 @@ namespace OHOS::Util {
         }
         size_t index = (colon != std::string::npos) ? colon : semicolon;
         std::string s1 = buf.substr(0, index);
-        std::string s2 = buf.substr(index+1, buf.size());
+        std::string s2 = buf.substr(index + 1, buf.size());
         size_t len1 = s1.size();
         size_t len2 = s2.size();
         for (int i = 1; i < len1; i++) {
