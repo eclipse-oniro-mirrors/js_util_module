@@ -22,7 +22,7 @@ gen_js_obj("util_js") {
   output = util_js_obj_path
 }
 
-ohos_shared_library("utilapi") {
+ohos_shared_library("util") {
   include_dirs = [
     "//foundation/ace/napi",
     "//foundation/ace/napi/native_engine",
@@ -33,11 +33,11 @@ ohos_shared_library("utilapi") {
   ]
 
   sources = [
+    "js_base64.cpp",
+    "js_rational.cpp",
     "js_textdecoder.cpp",
     "js_textencoder.cpp",
-    "js_rational.cpp",
     "native_module_util.cpp",
-    "js_base64.cpp",
   ]
 
   deps = [
@@ -61,5 +61,5 @@ ohos_shared_library("utilapi") {
 }
 
 group("util_packages") {
-  deps = [ ":utilapi" ]
+  deps = [ ":util" ]
 }

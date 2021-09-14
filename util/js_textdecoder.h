@@ -25,6 +25,17 @@
 
 using TransformToolPointer = std::unique_ptr<UConverter, void(*)(UConverter*)>;
 namespace OHOS::Util {
+    struct DecodeArr {
+        DecodeArr(UChar* tarPos, size_t tarStaPos, size_t limLen) {
+            this->target = tarPos;
+            this->tarStartPos = tarStaPos;
+            this->limitLen = limLen;
+        }
+        UChar* target = 0;
+        size_t tarStartPos = 0;
+        size_t limitLen = 0;
+    };
+
     class TextDecoder {
     public:
         enum ConverterFlags {
@@ -79,7 +90,8 @@ namespace OHOS::Util {
             ucnv_close(pointer);
         }
     private:
-        void FreedMemory(UChar *pData);
+        void SetBomFlag(const UChar* arr, const UErrorCode codeFlag, const DecodeArr decArr, size_t& rstLen, bool& bomFlag);
+        void FreedMemory(UChar* pData);
         napi_env env_;
         uint32_t label_;
         std::string encStr_;

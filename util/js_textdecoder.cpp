@@ -58,32 +58,28 @@ namespace OHOS::Util {
         tranTool_ = std::move(tempTranTool);
     }
 
+
     napi_value TextDecoder::Decode(napi_value src, bool iflag)
     {
-        HILOG_INFO("textcoder Decode start");
         uint32_t flags = 0;
         flags |= iflag ? 0 : FLUSH_FLG;
         UBool flush = ((flags & FLUSH_FLG)) == FLUSH_FLG;
         napi_typedarray_type type;
         size_t length = 0;
         void* data1 = nullptr;
-        napi_value arrayBuffer = nullptr;
         size_t byteOffset = 0;
+        napi_value arrayBuffer = nullptr;
         NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &data1, &arrayBuffer, &byteOffset));
         const char* source = static_cast<char*>(data1);
-        size_t sourceLength = length;
-        UErrorCode codeflag = U_ZERO_ERROR;
-        size_t limit = GetMinByteSize() * sourceLength;
+        UErrorCode codeFlag = U_ZERO_ERROR;
+        size_t limit = GetMinByteSize() * length;
         size_t len = limit * sizeof(UChar);
         UChar* arr = nullptr;
         if (limit > 0) {
             arr = new UChar[limit + 1];
             if (memset_s(arr, len + sizeof(UChar), 0, len + sizeof(UChar)) != 0) {
                 HILOG_ERROR("decode arr memset_s failed");
-                if (arr != nullptr) {
-                    delete[] arr;
-                    arr = nullptr;
-                }
+                FreedMemory(arr);
                 return nullptr;
             }
         } else {
@@ -92,21 +88,11 @@ namespace OHOS::Util {
         }
         UChar* target = arr;
         size_t tarStartPos = (intptr_t)arr;
-        ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source,
-                       source + sourceLength, nullptr, flush, &codeflag);
+        ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source, source + length, nullptr, flush, &codeFlag);
         size_t resultLength = 0;
         bool omitInitialBom = false;
-        if (U_SUCCESS(codeflag)) {
-            if (limit > 0) {
-                resultLength = (intptr_t)target - tarStartPos;
-                if (resultLength > 0 && IsUnicode() && !IsIgnoreBom() && !IsBomFlag()) {
-                    if (arr[0] == 0xFEFF) {
-                        omitInitialBom = true;
-                    }
-                    label_ |= BOM_SEEN_FLG;
-                }
-            }
-        }
+        DecodeArr decArr(target, tarStartPos, limit);
+        SetBomFlag(arr, codeFlag, decArr, resultLength, omitInitialBom);
         UChar* arrDat = arr;
         if (omitInitialBom && resultLength > 0) {
             arrDat = &arr[2]; // 2: Obtains the 2 value of the array.
@@ -117,10 +103,7 @@ namespace OHOS::Util {
         char* rstCh = const_cast<char*>(tempCh);
         napi_value resultStr = nullptr;
         NAPI_CALL(env_, napi_create_string_utf8(env_, rstCh, strlen(rstCh), &resultStr));
-        if (arr != nullptr) {
-            delete[] arr;
-            arr = nullptr;
-        }
+        FreedMemory(arr);
         if (flush) {
             label_ &= BOM_SEEN_FLG;
             Reset();
@@ -179,5 +162,29 @@ namespace OHOS::Util {
             return;
         }
         ucnv_reset(tranTool_.get());
+    }
+
+    void TextDecoder::FreedMemory(UChar *pData)
+    {
+        if (pData != nullptr) {
+            delete[] pData;
+            pData = nullptr;
+        }
+    }
+
+    void TextDecoder::SetBomFlag(const UChar* arr, const UErrorCode codeFlag, const DecodeArr decArr , size_t &rstLen, bool &bomFlag)
+    {
+        if (arr == nullptr ) {
+            return;
+        }
+        if (U_SUCCESS(codeFlag)) {
+            if (decArr.limitLen > 0) {
+                rstLen = (intptr_t)decArr.target - decArr.tarStartPos;
+                if (rstLen > 0 && IsUnicode() && !IsIgnoreBom() && !IsBomFlag()) {
+                    bomFlag = (arr[0] == 0xFEFF) ? true : false;
+                    label_ |= BOM_SEEN_FLG;
+                }
+            }
+        }
     }
 }
