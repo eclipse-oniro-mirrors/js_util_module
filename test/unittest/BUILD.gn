@@ -11,55 +11,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
-import("//build/ohos/ace/ace.gni")
+import("//build/test.gni")
 
-base_output_path = get_label_info(":util_js", "target_out_dir")
-util_js_obj_path = base_output_path + "/util.o"
-
-gen_js_obj("util_js") {
-  input = "//base/compileruntime/js_util_module/util/util_js.js"
-  output = util_js_obj_path
+if (is_standard_system) {
+  module_output_path = "compileruntime/js_util_module"
 }
 
-ohos_shared_library("util") {
+ohos_unittest("test_util_unittest") {
+  module_out_path = module_output_path
+
   include_dirs = [
-    "//foundation/ace/napi",
-    "//foundation/ace/napi/native_engine",
-    "//third_party/icu/icu4c/source/common",
-    "//third_party/node/src",
-    "//foundation/ace/napi/interfaces/kits",
     "//base/compileruntime/js_util_module/util",
+    "//foundation/ace/napi",
+    "//foundation/ace/napi/interfaces/kits",
+    "//foundation/ace/napi/native_engine",
+    "//foundation/ace/napi/native_engine/impl/quickjs",
+    "//third_party/icu/icu4c/source/common",
+    "//third_party/googletest/include",
+    "//third_party/node/src",
+    "//utils/native/base/include",
   ]
 
+  cflags = [ "-g3" ]
+
   sources = [
-    "js_base64.cpp",
-    "js_rational.cpp",
-    "js_textdecoder.cpp",
-    "js_textencoder.cpp",
-    "native_module_util.cpp",
+    "test_quickjs.cpp",
+    "test_util.cpp",
   ]
 
   deps = [
-    ":util_js",
-    "//base/compileruntime/js_util_module/util/:util_js",
+    "//base/compileruntime/js_util_module/util:util_packages",
     "//foundation/ace/napi/:ace_napi",
     "//foundation/ace/napi/:ace_napi_quickjs",
+    "//third_party/googletest:gtest",
+    "//third_party/googletest:gtest_main",
     "//third_party/icu/icu4c:static_icuuc",
+    "//third_party/libuv:uv_static",
+    "//third_party/quickjs:qjs",
     "//utils/native/base:utils",
+    "//utils/native/base:utilsecurec",
   ]
 
   if (is_standard_system) {
     external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
-  } else {
-    external_deps = [ "hilog:libhilog" ]
   }
-  subsystem_name = "ccruntime"
-  part_name = "jsapi_util"
-
-  relative_install_dir = "module"
 }
 
-group("util_packages") {
-  deps = [ ":util" ]
+group("unittest") {
+  testonly = true
+  deps = [ ":test_util_unittest" ]
 }

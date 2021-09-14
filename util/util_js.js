@@ -16,6 +16,8 @@
 const helpUtil = requireInternal('util');
 let TextEncoder = helpUtil.TextEncoder;
 let TextDecoder = helpUtil.TextDecoder;
+let RationalNumber = helpUtil.RationalNumber;
+let Base64 = helpUtil.Base64;
 
 function switchLittleObject(enter, obj, count)
 {
@@ -430,4 +432,6 @@ export default {
     promiseWrapper: promiseWrapper,
     TextEncoder: TextEncoder,
     TextDecoder: TextDecoder,
+    RationalNumber: RationalNumber,
+    Base64: Base64,
 };
