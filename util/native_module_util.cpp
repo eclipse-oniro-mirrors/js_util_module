@@ -13,11 +13,13 @@
  * limitations under the License.
  */
 
-#include <string>
+#include <cstring>
 #include <vector>
 
 #include "js_textdecoder.h"
 #include "js_textencoder.h"
+#include "js_rational.h"
+#include "js_base64.h"
 
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -27,6 +29,7 @@ extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
 namespace OHOS::Util {
     static std::string temp = "cdfijoOs";
+    napi_value RationalNumberClass = nullptr;
     static std::string DealWithPrintf(const std::string &format, const std::vector<std::string> &value)
     {
         size_t i = 0;
@@ -145,13 +148,13 @@ namespace OHOS::Util {
         napi_value *argv = nullptr;
         if (argc > 0) {
             argv = new napi_value[argc];
-        }
-        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char* format = nullptr;
-        size_t formatsize = 0;
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
-        if (formatsize > 0) {
-            format = new char[formatsize + 1];
+            napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+            char* format = nullptr;
+            size_t formatsize = 0;
+            napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+            if (formatsize > 0) {
+                format = new char[formatsize + 1];
+            }
             napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
             std::string printInfo;
             std::vector<std::string> value;
@@ -239,7 +242,6 @@ namespace OHOS::Util {
         return nullptr;
     }
 
-
     static napi_value TextdecoderConstructor(napi_env env, napi_callback_info info)
     {
         size_t tempArgc = 0;
@@ -283,9 +285,9 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
             [](napi_env env, void* data, void* hint) {
-                auto objectInfo = (TextDecoder*)data;
-                if (objectInfo != nullptr) {
-                    delete objectInfo;
+                auto objInfo = (TextDecoder*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
                 }
             },
             nullptr, nullptr));
@@ -376,9 +378,9 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_wrap(
             env, thisVar, object,
             [](napi_env env, void* data, void* hint) {
-                auto object = (TextEncoder*)data;
-                if (object != nullptr) {
-                    delete object;
+                auto obj = (TextEncoder*)data;
+                if (obj != nullptr) {
+                    delete obj;
                 }
             },
             nullptr, nullptr));
@@ -450,6 +452,203 @@ namespace OHOS::Util {
         return result;
     }
 
+    static napi_value RationalNumberConstructor(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        void* data = nullptr;
+        size_t argc = 3;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, &data));
+        int num = 0;
+        int den = 0;
+        napi_get_value_int32(env, args[0], &num);
+        napi_get_value_int32(env, args[1], &den);
+        auto objectInfo = new RationalNumber(env, num, den);
+        NAPI_CALL(env, napi_wrap(
+            env, thisVar, objectInfo,
+            [](napi_env env, void* data, void* hint) {
+                auto objInfo = (RationalNumber*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
+                }
+            },
+            nullptr, nullptr));
+        return thisVar;
+    }
+
+    static napi_value CreatRationalFromString(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong nuamber of arguments");
+        napi_valuetype valuetype;
+        NAPI_CALL(env, napi_typeof(env, args, &valuetype));
+        NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected");
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        if (RationalNumberClass == nullptr) {
+            napi_throw_error(env, "NullException", "RationalNumberClass must not be null!");
+        }
+        return object->CreatRationalFromString(args, RationalNumberClass);
+    }
+
+    static napi_value CompareTo(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong nuamber of arguments");
+        RationalNumber* object = nullptr;
+        napi_unwrap(env, thisVar, (void**)&object);
+        return object->CompareTo(args);
+    }
+
+    static napi_value Equals(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong nuamber of arguments");
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        return object->Equals(args);
+    }
+
+    static napi_value Value(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        return object->Value();
+    }
+
+    static napi_value GetCommonDivisor(napi_env env, napi_callback_info info)
+    {
+        size_t argc = 2;
+        napi_value argv[2] = {0};
+        napi_value thisVar = nullptr;
+        void* data = nullptr;
+        napi_value args = nullptr;
+        napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
+        napi_valuetype valuetype1;
+        napi_valuetype valuetype2;
+        NAPI_CALL(env, napi_typeof(env, argv[0], &valuetype1));
+        NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype2));
+        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. String expected");
+        NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. String expected");
+        RationalNumber* object = nullptr;
+        napi_unwrap(env, thisVar, (void**)&object);
+        napi_value result = nullptr;
+        result = object->GetCommonDivisor(argv[0], argv[1]);
+        return result;
+    }
+
+    static napi_value GetDenominator(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->GetDenominator();
+        return result;
+    }
+
+    static napi_value GetNumerator(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->GetNumerator();
+        return result;
+    }
+
+    static napi_value IsFinite(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->IsFinite();
+        return result;
+    }
+
+    static napi_value IsInfinite(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->IsInfinite();
+        return result;
+    }
+
+    static napi_value IsNaN(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->IsNaN();
+        return result;
+    }
+    static napi_value IsZero(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->IsZero();
+        return result;
+    }
+
+    static napi_value ToString(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
+        RationalNumber* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->ToString();
+        return result;
+    }
+
+    static napi_value RationalNumberInit(napi_env env, napi_value exports)
+    {
+        const char* RationalNumberClassName = "RationalNumber";
+        static napi_property_descriptor RationalNumberDesc[] = {
+            DECLARE_NAPI_FUNCTION("creatRationalFromString", CreatRationalFromString),
+            DECLARE_NAPI_FUNCTION("compareTo", CompareTo),
+            DECLARE_NAPI_FUNCTION("equals", Equals),
+            DECLARE_NAPI_FUNCTION("value", Value),
+            DECLARE_NAPI_FUNCTION("getCommonDivisor", GetCommonDivisor),
+            DECLARE_NAPI_FUNCTION("getDenominator", GetDenominator),
+            DECLARE_NAPI_FUNCTION("getNumerator", GetNumerator),
+            DECLARE_NAPI_FUNCTION("isFinite", IsFinite),
+            DECLARE_NAPI_FUNCTION("isInfinite", IsInfinite),
+            DECLARE_NAPI_FUNCTION("isNaN", IsNaN),
+            DECLARE_NAPI_FUNCTION("isZero", IsZero),
+            DECLARE_NAPI_FUNCTION("toString", ToString),
+        };
+        NAPI_CALL(env, napi_define_class(env, RationalNumberClassName, strlen(RationalNumberClassName),
+                                         RationalNumberConstructor, nullptr,
+                                         sizeof(RationalNumberDesc) / sizeof(RationalNumberDesc[0]),
+                                         RationalNumberDesc, &RationalNumberClass));
+        static napi_property_descriptor desc[] = {
+            DECLARE_NAPI_PROPERTY("RationalNumber", RationalNumberClass)
+        };
+        NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
+        return exports;
+    }
+
     static napi_value TextcoderInit(napi_env env, napi_value exports)
     {
         const char* textEncoderClassName = "TextEncoder";
@@ -486,6 +685,122 @@ namespace OHOS::Util {
         return exports;
     }
 
+    static napi_value Base64Constructor(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        void* data = nullptr;
+        NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, &data));
+        auto objectInfo = new Base64(env);
+        napi_wrap(
+            env, thisVar, objectInfo,
+            [](napi_env env, void* data, void* hint) {
+                auto objInfo = (Base64*)data;
+                if (objInfo != nullptr) {
+                    delete objInfo;
+                }
+            },
+            nullptr, nullptr);
+        return thisVar;
+    }
+
+    static napi_value EncodeBase64(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        size_t length = 0;
+        void* data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
+        napi_valuetype valuetype1;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
+        NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
+        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->Encode(args[0], args[1]);
+        return result;
+    }
+
+    static napi_value EncodeToString(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        size_t length = 0;
+        void* data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
+        napi_valuetype valuetype1;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
+        NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
+        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->EncodeToString(args[0], args[1]);
+        return result;
+    }
+
+    static napi_value DecodeBase64(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        napi_valuetype valuetype1;
+        size_t length = 0;
+        void* data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_typeof(env, args[0], &valuetype1));
+        if (valuetype1 != napi_valuetype::napi_string) {
+            NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length,
+                                                    &data, &arraybuffer, &byteOffset));
+        }
+        if ((valuetype1 != napi_valuetype::napi_string) && (valuetype0 != napi_typedarray_type::napi_uint8_array)) {
+            napi_throw_error(env, nullptr, "The parameter type is incorrect");
+        }
+        napi_valuetype valuetype2;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype2));
+        NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64* object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->Decode(args[0], args[1]);
+        return result;
+    }
+
+    static napi_value Base64Init(napi_env env, napi_value exports)
+    {
+        const char* base64ClassName = "Base64";
+        napi_value base64Class = nullptr;
+        static napi_property_descriptor base64Desc[] = {
+            DECLARE_NAPI_FUNCTION("encode", EncodeBase64),
+            DECLARE_NAPI_FUNCTION("encodeToString", EncodeToString),
+            DECLARE_NAPI_FUNCTION("decode", DecodeBase64),
+        };
+        NAPI_CALL(env, napi_define_class(env, base64ClassName, strlen(base64ClassName), Base64Constructor,
+                                         nullptr, sizeof(base64Desc) / sizeof(base64Desc[0]), base64Desc,
+                                         &base64Class));
+        static napi_property_descriptor desc[] = {
+            DECLARE_NAPI_PROPERTY("Base64", base64Class)
+        };
+        NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
+        return exports;
+    }
+
     static napi_value UtilInit(napi_env env, napi_value exports)
     {
         static napi_property_descriptor desc[] = {
@@ -495,6 +810,8 @@ namespace OHOS::Util {
         };
         NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
         TextcoderInit(env, exports);
+        RationalNumberInit(env, exports);
+        Base64Init(env, exports);
         return exports;
     }
 

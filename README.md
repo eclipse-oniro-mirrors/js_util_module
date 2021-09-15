@@ -1,192 +1,165 @@
-# js_util_module
+# js_util_module Subsystems / components
 
-#### 一、TextEncoder介绍
+-   [Introduction](#Introduction)
+-   [Directory](#Directory)
+-   [Description](#Description)
+    -   [Interface description](#Interface description)
+    -   [Instruction for use](#Instruction for use)
 
-TextEncoder表示一个文本编码器，接受字符串作为输入，以UTF-8格式进行编码，输出UTF-8字节流。
+-   [Related warehouse](#Related warehouse)
 
-接口介绍
+## Introduction
+The interface of util is used for character Textencoder, TextDecoder and HelpFunction module.The TextEncoder represents a text encoder that accepts a string as input, encodes it in UTF-8 format, and outputs UTF-8 byte stream. The TextDecoder interface represents a text decoder. The decoder takes the byte stream as the input and outputs the Stirng string. HelpFunction is mainly used to callback and promise functions, write and output error codes, and format class strings.
+## 目录
 
-1.readonly encoding : string
+```
+base/compileruntime/js_util_module/
+├── Class:TextEncoder                   # TextEncoder class
+│   ├──  new TextEncoder()             	# create textencoder object
+│   ├──  encode()                      	# encode method
+│   ├──  encoding                     	# encoding property
+│   └──  encodeInto()                   # encodeInto method
+├── Class:TextDecoder                   # TextDecoder class
+│   ├──  new TextDecoder()              # create TextDecoder object
+│   ├──  decode()             		    # decode method
+│   ├──  encoding                      	# encoding property
+│   ├──  fatal	                     	# fatal property
+│   └──  ignoreBOM                     	# ignoreBOM property
+├── printf()			                # printf method
+├── getErrorString()			        # getErrorString method
+├── callbackWrapper()		            # callbackWrapper method
+└── promiseWrapper()		            # promiseWrapper method
+```
 
-获取编码的格式，只支持UTF-8。
+## Description
 
-2.encode(input : string) : Uint8Array
+### Interface description
 
-输入stirng字符串，编码并输出UTF-8字节流。
 
-3.encodeInto(input : string, dest : Uint8Array) : {read : number, written : number}
+| Interface name | Description |
+| -------- | -------- |
+| readonly encoding : string | Get the encoding format, only UTF-8 is supported. |
+| encode(input : string) : Uint8Array | Input stirng string, encode and output UTF-8 byte stream. |
+| encodeInto(input : string, dest : Uint8Array) : {read : number, written : number} | Enter the stirng string, dest represents the storage location after encoding, and returns an object, read represents the number of characters that have been encoded,and written represents the size of bytes occupied by the encoded characters. |
+| constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean}) | Constructor, the first parameter encoding indicates the format of decoding.The second parameter represents some attributes.Fatal in the attribute indicates whether an exception is thrown, and ignoreBOM indicates whether to ignore the bom flag. |
+| readonly encoding : string | Get the set decoding format. |
+| readonly fatal : boolean | Get the setting that throws the exception. |
+| readonly ignoreBOM : boolean | Get whether to ignore the setting of the bom flag. |
+| decode(input : ArrayBuffer | Input the data to be decoded, and solve the corresponding string character string.The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false. |
+| function printf(format: string, ...args: Object[]): string | The util.format() method returns a formatted string using the first argument as a printf-like format string which can contain zero or more format specifiers. |
+| function getErrorString(errno: number): string |  The geterrorstring () method uses a system error number as a parameter to return system error information. |
+| function callbackWrapper(original: Function): (err: Object, value: Object) => void | Takes an async function (or a function that returns a Promise) and returns a function following the error-first callback style, i.e. taking an (err, value) => ... callback as the last argument. In the callback, the first argument will be the rejection reason (or null if the Promise resolved), and the second argument will be the resolved value. |
+| function promiseWrapper(original: (err: Object, value: Object) => void): Object |     Takes a function following the common error-first callback style, i.e. taking an (err, value) => ... callback as the last argument, and returns a version that returns promises. |
 
-输入stirng字符串，dest表示编码后存放位置，返回一个对象，read表示已经编码的字符的个数，written表示已编码字符所占字节的大小。
+Each specifier in printf is replaced with a converted value from the corresponding parameter. Supported specifiers are:
+| Stylized character | Style requirements |
+| -------- | -------- |
+|    %s: | String will be used to convert all values except BigInt, Object and -0. |
+|    %d: | Number will be used to convert all values except BigInt and Symbol. |
+|    %i:  | parseInt(value, 10) is used for all values except BigInt and Symbol. |
+|    %f:  | parseFloat(value) is used for all values expect Symbol. |
+|    %j:  | JSON. Replaced with the string '[Circular]' if the argument contains circular references. |
+|    %o:  | Object. A string representation of an object with generic JavaScript object formatting. Similar to util.inspect() with options { showHidden: true, showProxy: true }. This will show the full object including non-enumerable properties and proxies. |
+|    %O:  | Object. A string representation of an object with generic JavaScript object formatting. Similar to util.inspect() without options. This will show the full object not including non-enumerable properties and proxies. |
+|    %c:  | CSS. This specifier is ignored and will skip any CSS passed in. |
+|    %%:  | single percent sign ('%'). This does not consume an argument. |
 
-使用方法:
+### Instruction for use
 
+
+The use methods of each interface are as follows:
+
+1.readonly encoding()
+```
 import util from '@ohos.util'
-
 var textEncoder = new util.TextEncoder();
-
-var result = textEncoder.encode('abc');
-
-var dest = new Uint8Array(6);
-
-var obj = textEncoder.encodeInto('abc', dest);
-
 var getEncoding = textEncoder.encoding();
-
-#### 二、TextDecoder介绍
-
-TextDecoder接口表示一个文本解码器，解码器将字节流作为输入，输出stirng字符串。
-
-接口介绍
-
-1.constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean})
-构造函数，第一个参数encoding表示解码的格式。
-
-第二个参数表示一些属性。
-
-属性中fatal表示是否抛出异常，ignoreBOM表示是否忽略bom标志。
-
-2.readonly encoding : string
-
-获取设置的解码格式
-
-3.readonly fatal : boolean
-
-获取抛出异常的设置
-
-4.readonly ignoreBOM : boolean
-
-获取是否忽略bom标志的设置
-
-5.decode(input : ArrayBuffer | ArrayBufferView, options? : {stream? : false}) : string
-
-输入要解码的数据，解出对应的string字符串。
-
-第一个参数input表示要解码的数据，第二个参数options表示一个bool标志，表示将跟随附加数据，默认为false。
-
-使用方法:
-
+```
+2.encode()
+```
 import util from '@ohos.util'
-
+var textEncoder = new util.TextEncoder();
+var result = textEncoder.encode('abc');
+```
+3.encodeInto()
+```
+import util from '@ohos.util'
+var textEncoder = new util.TextEncoder();
+var obj = textEncoder.encodeInto('abc', dest);
+```
+4.textDecoder()
+```
+import util from '@ohos.util'
 var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
-
-var getEncoding = textDecoder.encoding();
-
-var fatalStr = textDecoder.fatal();
-
-var ignoreBom = textDecoder.ignoreBOM();
-
-var input = new Uint8Array([96, 97, 98]);
-
-var result = textDecoder.decode(input, {stream : true});
-
-#### 三、helpfunction介绍
-
-主要是对函数做callback化、promise化以及对错误码进行编写输出，及类字符串的格式化输出。
-
-helpfunction模块，涉及4个接口。
-
-接口介绍
-
-1.function printf(format: string, ...args: Object[]): string;
-
-    printf（）方法使用第一个参数作为格式字符串（其可以包含零个或多个格式说明符）来返回格式化的字符串。
-
-每个说明符都替换为来自相应参数的转换后的值。 支持的说明符有：
-
-    %s: String 将用于转换除 BigInt、Object 和 -0 之外的所有值。
-
-    %d: Number 将用于转换除 BigInt 和 Symbol 之外的所有值。
-
-    %i: parseInt(value, 10) 用于除 BigInt 和 Symbol 之外的所有值。
-
-    %f: parseFloat(value) 用于除 Symbol 之外的所有值。
-
-    %j: JSON。 如果参数包含循环引用，则替换为字符串 '[Circular]'。
-
-    %o: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。
-    
-        类似于具有选项 { showHidden: true, showProxy: true } 的 util.inspect()。
-
-        这将显示完整的对象，包括不可枚举的属性和代理。
-
-    %O: Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。
-
-        类似于没有选项的 util.inspect()。 这将显示完整的对象，但不包括不可枚举的属性和代理。
-
-    %c: CSS. 此说明符被忽略，将跳过任何传入的 CSS。
-
-    %%: 单个百分号 ('%')。 这不消费参数。
-
-    返回: <string> 格式化的字符串
-
-    如果说明符没有相应的参数，则不会替换它：
-
-         printf('%s:%s', 'foo');
-
-        // 返回: 'foo:%s'
-
-    如果其类型不是 string，则不属于格式字符串的值将进行%o类型的格式化。
-
-    如果传给 printf（） 方法的参数多于说明符的数量，则额外的参数将以空格分隔串联到返回的字符串：
-
-         printf('%s:%s', 'foo', 'bar', 'baz');
-
-         // 返回: 'foo:bar baz'
-
-    如果第一个参数不包含有效的格式说明符，则printf（）返回以空格分隔的所有参数的串联的字符串:
-
-         printf(1, 2, 3);
-
-        // 返回: '1 2 3'
-
-    如果只有一个参数传给printf（），则它会按原样返回，不进行任何格式化：
-
-         util.format('%% %s');
-
-        // Returns: '%% %s'
-
-2.function getErrorString(errno: number): string;
-
-    getErrorString（）方法使用一个系统的错误数字作为参数，用来返回系统的错误信息。
-
-3.function callbackWrapper(original: Function): (err: Object, value: Object) => void;
-
-    参数为一个采用 async 函数（或返回 Promise 的函数）并返回遵循错误优先回调风格的函数，
-
-    即将 (err, value) => ... 回调作为最后一个参数。 在回调中，第一个参数将是拒绝原因
-
-    （如果 Promise 已解决，则为 null），第二个参数将是已解决的值。
-
-4.function promiseWrapper(original: (err: Object, value: Object) => void): Object;
-
-    参数为采用遵循常见的错误优先的回调风格的函数
-
-    （也就是将 (err, value) => ... 回调作为最后一个参数），并返回一个返回 promise 的版本。
-
-使用方法:
-
-以printf、geterrorstring为例：
-
+```
+5.readonly encoding()
+```
 import util from '@ohos.util'
-
-1.printf()
-
-{
-        var format = "%%%o%%%i%s";
-
-        var value =  function aa(){};
-
-        var value1 = 1.5;
-
-        var value2 = "qwer";
-
-        var result = util.printf(format,value,value1,value2);
+var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
+var getEncoding = textDecoder.encoding();
+```
+6.readonly fatal()
+```
+import util from '@ohos.util'
+var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
+var fatalStr = textDecoder.fatal();
+```
+7.readonly ignoreBOM()
+```
+import util from '@ohos.util'
+var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
+var ignoreBom = textDecoder.ignoreBOM();
+```
+8.decode()
+```
+import util from '@ohos.util'
+var textDecoder = new util.textDecoder("utf-16be", {fatal : ture, ignoreBOM : false});
+var result = textDecoder.decode(input, {stream : true});
+```
+9.printf()
+```
+import util from '@ohos.util'
+var format = "%%%o%%%i%s";
+var value =  function aa(){};
+var value1 = 1.5;
+var value2 = "qwer";
+var result = util.printf(format,value,value1,value2);
+```
+10.getErrorString()
+```
+import util from '@ohos.util'
+var errnum = 13;
+var result = util.getErrorString(errnum);
+```
+11.callbackWrapper()
+```
+import util from '@ohos.util'
+async function promiseFn() {
+    return Promise.resolve('value');
+};
+var cb = util.callbackWrapper(promiseFn);
+cb((err, ret) => {
+    expect(err).strictEqual(null);
+    expect(ret).strictEqual('value');
+})
+```
+12.promiseWrapper()
+```
+import util from '@ohos.util'
+function aysnFun(str1, str2, callback) {
+    if (typeof str1 === 'string' && typeof str1 === 'string') {
+        callback(null, str1 + str2);
+    } else {
+        callback('type err');
+    }
 }
+let newPromiseObj = util.promiseWrapper(aysnFun)("Hello", 'World');
+newPromiseObj.then(res => {
+    expect(res).strictEqual('HelloWorld');
+})
+```
+## Related warehouse
 
-2.geterrorstring()
+[js_util_module subsystem](https://gitee.com/OHOS_STD/js_util_module)
 
-{
-        var errnum = 13;
-
-        var result = util.geterrorstring(errnum);
-}
+[base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
