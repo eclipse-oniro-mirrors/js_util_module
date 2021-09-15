@@ -15,14 +15,10 @@
 
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "utils/log.h"
-
-extern const char _binary_scope_js_js_start[];
-extern const char _binary_scope_js_js_end[];
 
 static napi_value ScopeInit(napi_env env, napi_value exports)
 {
-    const char* ClassName = "scope";
+    const char *ClassName = "scope";
     napi_value scopeClass = nullptr;
     NAPI_CALL(env, napi_define_class(env, ClassName, strlen(ClassName), nullptr,
     nullptr, 0, nullptr,
@@ -54,8 +50,10 @@ __attribute__((constructor)) void RegisterModule()
 
 // Scope JS register
 extern "C"
-__attribute__((visibility("default"))) void NAPI_scope_GetJSCode(const char** buf, int* buflen)
+__attribute__((visibility("default"))) void NAPI_scope_GetJSCode(const char **buf, int *buflen)
 {
+    extern const char _binary_scope_js_js_start[];
+    extern const char _binary_scope_js_js_end[];
     if (buf != nullptr) {
         *buf = _binary_scope_js_js_start;
     }

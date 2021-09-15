@@ -15,15 +15,9 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
-#include "utils/log.h"
-
-extern const char _binary_js_lrubuffer_js_start[];
-extern const char _binary_js_lrubuffer_js_end[];
-
 static napi_value LruBufferInit(napi_env env, napi_value exports)
 {
-    HILOG_INFO("LXY -------module----- LruBufferInit start");
-    const char* lruBufferClassName = "lrubuffer";
+    const char *lruBufferClassName = "lrubuffer";
     napi_value lruBufferClass = nullptr;
     NAPI_CALL(env, napi_define_class(env, lruBufferClassName, strlen(lruBufferClassName), nullptr,
     nullptr, 0, nullptr,
@@ -32,7 +26,6 @@ static napi_value LruBufferInit(napi_env env, napi_value exports)
         DECLARE_NAPI_PROPERTY("lrubuffer", lruBufferClass),
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
-    HILOG_INFO("LXY -------module----- LruBufferInit end ");
     return exports;
 }
 
@@ -54,8 +47,10 @@ extern "C" __attribute__ ((constructor)) void RegisterModule()
 
 // lrubuffer JS register
 extern "C"
-__attribute__((visibility("default"))) void NAPI_lrubuffer_GetJSCode(const char** buf, int* buflen)
+__attribute__((visibility("default"))) void NAPI_lrubuffer_GetJSCode(const char **buf, int *buflen)
 {
+    extern const char _binary_js_lrubuffer_js_start[];
+    extern const char _binary_js_lrubuffer_js_end[];
     if (buf != nullptr) {
         *buf = _binary_js_lrubuffer_js_start;
     }
