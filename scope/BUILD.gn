@@ -11,53 +11,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/test.gni")
+import("//build/ohos.gni")
+import("//build/ohos/ace/ace.gni")
 
-if (is_standard_system) {
-  module_output_path = "compileruntime/js_util_module"
+base_output_path = get_label_info(":scope_js", "target_out_dir")
+scope_js_obj_path = base_output_path + "/scope.o"
+
+gen_js_obj("scope_js") {
+  input = "//base/compileruntime/js_util_module/scope/scope_js.js"
+  output = scope_js_obj_path
 }
 
-ohos_unittest("test_util_unittest") {
-  module_out_path = module_output_path
-
+ohos_shared_library("scope") {
   include_dirs = [
-    "//base/compileruntime/js_util_module/util",
     "//foundation/ace/napi",
-    "//foundation/ace/napi/interfaces/kits",
     "//foundation/ace/napi/native_engine",
-    "//foundation/ace/napi/native_engine/impl/quickjs",
     "//third_party/icu/icu4c/source/common",
-    "//third_party/googletest/include",
     "//third_party/node/src",
-    "//utils/native/base/include",
+    "//foundation/ace/napi/interfaces/kits",
+    "//base/compileruntime/js_util_module/scope",
   ]
 
-  cflags = [ "-g3" ]
-
-  sources = [
-    "test_quickjs.cpp",
-    "test_util.cpp",
-  ]
+  sources = [ "native_module_scope.cpp" ]
 
   deps = [
-    "//base/compileruntime/js_util_module/util:util_packages",
+    ":scope_js",
+    "//base/compileruntime/js_util_module/scope/:scope_js",
     "//foundation/ace/napi/:ace_napi",
     "//foundation/ace/napi/:ace_napi_quickjs",
-    "//third_party/googletest:gtest",
-    "//third_party/googletest:gtest_main",
     "//third_party/icu/icu4c:static_icuuc",
-    "//third_party/libuv:uv_static",
-    "//third_party/quickjs:qjs",
     "//utils/native/base:utils",
-    "//utils/native/base:utilsecurec",
   ]
 
   if (is_standard_system) {
     external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  } else {
+    external_deps = [ "hilog:libhilog" ]
   }
+  subsystem_name = "ccruntime"
+  part_name = "jsapi_util"
+
+  relative_install_dir = "module"
 }
 
-group("unittest") {
-  testonly = true
-  deps = [ ":test_util_unittest" ]
+group("scope_packages") {
+  deps = [ ":scope" ]
 }
