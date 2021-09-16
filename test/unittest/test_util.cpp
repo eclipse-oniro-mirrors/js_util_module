@@ -23,7 +23,6 @@
 #include "utils/log.h"
 #include "js_textdecoder.h"
 #include "js_textencoder.h"
-// #include "unicode/unistr.h"
 
 #define ASSERT_CHECK_CALL(call)   \
     {                             \
