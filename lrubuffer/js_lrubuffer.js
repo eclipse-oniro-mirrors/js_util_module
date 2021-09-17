@@ -121,10 +121,13 @@ class LruBuffer {
         if (this.cache.has(key)) {
             flag = true;
             let value;
+            this.hitCount++;
             value = this.cache.get(key);
             this.cache.delete(key);
             this.cache.set(key, value);
+            return flag;
         }
+        this.missCount++;
         return flag;
     }
     remove(key) {
@@ -135,7 +138,7 @@ class LruBuffer {
             let former;
             former = this.cache.get(key);
             this.cache.delete(key);
-            if (key !== null) {
+            if (former !== null) {
                 this.afterRemoval(false, key, former, null);
                 return former;
             }
