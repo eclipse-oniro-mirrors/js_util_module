@@ -138,7 +138,7 @@ class LruBuffer {
             let former;
             former = this.cache.get(key);
             this.cache.delete(key);
-            if (key !== null) {
+            if (former !== null) {
                 this.afterRemoval(false, key, former, null);
                 return former;
             }
