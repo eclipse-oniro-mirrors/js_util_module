@@ -115,7 +115,7 @@ namespace OHOS::Util {
             argv = new napi_value[argc];
         }
         napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char* format = nullptr;
+        char *format = nullptr;
         size_t formatsize = 0;
         napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
         if (formatsize > 0) {
@@ -149,7 +149,7 @@ namespace OHOS::Util {
         if (argc > 0) {
             argv = new napi_value[argc];
             napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-            char* format = nullptr;
+            char *format = nullptr;
             size_t formatsize = 0;
             napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
             if (formatsize > 0) {
@@ -159,7 +159,7 @@ namespace OHOS::Util {
             std::string printInfo;
             std::vector<std::string> value;
             for (size_t i = 1; i < argc; i++) {
-                char* valueString = nullptr;
+                char *valueString = nullptr;
                 size_t valuesize = 0;
                 napi_get_value_string_utf8(env, argv[i], nullptr, 0, &valuesize);
                 if (valuesize > 0) {
@@ -223,9 +223,9 @@ namespace OHOS::Util {
     static napi_value GetSecPara(napi_env env, napi_value valData, std::vector<int> &paraVec)
     {
         napi_value messageKeyFatal = nullptr;
-        const char* messageKeyStrFatal = "fatal";
+        const char *messageKeyStrFatal = "fatal";
         napi_value messageKeyIgnorebom = nullptr;
-        const char* messageKeyStrIgnorebom = "ignoreBOM";
+        const char *messageKeyStrIgnorebom = "ignoreBOM";
         napi_value resultFatal = nullptr;
         napi_value resultIgnorebom = nullptr;
         bool bResultFat = false;
@@ -248,8 +248,8 @@ namespace OHOS::Util {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, &tempArgc, nullptr, &thisVar, nullptr);
         size_t argc = 0;
-        void* data = nullptr;
-        char* type = nullptr;
+        void *data = nullptr;
+        char *type = nullptr;
         size_t typeLen = 0;
         std::vector<int> paraVec(2, 0); // 2: Specifies the size of the container to be applied for.
         if (tempArgc == 1) {
@@ -284,7 +284,7 @@ namespace OHOS::Util {
         auto objectInfo = new TextDecoder(env, enconding, paraVec);
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
-            [](napi_env env, void* data, void* hint) {
+            [](napi_env env, void *data, void *hint) {
                 auto objInfo = (TextDecoder*)data;
                 if (objInfo != nullptr) {
                     delete objInfo;
@@ -300,14 +300,14 @@ namespace OHOS::Util {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, &tempArgc, nullptr, &thisVar, nullptr);
         size_t argc = 0;
-        void* dataPara = nullptr;
+        void *dataPara = nullptr;
         napi_typedarray_type type;
         size_t length = 0;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         bool iStream = false;
-        TextDecoder* textDecoder = nullptr;
+        TextDecoder *textDecoder = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&textDecoder));
         napi_value valStr = nullptr;
         if (tempArgc == 1) {
@@ -325,7 +325,7 @@ namespace OHOS::Util {
             NAPI_CALL(env, napi_get_typedarray_info(env, argv[0], &type, &length, &data, &arraybuffer, &byteOffset));
             // second para
             napi_value messageKeyStream = nullptr;
-            const char* messageKeyStrStream = "stream";
+            const char *messageKeyStrStream = "stream";
 
             napi_value resultStream = nullptr;
             NAPI_CALL(env, napi_create_string_utf8(env, messageKeyStrStream, strlen(messageKeyStrStream),
@@ -341,7 +341,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        TextDecoder* textDecoder = nullptr;
+        TextDecoder *textDecoder = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&textDecoder));
         napi_value retVal = textDecoder->GetEncoding();
         return retVal;
@@ -351,7 +351,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        TextDecoder* textDecoder = nullptr;
+        TextDecoder *textDecoder = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&textDecoder));
         napi_value retVal = textDecoder->GetFatal();
         return retVal;
@@ -361,7 +361,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        TextDecoder* textDecoder = nullptr;
+        TextDecoder *textDecoder = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&textDecoder));
         napi_value retVal = textDecoder->GetIgnoreBOM();
         return retVal;
@@ -371,13 +371,13 @@ namespace OHOS::Util {
     static napi_value TextEncoderConstructor(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        void* data = nullptr;
+        void *data = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, &data));
 
         auto object = new TextEncoder(env);
         NAPI_CALL(env, napi_wrap(
             env, thisVar, object,
-            [](napi_env env, void* data, void* hint) {
+            [](napi_env env, void *data, void *hint) {
                 auto obj = (TextEncoder*)data;
                 if (obj != nullptr) {
                     delete obj;
@@ -392,7 +392,7 @@ namespace OHOS::Util {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
 
-        TextEncoder* object = nullptr;
+        TextEncoder *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
 
         return object->GetEncoding();
@@ -413,7 +413,7 @@ namespace OHOS::Util {
 
         NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
 
-        TextEncoder* object = nullptr;
+        TextEncoder *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
 
         napi_value result = object->Encode(args);
@@ -436,7 +436,7 @@ namespace OHOS::Util {
 
         napi_typedarray_type valuetype1;
         size_t length = 0;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[1], &valuetype1, &length, &data, &arraybuffer, &byteOffset));
@@ -444,7 +444,7 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, valuetype0 == napi_string, "Wrong argument type. String expected.");
         NAPI_ASSERT(env, valuetype1 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
 
-        TextEncoder* object = nullptr;
+        TextEncoder *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
 
         napi_value result = object->EncodeInto(args[0], args[1]);
@@ -455,7 +455,7 @@ namespace OHOS::Util {
     static napi_value RationalNumberConstructor(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        void* data = nullptr;
+        void *data = nullptr;
         size_t argc = 3;
         napi_value args[2] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, &data));
@@ -466,7 +466,7 @@ namespace OHOS::Util {
         auto objectInfo = new RationalNumber(env, num, den);
         NAPI_CALL(env, napi_wrap(
             env, thisVar, objectInfo,
-            [](napi_env env, void* data, void* hint) {
+            [](napi_env env, void *data, void *hint) {
                 auto objInfo = (RationalNumber*)data;
                 if (objInfo != nullptr) {
                     delete objInfo;
@@ -487,7 +487,7 @@ namespace OHOS::Util {
         napi_valuetype valuetype;
         NAPI_CALL(env, napi_typeof(env, args, &valuetype));
         NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected");
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         if (RationalNumberClass == nullptr) {
             napi_throw_error(env, "NullException", "RationalNumberClass must not be null!");
@@ -503,7 +503,7 @@ namespace OHOS::Util {
         napi_value args = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong nuamber of arguments");
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         napi_unwrap(env, thisVar, (void**)&object);
         return object->CompareTo(args);
     }
@@ -516,7 +516,7 @@ namespace OHOS::Util {
         napi_value args = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong nuamber of arguments");
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         return object->Equals(args);
     }
@@ -525,7 +525,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         return object->Value();
     }
@@ -535,7 +535,7 @@ namespace OHOS::Util {
         size_t argc = 2;
         napi_value argv[2] = {0};
         napi_value thisVar = nullptr;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value args = nullptr;
         napi_get_cb_info(env, info, &argc, argv, &thisVar, &data);
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
@@ -545,7 +545,7 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_typeof(env, argv[1], &valuetype2));
         NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. String expected");
         NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. String expected");
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         napi_unwrap(env, thisVar, (void**)&object);
         napi_value result = nullptr;
         result = object->GetCommonDivisor(argv[0], argv[1]);
@@ -556,7 +556,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->GetDenominator();
         return result;
@@ -566,7 +566,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->GetNumerator();
         return result;
@@ -576,7 +576,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr));
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsFinite();
         return result;
@@ -586,7 +586,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsInfinite();
         return result;
@@ -596,7 +596,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsNaN();
         return result;
@@ -605,7 +605,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsZero();
         return result;
@@ -615,7 +615,7 @@ namespace OHOS::Util {
     {
         napi_value thisVar = nullptr;
         napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->ToString();
         return result;
@@ -623,7 +623,7 @@ namespace OHOS::Util {
 
     static napi_value RationalNumberInit(napi_env env, napi_value exports)
     {
-        const char* RationalNumberClassName = "RationalNumber";
+        const char *RationalNumberClassName = "RationalNumber";
         static napi_property_descriptor RationalNumberDesc[] = {
             DECLARE_NAPI_FUNCTION("creatRationalFromString", CreatRationalFromString),
             DECLARE_NAPI_FUNCTION("compareTo", CompareTo),
@@ -651,7 +651,7 @@ namespace OHOS::Util {
 
     static napi_value TextcoderInit(napi_env env, napi_value exports)
     {
-        const char* textEncoderClassName = "TextEncoder";
+        const char *textEncoderClassName = "TextEncoder";
         napi_value textEncoderClass = nullptr;
         static napi_property_descriptor textEncoderDesc[] = {
             DECLARE_NAPI_GETTER("encoding", GetEncoding),
@@ -663,7 +663,7 @@ namespace OHOS::Util {
                                          sizeof(textEncoderDesc) / sizeof(textEncoderDesc[0]),
                                          textEncoderDesc, &textEncoderClass));
 
-        const char* textDecoderClassName = "TextDecoder";
+        const char *textDecoderClassName = "TextDecoder";
         napi_value textDecoderClass = nullptr;
         static napi_property_descriptor textdecoderDesc[] = {
             DECLARE_NAPI_FUNCTION("decode", TextdecoderDecode),
@@ -688,12 +688,12 @@ namespace OHOS::Util {
     static napi_value Base64Constructor(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        void* data = nullptr;
+        void *data = nullptr;
         NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, &data));
         auto objectInfo = new Base64(env);
         napi_wrap(
             env, thisVar, objectInfo,
-            [](napi_env env, void* data, void* hint) {
+            [](napi_env env, void *data, void *hint) {
                 auto objInfo = (Base64*)data;
                 if (objInfo != nullptr) {
                     delete objInfo;
@@ -713,7 +713,7 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
         size_t length = 0;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
@@ -721,7 +721,7 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
-        Base64* object = nullptr;
+        Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->Encode(args[0], args[1]);
         return result;
@@ -737,7 +737,7 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
         size_t length = 0;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
@@ -745,7 +745,7 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
-        Base64* object = nullptr;
+        Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->EncodeToString(args[0], args[1]);
         return result;
@@ -762,7 +762,7 @@ namespace OHOS::Util {
         napi_typedarray_type valuetype0;
         napi_valuetype valuetype1;
         size_t length = 0;
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_typeof(env, args[0], &valuetype1));
@@ -776,7 +776,7 @@ namespace OHOS::Util {
         napi_valuetype valuetype2;
         NAPI_CALL(env, napi_typeof(env, args[1], &valuetype2));
         NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. Nmuber expected.");
-        Base64* object = nullptr;
+        Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->Decode(args[0], args[1]);
         return result;
@@ -784,7 +784,7 @@ namespace OHOS::Util {
 
     static napi_value Base64Init(napi_env env, napi_value exports)
     {
-        const char* base64ClassName = "Base64";
+        const char *base64ClassName = "Base64";
         napi_value base64Class = nullptr;
         static napi_property_descriptor base64Desc[] = {
             DECLARE_NAPI_FUNCTION("encode", EncodeBase64),
@@ -835,7 +835,7 @@ namespace OHOS::Util {
 
     // util JS register
     extern "C"
-    __attribute__((visibility("default"))) void NAPI_util_GetJSCode(const char** buf, int* buflen)
+    __attribute__((visibility("default"))) void NAPI_util_GetJSCode(const char **buf, int *buflen)
     {
         if (buf != nullptr) {
             *buf = _binary_util_js_js_start;

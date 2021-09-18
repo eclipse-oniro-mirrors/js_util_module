@@ -32,20 +32,21 @@ namespace OHOS::Util {
         uint32_t i32Flag = 0;
         if (optionVec.size() == 2) { // 2:Meaning of optionVec size 2
             if (optionVec[0] >= 0 && optionVec[1] >= 0) {
-                i32Flag |= optionVec[0] ? FATAL_FLG : 0;
-                i32Flag |= optionVec[1] ? IGNORE_BOM_FLG : 0;
+                i32Flag |= optionVec[0] ? static_cast<uint32_t>(ConverterFlags::FATAL_FLG) : 0;
+                i32Flag |= optionVec[1] ? static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG) : 0;
             } else if (optionVec[0] >= 0 && optionVec[1] < 0) {
-                i32Flag |= optionVec[0] ? FATAL_FLG : 0;
+                i32Flag |= optionVec[0] ? static_cast<uint32_t>(ConverterFlags::FATAL_FLG) : 0;
             } else if (optionVec[0] < 0 && optionVec[1] >= 0) {
-                i32Flag |= optionVec[1] ? IGNORE_BOM_FLG : 0;
+                i32Flag |= optionVec[1] ? static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG) : 0;
             }
         }
         label_ = i32Flag;
         bool fatal =
-        (i32Flag & FATAL_FLG) == FATAL_FLG;
+        (i32Flag & static_cast<uint32_t>(ConverterFlags::FATAL_FLG)) ==
+        static_cast<uint32_t>(ConverterFlags::FATAL_FLG);
         UErrorCode codeflag = U_ZERO_ERROR;
-        char* pStr = const_cast<char*>(encStr_.c_str());
-        UConverter* conv = ucnv_open(pStr, &codeflag);
+        char *pStr = const_cast<char*>(encStr_.c_str());
+        UConverter *conv = ucnv_open(pStr, &codeflag);
         if (U_FAILURE(codeflag)) {
             HILOG_ERROR("ucnv_open failed !");
             return;
@@ -62,19 +63,20 @@ namespace OHOS::Util {
     napi_value TextDecoder::Decode(napi_value src, bool iflag)
     {
         uint32_t flags = 0;
-        flags |= iflag ? 0 : FLUSH_FLG;
-        UBool flush = ((flags & FLUSH_FLG)) == FLUSH_FLG;
+        flags |= iflag ? 0 : static_cast<uint32_t>(ConverterFlags::FLUSH_FLG);
+        UBool flush = ((flags & static_cast<uint32_t>(ConverterFlags::FLUSH_FLG))) ==
+        static_cast<uint32_t>(ConverterFlags::FLUSH_FLG);
         napi_typedarray_type type;
         size_t length = 0;
-        void* data1 = nullptr;
+        void *data1 = nullptr;
         size_t byteOffset = 0;
         napi_value arrayBuffer = nullptr;
         NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &data1, &arrayBuffer, &byteOffset));
-        const char* source = static_cast<char*>(data1);
+        const char *source = static_cast<char*>(data1);
         UErrorCode codeFlag = U_ZERO_ERROR;
-        size_t limit = GetMinByteSize() * length;
-        size_t len = limit * sizeof(UChar);
-        UChar* arr = nullptr;
+        size_t limit = GetMinByteSize()  *length;
+        size_t len = limit  *sizeof(UChar);
+        UChar *arr = nullptr;
         if (limit > 0) {
             arr = new UChar[limit + 1];
             if (memset_s(arr, len + sizeof(UChar), 0, len + sizeof(UChar)) != 0) {
@@ -86,26 +88,24 @@ namespace OHOS::Util {
             HILOG_ERROR("limit is error");
             return nullptr;
         }
-        UChar* target = arr;
+        UChar *target = arr;
         size_t tarStartPos = (intptr_t)arr;
         ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source, source + length, nullptr, flush, &codeFlag);
         size_t resultLength = 0;
         bool omitInitialBom = false;
         DecodeArr decArr(target, tarStartPos, limit);
         SetBomFlag(arr, codeFlag, decArr, resultLength, omitInitialBom);
-        UChar* arrDat = arr;
+        UChar *arrDat = arr;
         if (omitInitialBom && resultLength > 0) {
             arrDat = &arr[2]; // 2: Obtains the 2 value of the array.
         }
         std::u16string tempStr16(arrDat);
         std::string tepStr = std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.to_bytes(tempStr16);
-        const char* tempCh = tepStr.c_str();
-        char* rstCh = const_cast<char*>(tempCh);
         napi_value resultStr = nullptr;
-        NAPI_CALL(env_, napi_create_string_utf8(env_, rstCh, strlen(rstCh), &resultStr));
+        NAPI_CALL(env_, napi_create_string_utf8(env_, tepStr.c_str(), tepStr.size(), &resultStr));
         FreedMemory(arr);
         if (flush) {
-            label_ &= BOM_SEEN_FLG;
+            label_ &= static_cast<uint32_t>(ConverterFlags::BOM_SEEN_FLG);
             Reset();
         }
         return resultStr;
@@ -121,9 +121,9 @@ namespace OHOS::Util {
 
     napi_value TextDecoder::GetFatal() const
     {
-        uint32_t temp = label_ & FATAL_FLG;
+        uint32_t temp = label_ & static_cast<uint32_t>(ConverterFlags::FATAL_FLG);
         bool comRst = false;
-        if (temp == FATAL_FLG) {
+        if (temp == static_cast<uint32_t>(ConverterFlags::FATAL_FLG)) {
             comRst = true;
         } else {
             comRst = false;
@@ -135,9 +135,9 @@ namespace OHOS::Util {
 
     napi_value TextDecoder::GetIgnoreBOM() const
     {
-        uint32_t temp = label_ & IGNORE_BOM_FLG;
+        uint32_t temp = label_ & static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG);
         bool comRst = false;
-        if (temp == IGNORE_BOM_FLG) {
+        if (temp == static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG)) {
             comRst = true;
         } else {
             comRst = false;
@@ -172,7 +172,8 @@ namespace OHOS::Util {
         }
     }
 
-    void TextDecoder::SetBomFlag(const UChar* arr, const UErrorCode codeFlag, const DecodeArr decArr , size_t &rstLen, bool &bomFlag)
+    void TextDecoder::SetBomFlag(const UChar *arr, const UErrorCode codeFlag, const DecodeArr decArr,
+                                 size_t &rstLen, bool &bomFlag)
     {
         if (arr == nullptr ) {
             return;
@@ -182,7 +183,7 @@ namespace OHOS::Util {
                 rstLen = (intptr_t)decArr.target - decArr.tarStartPos;
                 if (rstLen > 0 && IsUnicode() && !IsIgnoreBom() && !IsBomFlag()) {
                     bomFlag = (arr[0] == 0xFEFF) ? true : false;
-                    label_ |= BOM_SEEN_FLG;
+                    label_ |= static_cast<uint32_t>(ConverterFlags::BOM_SEEN_FLG);
                 }
             }
         }
