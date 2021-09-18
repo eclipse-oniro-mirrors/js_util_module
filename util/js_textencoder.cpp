@@ -44,7 +44,7 @@ namespace OHOS::Util {
 
         NAPI_CALL(env_, napi_get_value_string_utf8(env_, src, buffer, bufferSize + 1, &bufferSize));
 
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arrayBuffer = nullptr;
         NAPI_CALL(env_, napi_create_arraybuffer(env_, bufferSize, &data, &arrayBuffer));
         if (memcpy_s(data, bufferSize, reinterpret_cast<void*>(buffer), bufferSize) != 0) {
@@ -65,16 +65,16 @@ namespace OHOS::Util {
         napi_typedarray_type type;
         size_t byteOffset = 0;
         size_t length = 0;
-        void* resultData = nullptr;
+        void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env_, napi_get_typedarray_info(env_, dest, &type, &length, &resultData, &resultBuffer, &byteOffset));
 
-        char* writeResult = static_cast<char*>(resultData) + byteOffset;
+        char *writeResult = static_cast<char*>(resultData) + byteOffset;
 
         int32_t nchars = 0;
         int32_t written = 0;
-        NativeEngine* engine = reinterpret_cast<NativeEngine*>(env_);
-        NativeValue* nativeValue = reinterpret_cast<NativeValue*>(src);
+        NativeEngine *engine = reinterpret_cast<NativeEngine*>(env_);
+        NativeValue *nativeValue = reinterpret_cast<NativeValue*>(src);
         engine->EncodeToUtf8(nativeValue, writeResult, &written, length, &nchars);
 
         napi_value result = nullptr;

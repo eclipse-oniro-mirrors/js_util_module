@@ -26,19 +26,19 @@
 using TransformToolPointer = std::unique_ptr<UConverter, void(*)(UConverter*)>;
 namespace OHOS::Util {
     struct DecodeArr {
-        DecodeArr(UChar* tarPos, size_t tarStaPos, size_t limLen) {
+        DecodeArr(UChar *tarPos, size_t tarStaPos, size_t limLen) {
             this->target = tarPos;
             this->tarStartPos = tarStaPos;
             this->limitLen = limLen;
         }
-        UChar* target = 0;
+        UChar *target = 0;
         size_t tarStartPos = 0;
         size_t limitLen = 0;
     };
 
     class TextDecoder {
     public:
-        enum ConverterFlags {
+        enum class ConverterFlags {
             FLUSH_FLG = 0x1,
             FATAL_FLG = 0x2,
             IGNORE_BOM_FLG = 0x4,
@@ -60,8 +60,8 @@ namespace OHOS::Util {
         }
         bool IsBomFlag() const
         {
-            uint32_t temp = label_ & BOM_SEEN_FLG;
-            if (temp == BOM_SEEN_FLG) {
+            uint32_t temp = label_ & static_cast<uint32_t>(ConverterFlags::BOM_SEEN_FLG);
+            if (temp == static_cast<uint32_t>(ConverterFlags::BOM_SEEN_FLG)) {
                 return true;
             } else {
                 return false;
@@ -69,8 +69,8 @@ namespace OHOS::Util {
         }
         bool IsUnicode() const
         {
-            uint32_t temp = label_ & UNICODE_FLG;
-            if (temp == UNICODE_FLG) {
+            uint32_t temp = label_ & static_cast<uint32_t>(ConverterFlags::UNICODE_FLG);
+            if (temp == static_cast<uint32_t>(ConverterFlags::UNICODE_FLG)) {
                 return true;
             } else {
                 return false;
@@ -78,20 +78,20 @@ namespace OHOS::Util {
         }
         bool IsIgnoreBom() const
         {
-            uint32_t temp = label_ & IGNORE_BOM_FLG;
-            if (temp == IGNORE_BOM_FLG) {
+            uint32_t temp = label_ & static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG);
+            if (temp == static_cast<uint32_t>(ConverterFlags::IGNORE_BOM_FLG)) {
                 return true;
             } else {
                 return false;
             }
         }
-        static void ConverterClose(UConverter* pointer)
+        static void ConverterClose(UConverter *pointer)
         {
             ucnv_close(pointer);
         }
     private:
-        void SetBomFlag(const UChar* arr, const UErrorCode codeFlag, const DecodeArr decArr, size_t& rstLen, bool& bomFlag);
-        void FreedMemory(UChar* pData);
+        void SetBomFlag(const UChar *arr, const UErrorCode codeFlag, const DecodeArr decArr, size_t& rstLen, bool& bomFlag);
+        void FreedMemory(UChar *pData);
         napi_env env_;
         uint32_t label_;
         std::string encStr_;
