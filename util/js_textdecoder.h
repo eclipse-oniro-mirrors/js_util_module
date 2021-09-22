@@ -26,7 +26,8 @@
 using TransformToolPointer = std::unique_ptr<UConverter, void(*)(UConverter*)>;
 namespace OHOS::Util {
     struct DecodeArr {
-        DecodeArr(UChar *tarPos, size_t tarStaPos, size_t limLen) {
+        DecodeArr(UChar *tarPos, size_t tarStaPos, size_t limLen)
+        {
             this->target = tarPos;
             this->tarStartPos = tarStaPos;
             this->limitLen = limLen;
@@ -90,7 +91,8 @@ namespace OHOS::Util {
             ucnv_close(pointer);
         }
     private:
-        void SetBomFlag(const UChar *arr, const UErrorCode codeFlag, const DecodeArr decArr, size_t& rstLen, bool& bomFlag);
+        void SetBomFlag(const UChar *arr, const UErrorCode codeFlag, const DecodeArr decArr,
+                        size_t& rstLen, bool& bomFlag);
         void FreedMemory(UChar *pData);
         napi_env env_;
         uint32_t label_;
