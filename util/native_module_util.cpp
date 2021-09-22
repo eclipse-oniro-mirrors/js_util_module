@@ -27,6 +27,8 @@
 
 extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
+extern const char _binary_util_abc_start[];
+extern const char _binary_util_abc_end[];
 namespace OHOS::Util {
     static std::string temp = "cdfijoOs";
     napi_value RationalNumberClass = nullptr;
@@ -113,29 +115,34 @@ namespace OHOS::Util {
         napi_value *argv = nullptr;
         if (argc > 0) {
             argv = new napi_value[argc];
+            napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+            char *format = nullptr;
+            size_t formatsize = 0;
+            napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+            if (formatsize > 0) {
+                format = new char[formatsize + 1];
+                napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
+                std::string str = format;
+                delete []format;
+                delete []argv;
+                argv = nullptr;
+                format = nullptr;
+                return FormatString(env, str);
+            } else {
+                return;
+            }
+            napi_value res = nullptr;
+            NAPI_CALL(env, napi_get_undefined(env, &res));
+            return res;
+        } else {
+            return;
         }
-        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char *format = nullptr;
-        size_t formatsize = 0;
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
-        if (formatsize > 0) {
-            format = new char[formatsize + 1];
-            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
-            std::string str = format;
-            delete []format;
-            delete []argv;
-            argv = nullptr;
-            format = nullptr;
-            return FormatString(env, str);
-        }
-        napi_value res = nullptr;
-        NAPI_CALL(env, napi_get_undefined(env, &res));
-        return res;
     }
 
     static std::string PrintfString(const std::string &format, const std::vector<std::string> &value)
     {
-        std::string printInfo = DealWithPrintf(format, value);
+        std::string printInfo;
+        printInfo = DealWithPrintf(format, value);
         return printInfo;
     }
 
@@ -841,6 +848,17 @@ namespace OHOS::Util {
         }
         if (buflen != nullptr) {
             *buflen = _binary_util_js_js_end - _binary_util_js_js_start;
+        }
+    }
+    // util JS register
+    extern "C"
+    __attribute__((visibility("default"))) void NAPI_util_GetABCCode(const char** buf, int* buflen)
+    {
+        if (buf != nullptr) {
+            *buf = _binary_util_abc_start;
+        }
+        if (buflen != nullptr) {
+            *buflen = _binary_util_abc_end - _binary_util_abc_start;
         }
     }
 }
