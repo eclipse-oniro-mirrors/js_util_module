@@ -97,8 +97,6 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-1", "decode rstring memset_s failed");
             }
         } else {
-            FreeMemory(ret);
-            FreeMemory(rstring);
             napi_throw_error(env, "-2", "outputLen is error !");
         }
         for (size_t i = 0; i < outputLen; i++) {
@@ -132,7 +130,6 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-1", "ret path memset_s failed");
             }
         } else {
-            FreeMemory(ret);
             napi_throw_error(env, "-2", "outputLen is error !");
         }
         bosom = ret;
@@ -193,7 +190,6 @@ namespace OHOS::Util {
                     napi_throw_error(env, "-1", "decode inputString memset_s failed");
                 }
             } else {
-                FreeMemory(inputString);
                 napi_throw_error(env, "-2", "prolen is error !");
             }
             napi_get_value_string_utf8(env, src, inputString, prolen + 1, &prolen);
@@ -245,7 +241,6 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-1", "decode retDecode memset_s failed");
             }
         } else {
-            FreeMemory(retDecode);
             napi_throw_error(env, "-2", "retLen is error !");
         }
         bosom = retDecode;
