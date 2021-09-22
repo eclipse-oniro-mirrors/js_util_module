@@ -45,8 +45,7 @@ namespace OHOS::Util {
         (i32Flag & static_cast<uint32_t>(ConverterFlags::FATAL_FLG)) ==
         static_cast<uint32_t>(ConverterFlags::FATAL_FLG);
         UErrorCode codeflag = U_ZERO_ERROR;
-        char *pStr = const_cast<char*>(encStr_.c_str());
-        UConverter *conv = ucnv_open(pStr, &codeflag);
+        UConverter *conv = ucnv_open(encStr_.c_str(), &codeflag);
         if (U_FAILURE(codeflag)) {
             HILOG_ERROR("ucnv_open failed !");
             return;
@@ -175,7 +174,7 @@ namespace OHOS::Util {
     void TextDecoder::SetBomFlag(const UChar *arr, const UErrorCode codeFlag, const DecodeArr decArr,
                                  size_t &rstLen, bool &bomFlag)
     {
-        if (arr == nullptr ) {
+        if (arr == nullptr) {
             return;
         }
         if (U_SUCCESS(codeFlag)) {

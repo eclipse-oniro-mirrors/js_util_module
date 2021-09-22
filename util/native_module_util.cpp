@@ -115,20 +115,20 @@ namespace OHOS::Util {
         napi_value *argv = nullptr;
         if (argc > 0) {
             argv = new napi_value[argc];
-        }
-        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-        char *format = nullptr;
-        size_t formatsize = 0;
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
-        if (formatsize > 0) {
-            format = new char[formatsize + 1];
-            napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
-            std::string str = format;
-            delete []format;
-            delete []argv;
-            argv = nullptr;
-            format = nullptr;
-            return FormatString(env, str);
+            napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+            char *format = nullptr;
+            size_t formatsize = 0;
+            napi_get_value_string_utf8(env, argv[0], nullptr, 0, &formatsize);
+            if (formatsize > 0) {
+                format = new char[formatsize + 1];
+                napi_get_value_string_utf8(env, argv[0], format, formatsize + 1, &formatsize);
+                std::string str = format;
+                delete []format;
+                delete []argv;
+                argv = nullptr;
+                format = nullptr;
+                return FormatString(env, str);
+            }
         }
         napi_value res = nullptr;
         NAPI_CALL(env, napi_get_undefined(env, &res));
@@ -137,8 +137,7 @@ namespace OHOS::Util {
 
     static std::string PrintfString(const std::string &format, const std::vector<std::string> &value)
     {
-        std::string printInfo;
-        printInfo = DealWithPrintf(format, value);
+        std::string printInfo = DealWithPrintf(format, value);
         return printInfo;
     }
 
