@@ -135,8 +135,7 @@ namespace OHOS::Util {
 
     static std::string PrintfString(const std::string &format, const std::vector<std::string> &value)
     {
-        std::string printInfo;
-        printInfo = DealWithPrintf(format, value);
+        std::string printInfo = DealWithPrintf(format, value);
         return printInfo;
     }
 
