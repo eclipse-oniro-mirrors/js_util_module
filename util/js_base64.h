@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <cstring>
 #include <sys/sysinfo.h>
 #include <unistd.h>
@@ -38,19 +38,19 @@ namespace OHOS::Util {
         napi_value Decode(napi_value src, napi_value flags);
     private:
         napi_env env;
-        unsigned char* DecodeAchieve(const char* input, size_t inputLen, size_t iflag);
-        unsigned char* EncodeAchieve(const unsigned char* input, size_t inputLen, size_t iflag);
+        unsigned char *DecodeAchieve(const char *input, size_t inputLen, size_t iflag);
+        unsigned char *EncodeAchieve(const unsigned char *input, size_t inputLen, size_t iflag);
         size_t Finds(char ch, size_t iflag);
         size_t DecodeOut(size_t equalCount, size_t retLen);
-        void FreeMemory(const unsigned char* address);
-        void FreeMemory(const char* address);
+        void FreeMemory(const unsigned char *address);
+        void FreeMemory(const char *address);
         size_t retLen = 0;
         size_t decodeOutLen = 0;
         size_t outputLen = 0;
-        unsigned char* pret = nullptr;
-        const unsigned char* inputEncode = nullptr;
-        const char* inputDecode = nullptr;
-        unsigned char* retDecode = nullptr;
+        unsigned char *pret = nullptr;
+        const unsigned char *inputEncode = nullptr;
+        const char *inputDecode = nullptr;
+        unsigned char *retDecode = nullptr;
     };
 }
 #endif
