@@ -49,7 +49,7 @@ namespace OHOS::Util {
         napi_typedarray_type type;
         size_t byteOffset = 0;
         size_t length = 0;
-        void* resultData = nullptr;
+        void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         inputEncode = static_cast<const unsigned char*>(resultData) + byteOffset;
@@ -57,8 +57,8 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
         size_t flag = 0;
         flag = static_cast<size_t>(iflag);
-        const unsigned char* rets = EncodeAchieve(inputEncode, length, flag);
-        void* data = nullptr;
+        const unsigned char *rets = EncodeAchieve(inputEncode, length, flag);
+        void *data = nullptr;
         napi_value arrayBuffer = nullptr;
         size_t bufferSize = outputLen;
         NAPI_CALL(env, napi_create_arraybuffer(env, bufferSize, &data, &arrayBuffer));
@@ -79,7 +79,7 @@ namespace OHOS::Util {
         napi_typedarray_type type;
         size_t byteOffset = 0;
         size_t length = 0;
-        void* resultData = nullptr;
+        void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         inputEncode = static_cast<const unsigned char*>(resultData) + byteOffset;
@@ -87,8 +87,8 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
         size_t flag = 0;
         flag = static_cast<size_t>(iflag);
-        unsigned char* ret = EncodeAchieve(inputEncode, length, flag);
-        char* rstring = nullptr;
+        unsigned char *ret = EncodeAchieve(inputEncode, length, flag);
+        char *rstring = nullptr;
         if (outputLen > 0) {
             rstring = new char[outputLen + 1];
             if (memset_s(rstring, outputLen + 1, '\0', outputLen + 1) != 0) {
@@ -103,8 +103,8 @@ namespace OHOS::Util {
             rstring[i] = char(ret[i]);
         }
         std::string finalString = rstring;
-        const char* outString = finalString.c_str();
-        const char* encString = static_cast<const char*>(outString);
+        const char *outString = finalString.c_str();
+        const char *encString = static_cast<const char*>(outString);
         napi_value resultStr = nullptr;
         NAPI_CALL(env, napi_create_string_utf8(env, encString, strlen(encString), &resultStr));
         FreeMemory(ret);
@@ -112,13 +112,13 @@ namespace OHOS::Util {
         return resultStr;
     }
 
-    unsigned char* Base64::EncodeAchieve(const unsigned char* input, size_t inputLen, size_t iflag)
+    unsigned char *Base64::EncodeAchieve(const unsigned char *input, size_t inputLen, size_t iflag)
     {
         size_t inp = 0;
         size_t temp = 0;
         size_t bitWise = 0;
-        unsigned char* ret = nullptr;
-        unsigned char* bosom = nullptr;
+        unsigned char *ret = nullptr;
+        unsigned char *bosom = nullptr;
         outputLen = (inputLen / TRAGET_THREE) * TRAGET_FOUR;
         if ((inputLen % TRAGET_THREE) > 0) {
             outputLen += TRAGET_FOUR;
@@ -170,9 +170,9 @@ namespace OHOS::Util {
         napi_typedarray_type type;
         size_t byteOffset = 0;
         size_t length = 0;
-        void* resultData = nullptr;
+        void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
-        char* inputString = nullptr;
+        char *inputString = nullptr;
         if (valuetype != napi_valuetype::napi_string) {
             NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         }
@@ -198,7 +198,7 @@ namespace OHOS::Util {
             inputDecode = static_cast<const char*>(resultData) + byteOffset;
             pret = DecodeAchieve(inputDecode, length, flag);
         }
-        void* data = nullptr;
+        void *data = nullptr;
         napi_value arrayBuffer = nullptr;
         size_t bufferSize = decodeOutLen;
         NAPI_CALL(env, napi_create_arraybuffer(env, bufferSize, &data, &arrayBuffer));
@@ -215,12 +215,12 @@ namespace OHOS::Util {
         return result;
     }
 
-    unsigned char* Base64::DecodeAchieve(const char* input, size_t inputLen, size_t iflag)
+    unsigned char *Base64::DecodeAchieve(const char *input, size_t inputLen, size_t iflag)
     {
         retLen = (inputLen / TRAGET_FOUR) * TRAGET_THREE;
         decodeOutLen = retLen;
         size_t equalCount = 0;
-        unsigned char* bosom = nullptr;
+        unsigned char *bosom = nullptr;
         size_t inp = 0;
         size_t temp = 0;
         size_t bitWise = 0;
@@ -270,6 +270,7 @@ namespace OHOS::Util {
 
     size_t Base64::DecodeOut(size_t equalCount, size_t retLen)
     {
+        size_t temp = retLen;
         if (equalCount == 1) {
             decodeOutLen -= 1;
         }
@@ -278,19 +279,19 @@ namespace OHOS::Util {
         }
         switch (equalCount) {
             case 0:
-                retLen += TRAGET_FOUR;
+                temp += TRAGET_FOUR;
                 break;
             case 1:
-                retLen += TRAGET_FOUR;
+                temp += TRAGET_FOUR;
                 break;
             case TRAGET_TWO:
-                retLen += TRAGET_THREE;
+                temp += TRAGET_THREE;
                 break;
             default:
-                retLen += TRAGET_TWO;
+                temp += TRAGET_TWO;
                 break;
         }
-        return retLen;
+        return temp;
     }
 
     /* Decoding lookup function */
@@ -316,18 +317,20 @@ namespace OHOS::Util {
     }
 
     /* Memory cleanup function */
-    void Base64::FreeMemory(const unsigned char* address)
+    void Base64::FreeMemory(const unsigned char *address)
     {
-        if (address != nullptr) {
-            delete[] address;
-            address = nullptr;
+        const unsigned char *temp = address;
+        if (temp != nullptr) {
+            delete[] temp;
+            temp = nullptr;
         }
     }
-    void Base64::FreeMemory(const char* address)
+    void Base64::FreeMemory(const char *address)
     {
-        if (address != nullptr) {
-            delete[] address;
-            address = nullptr;
+        const char *temp = address;
+        if (temp != nullptr) {
+            delete[] temp;
+            temp = nullptr;
         }
     }
 }

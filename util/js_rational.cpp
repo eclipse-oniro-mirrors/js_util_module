@@ -59,7 +59,7 @@ namespace OHOS::Util {
         size_t len = 0;
         int flag = 0;
         napi_get_value_string_utf8(env_, str, nullptr, 0, &len);
-        char* buffer = nullptr;
+        char *buffer = nullptr;
         if (len > 0) {
             buffer = new char[len + 1];
             if (memset_s(buffer, len + 1, '\0', len + 1) != 0) {
@@ -121,7 +121,7 @@ namespace OHOS::Util {
 
     napi_value RationalNumber::CompareTo(napi_value rational) const
     {
-        RationalNumber* other = nullptr;
+        RationalNumber *other = nullptr;
         NAPI_CALL(env_, napi_unwrap(env_, rational, reinterpret_cast<void**>(&other)));
         if (mnum == other->mnum && mden == other->mden) {
             napi_value result = nullptr;
@@ -163,7 +163,7 @@ namespace OHOS::Util {
 
     napi_value RationalNumber::Equals(napi_value obj) const
     {
-        RationalNumber* object = nullptr;
+        RationalNumber *object = nullptr;
         napi_status status = napi_unwrap(env_, obj, reinterpret_cast<void**>(&object));
         bool flag = false;
         long thisnum = static_cast<long>(mnum) * object->mden;
