@@ -50,8 +50,6 @@ HWTEST_F(NativeEngineTest, getEncodingTest001, testing::ext::TestSize.Level0)
     OHOS::Util::TextEncoder textEncoder(env);
     napi_value result = textEncoder.GetEncoding();
 
-    std::string tmpTestStr = "utf-8";
-
     char *buffer = nullptr;
     size_t bufferSize = 0;
     napi_get_value_string_utf8(env, result, buffer, -1, &bufferSize);
@@ -60,7 +58,7 @@ HWTEST_F(NativeEngineTest, getEncodingTest001, testing::ext::TestSize.Level0)
         napi_get_value_string_utf8(env, result, buffer, bufferSize + 1, &bufferSize);
     }
 
-    ASSERT_STREQ(buffer, tmpTestStr.c_str());
+    ASSERT_STREQ(buffer, "utf-8");
     if (buffer != nullptr) {
         delete []buffer;
         buffer = nullptr;
@@ -198,8 +196,10 @@ HWTEST_F(NativeEngineTest, GetEncoding001, testing::ext::TestSize.Level0)
         buffer = new char[bufferSize + 1]{ 0 };
         napi_get_value_string_utf8(env, testString, buffer, bufferSize + 1, &strLength);
     }
-    ASSERT_STREQ(tmpTestStr.c_str(), buffer);
-    ASSERT_EQ(tmpTestStr.length(), strLength);
+    const char *result = tmpTestStr.c_str();
+    size_t resultLength = tmpTestStr.length();
+    ASSERT_STREQ(result, buffer);
+    ASSERT_EQ(resultLength, strLength);
     if (buffer != nullptr) {
         delete []buffer;
         buffer = nullptr;
@@ -291,12 +291,12 @@ HWTEST_F(NativeEngineTest, decoderUtf8001, testing::ext::TestSize.Level0)
     bool iflag = false;
     size_t byteLength = 3;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[3] = {0x61, 0x62, 0x63};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
@@ -307,8 +307,7 @@ HWTEST_F(NativeEngineTest, decoderUtf8001, testing::ext::TestSize.Level0)
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
     }
-    std::string tempStr = "abc";
-    ASSERT_STREQ(tempStr.c_str(), ch);
+    ASSERT_STREQ("abc", ch);
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
@@ -334,12 +333,12 @@ HWTEST_F(NativeEngineTest, decoderUtf8002, testing::ext::TestSize.Level0)
     bool iflag = true;
     size_t byteLength = 3;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[3] = {0x61, 0x62, 0x63};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
@@ -350,9 +349,7 @@ HWTEST_F(NativeEngineTest, decoderUtf8002, testing::ext::TestSize.Level0)
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
     }
-
-    std::string tempStr = "abc";
-    ASSERT_STREQ(tempStr.c_str(), ch);
+    ASSERT_STREQ("abc", ch);
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
@@ -378,12 +375,12 @@ HWTEST_F(NativeEngineTest, decoderUtf16le001, testing::ext::TestSize.Level0)
     bool iflag = false;
     size_t byteLength = 6;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[6] = {0x61, 0x00, 0x62, 0x00, 0x63, 0x00};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
@@ -394,9 +391,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le001, testing::ext::TestSize.Level0)
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
     }
-
-    std::string tempStr = "abc";
-    ASSERT_STREQ(tempStr.c_str(), ch);
+    ASSERT_STREQ("abc", ch);
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
@@ -422,12 +417,12 @@ HWTEST_F(NativeEngineTest, decoderUtf16le002, testing::ext::TestSize.Level0)
     bool iflag = true;
     size_t byteLength = 6;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[6] = {0x61, 0x00, 0x62, 0x00, 0x63, 0x00};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
@@ -438,9 +433,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16le002, testing::ext::TestSize.Level0)
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr = "abc";
-    ASSERT_STREQ(tempStr.c_str(), ch);
+    ASSERT_STREQ("abc", ch);
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
@@ -466,24 +459,24 @@ HWTEST_F(NativeEngineTest, decoderUtf16le003, testing::ext::TestSize.Level0)
     bool iflag = true;
     size_t byteLength = 8;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[8] = {0xFF, 0xFE, 0x61, 0x00, 0x62, 0x00, 0x63, 0x00};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
     napi_get_value_string_utf8(env, testString, nullptr, 0, &bufferSize);
     char* ch = nullptr;
     size_t length = 0;
+    std::string tempStr01 = "";
     if (bufferSize > 0) {
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
+        tempStr01 = ch;
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr01(ch);
     std::u16string tempU16str02 =
         std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.from_bytes(tempStr01);
     ASSERT_EQ(0xFEFF, (int)tempU16str02[0]);
@@ -515,25 +508,24 @@ HWTEST_F(NativeEngineTest, decoderUtf16le004, testing::ext::TestSize.Level0)
     bool iflag = false;
     size_t byteLength = 8;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[8] = {0xFF, 0xFE, 0x61, 0x00, 0x62, 0x00, 0x63, 0x00};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
-
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
     napi_get_value_string_utf8(env, testString, nullptr, 0, &bufferSize);
     char* ch = nullptr;
     size_t length = 0;
+    std::string tempStr01 = "";
     if (bufferSize > 0) {
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
+        tempStr01 = ch;
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr01(ch);
     std::u16string tempU16str02 =
     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.from_bytes(tempStr01);
     ASSERT_EQ(0xFEFF, (int)tempU16str02[0]);
@@ -565,12 +557,12 @@ HWTEST_F(NativeEngineTest, decoderUtf16be001, testing::ext::TestSize.Level0)
     bool iflag = false;
     size_t byteLength = 6;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[6] = {0x00, 0x61, 0x00, 0x62, 0x00, 0x63};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
@@ -581,9 +573,7 @@ HWTEST_F(NativeEngineTest, decoderUtf16be001, testing::ext::TestSize.Level0)
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr = "abc";
-    ASSERT_STREQ(tempStr.c_str(), ch);
+    ASSERT_STREQ("abc", ch);
     if (ch != nullptr) {
         delete []ch;
         ch = nullptr;
@@ -609,24 +599,24 @@ HWTEST_F(NativeEngineTest, decoderUtf16be002, testing::ext::TestSize.Level0)
     bool iflag = false;
     size_t byteLength = 8;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[8] = {0xFE, 0xFF, 0x00, 0x61, 0x00, 0x62, 0x00, 0x63};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
     napi_get_value_string_utf8(env, testString, nullptr, 0, &bufferSize);
     size_t length = 0;
     char* ch = nullptr;
+    std::string tempStr01 = "";
     if (bufferSize > 0) {
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
+        tempStr01 = ch;
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr01(ch);
     std::u16string tempU16str02 =
     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.from_bytes(tempStr01);
     ASSERT_EQ(0xFEFF, (int)tempU16str02[0]);
@@ -658,24 +648,24 @@ HWTEST_F(NativeEngineTest, decoderUtf16be003, testing::ext::TestSize.Level0)
     bool iflag = true;
     size_t byteLength = 8;
     void* data = nullptr;
-    napi_value resultBuff;
+    napi_value resultBuff = nullptr;
     napi_create_arraybuffer(env, byteLength, &data, &resultBuff);
     unsigned char arr[8] = {0xFE, 0xFF, 0x00, 0x61, 0x00, 0x62, 0x00, 0x63};
     int ret = memcpy_s(data, sizeof(arr), reinterpret_cast<void*>(arr), sizeof(arr));
     ASSERT_EQ(0, ret);
-    napi_value result2;
+    napi_value result2 = nullptr;
     napi_create_typedarray(env, napi_int8_array, byteLength, resultBuff, 0, &result2);
     napi_value testString = textDecoder.Decode(result2, iflag);
     size_t bufferSize = 0;
     napi_get_value_string_utf8(env, testString, nullptr, 0, &bufferSize);
     size_t length = 0;
     char* ch = nullptr;
+    std::string tempStr01 = "";
     if (bufferSize > 0) {
         ch = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
+        tempStr01 = ch;
     }
-    napi_get_value_string_utf8(env, testString, ch, bufferSize + 1, &length);
-    std::string tempStr01(ch);
     std::u16string tempU16str02 =
     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> {}.from_bytes(tempStr01);
     ASSERT_EQ(0xFEFF, (int)tempU16str02[0]);

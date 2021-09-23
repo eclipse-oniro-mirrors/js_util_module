@@ -69,8 +69,13 @@ namespace OHOS::Util {
             napi_throw_error(env_, "NullPointerException", "string must not be null!");
         }
         napi_get_value_string_utf8(env_, str, buffer, len + 1, &len);
-        std::string buf = buffer;
-        delete []buffer;
+        std::string buf = "";
+        if (buffer != nullptr) {
+            buf = buffer;
+            delete []buffer;
+            buffer = nullptr;
+        }
+
         if (buf.compare("NaN") == 0) {
             return GreateObj(0, 0, RationalNumberClass);
         } else if (buf.compare("Infinity") == 0) {
