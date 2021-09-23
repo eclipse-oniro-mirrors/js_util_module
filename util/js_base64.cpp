@@ -330,7 +330,7 @@ namespace OHOS::Util {
         const char *temp = address;
         if (temp != nullptr) {
             delete[] temp;
-            address = temp;
+            temp = nullptr;
         }
     }
 }
