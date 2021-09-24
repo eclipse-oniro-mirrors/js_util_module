@@ -87,9 +87,7 @@ namespace OHOS::Util {
         size_t index = (colon != std::string::npos) ? colon : semicolon;
         std::string s1 = buf.substr(0, index);
         std::string s2 = buf.substr(index + 1, buf.size());
-        size_t len1 = s1.size();
-        size_t len2 = s2.size();
-        for (int i = 1; i < len1; i++) {
+        for (int i = 1; i < s1.size(); i++) {
             if (((s1[0] == '+') || (s1[0] == '-') || (isdigit(s1[0]))) && (isdigit(s1[i]))) {
                 flag = 1;
             } else {
@@ -97,7 +95,7 @@ namespace OHOS::Util {
             }
         }
         int num1 = stoi(s1) * flag;
-        for (int i = 1; i < len2; i++) {
+        for (int i = 1; i < s2.size(); i++) {
             if (((s2[0] == '+') || (s2[0] == '-') || (isdigit(s2[0]))) && (isdigit(s2[i]))) {
                 flag = 1;
             } else {
