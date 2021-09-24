@@ -475,7 +475,7 @@ namespace OHOS::Util {
         return thisVar;
     }
 
-    static napi_value CreatRationalFromString(napi_env env, napi_callback_info info)
+    static napi_value CreateRationalFromString(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
         size_t requireArgc = 1;
@@ -491,7 +491,7 @@ namespace OHOS::Util {
         if (RationalNumberClass == nullptr) {
             napi_throw_error(env, "NullException", "RationalNumberClass must not be null!");
         }
-        return object->CreatRationalFromString(args, RationalNumberClass);
+        return object->CreateRationalFromString(args, RationalNumberClass);
     }
 
     static napi_value CompareTo(napi_env env, napi_callback_info info)
@@ -581,16 +581,6 @@ namespace OHOS::Util {
         return result;
     }
 
-    static napi_value IsInfinite(napi_env env, napi_callback_info info)
-    {
-        napi_value thisVar = nullptr;
-        napi_get_cb_info(env, info, nullptr, nullptr, &thisVar, nullptr);
-        RationalNumber *object = nullptr;
-        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->IsInfinite();
-        return result;
-    }
-
     static napi_value IsNaN(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -624,7 +614,7 @@ namespace OHOS::Util {
     {
         const char *RationalNumberClassName = "RationalNumber";
         static napi_property_descriptor RationalNumberDesc[] = {
-            DECLARE_NAPI_FUNCTION("creatRationalFromString", CreatRationalFromString),
+            DECLARE_NAPI_FUNCTION("createRationalFromString", CreateRationalFromString),
             DECLARE_NAPI_FUNCTION("compareTo", CompareTo),
             DECLARE_NAPI_FUNCTION("equals", Equals),
             DECLARE_NAPI_FUNCTION("value", Value),
@@ -632,7 +622,6 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("getDenominator", GetDenominator),
             DECLARE_NAPI_FUNCTION("getNumerator", GetNumerator),
             DECLARE_NAPI_FUNCTION("isFinite", IsFinite),
-            DECLARE_NAPI_FUNCTION("isInfinite", IsInfinite),
             DECLARE_NAPI_FUNCTION("isNaN", IsNaN),
             DECLARE_NAPI_FUNCTION("isZero", IsZero),
             DECLARE_NAPI_FUNCTION("toString", ToString),

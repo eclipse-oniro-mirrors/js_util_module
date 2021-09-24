@@ -54,7 +54,7 @@ namespace OHOS::Util {
         }
     }
 
-    napi_value RationalNumber::CreatRationalFromString(napi_value str, napi_value RationalNumberClass) const
+    napi_value RationalNumber::CreateRationalFromString(napi_value str, napi_value RationalNumberClass) const
     {
         size_t len = 0;
         int flag = 0;
@@ -75,13 +75,8 @@ namespace OHOS::Util {
             delete []buffer;
             buffer = nullptr;
         }
-
         if (buf.compare("NaN") == 0) {
-            return GreateObj(0, 0, RationalNumberClass);
-        } else if (buf.compare("Infinity") == 0) {
-            return GreateObj(1, 0, RationalNumberClass);
-        } else if (buf.compare("-Infinity") == 0) {
-            return GreateObj(-1, 0, RationalNumberClass);
+            return CreateObj(0, 0, RationalNumberClass);
         }
         size_t colon = buf.find(':');
         size_t semicolon = buf.find('/');
@@ -110,10 +105,10 @@ namespace OHOS::Util {
             }
         }
         int num2 = stoi(s2) * flag;
-        return GreateObj(num1, num2, RationalNumberClass);
+        return CreateObj(num1, num2, RationalNumberClass);
     }
 
-    napi_value RationalNumber::GreateObj(int num1, int num2, napi_value RationalNumberClass) const
+    napi_value RationalNumber::CreateObj(int num1, int num2, napi_value RationalNumberClass) const
     {
         napi_value argvs[2] = { nullptr };
         NAPI_CALL(env_, napi_create_int32(env_, num1, &argvs[0]));
@@ -284,17 +279,6 @@ namespace OHOS::Util {
     {
         bool flag = false;
         if (mden != 0) {
-            flag = true;
-        }
-        napi_value result = nullptr;
-        NAPI_CALL(env_, napi_get_boolean(env_, flag, &result));
-        return result;
-    }
-
-    napi_value RationalNumber::IsInfinite() const
-    {
-        bool flag = false;
-        if ((mnum != 0) && (mden == 0)) {
             flag = true;
         }
         napi_value result = nullptr;
