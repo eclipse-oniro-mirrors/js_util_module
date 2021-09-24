@@ -54,7 +54,7 @@ namespace OHOS::Util {
         }
     }
 
-    napi_value RationalNumber::CreatRationalFromString(napi_value str, napi_value RationalNumberClass) const
+    napi_value RationalNumber::CreateRationalFromString(napi_value str, napi_value RationalNumberClass) const
     {
         size_t len = 0;
         int flag = 0;
@@ -69,14 +69,14 @@ namespace OHOS::Util {
             napi_throw_error(env_, "NullPointerException", "string must not be null!");
         }
         napi_get_value_string_utf8(env_, str, buffer, len + 1, &len);
-        std::string buf = buffer;
-        delete []buffer;
+        std::string buf = "";
+        if (buffer != nullptr) {
+            buf = buffer;
+            delete []buffer;
+            buffer = nullptr;
+        }
         if (buf.compare("NaN") == 0) {
-            return GreateObj(0, 0, RationalNumberClass);
-        } else if (buf.compare("Infinity") == 0) {
-            return GreateObj(1, 0, RationalNumberClass);
-        } else if (buf.compare("-Infinity") == 0) {
-            return GreateObj(-1, 0, RationalNumberClass);
+            return CreateObj(0, 0, RationalNumberClass);
         }
         size_t colon = buf.find(':');
         size_t semicolon = buf.find('/');
@@ -87,9 +87,7 @@ namespace OHOS::Util {
         size_t index = (colon != std::string::npos) ? colon : semicolon;
         std::string s1 = buf.substr(0, index);
         std::string s2 = buf.substr(index + 1, buf.size());
-        size_t len1 = s1.size();
-        size_t len2 = s2.size();
-        for (int i = 1; i < len1; i++) {
+        for (int i = 1; i < s1.size(); i++) {
             if (((s1[0] == '+') || (s1[0] == '-') || (isdigit(s1[0]))) && (isdigit(s1[i]))) {
                 flag = 1;
             } else {
@@ -97,7 +95,7 @@ namespace OHOS::Util {
             }
         }
         int num1 = stoi(s1) * flag;
-        for (int i = 1; i < len2; i++) {
+        for (int i = 1; i < s2.size(); i++) {
             if (((s2[0] == '+') || (s2[0] == '-') || (isdigit(s2[0]))) && (isdigit(s2[i]))) {
                 flag = 1;
             } else {
@@ -105,10 +103,10 @@ namespace OHOS::Util {
             }
         }
         int num2 = stoi(s2) * flag;
-        return GreateObj(num1, num2, RationalNumberClass);
+        return CreateObj(num1, num2, RationalNumberClass);
     }
 
-    napi_value RationalNumber::GreateObj(int num1, int num2, napi_value RationalNumberClass) const
+    napi_value RationalNumber::CreateObj(int num1, int num2, napi_value RationalNumberClass) const
     {
         napi_value argvs[2] = { nullptr };
         NAPI_CALL(env_, napi_create_int32(env_, num1, &argvs[0]));
@@ -279,17 +277,6 @@ namespace OHOS::Util {
     {
         bool flag = false;
         if (mden != 0) {
-            flag = true;
-        }
-        napi_value result = nullptr;
-        NAPI_CALL(env_, napi_get_boolean(env_, flag, &result));
-        return result;
-    }
-
-    napi_value RationalNumber::IsInfinite() const
-    {
-        bool flag = false;
-        if ((mnum != 0) && (mden == 0)) {
             flag = true;
         }
         napi_value result = nullptr;

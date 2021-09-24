@@ -25,7 +25,7 @@ namespace OHOS::Util {
     public:
         explicit RationalNumber(napi_env env, int numerator, int denominator);
         virtual ~RationalNumber(){}
-        napi_value CreatRationalFromString(napi_value str, napi_value RationalNumberClass) const;
+        napi_value CreateRationalFromString(napi_value str, napi_value RationalNumberClass) const;
         napi_value CompareTo(napi_value rational) const;
         napi_value Equals(napi_value obj) const;
         napi_value Value() const;
@@ -33,7 +33,6 @@ namespace OHOS::Util {
         napi_value GetDenominator() const;
         napi_value GetNumerator() const;
         napi_value IsFinite() const;
-        napi_value IsInfinite() const;
         napi_value IsNaN() const;
         napi_value IsZero() const;
         napi_value ToString() const;
@@ -41,7 +40,7 @@ namespace OHOS::Util {
         int mnum = 0;
         int mden = 0;
         napi_env env_;
-        napi_value GreateObj(int num1, int num2, napi_value RationalNumberClass) const;
+        napi_value CreateObj(int num1, int num2, napi_value RationalNumberClass) const;
     };
 }
 #endif
