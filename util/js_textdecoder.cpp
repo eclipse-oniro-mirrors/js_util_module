@@ -73,8 +73,8 @@ namespace OHOS::Util {
         NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &data1, &arrayBuffer, &byteOffset));
         const char *source = static_cast<char*>(data1);
         UErrorCode codeFlag = U_ZERO_ERROR;
-        size_t limit = GetMinByteSize()  *length;
-        size_t len = limit  *sizeof(UChar);
+        size_t limit = GetMinByteSize() * length;
+        size_t len = limit * sizeof(UChar);
         UChar *arr = nullptr;
         if (limit > 0) {
             arr = new UChar[limit + 1];

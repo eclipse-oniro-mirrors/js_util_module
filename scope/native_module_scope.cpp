@@ -22,8 +22,7 @@ static napi_value ScopeInit(napi_env env, napi_value exports)
     const char *ClassName = "scope";
     napi_value scopeClass = nullptr;
     NAPI_CALL(env, napi_define_class(env, ClassName, strlen(ClassName), nullptr,
-    nullptr, 0, nullptr,
-    &scopeClass));
+                                     nullptr, 0, nullptr, &scopeClass));
     static napi_property_descriptor desc[] = {
         DECLARE_NAPI_PROPERTY("scope", scopeClass)
     };
