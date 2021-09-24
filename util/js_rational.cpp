@@ -20,11 +20,14 @@
 #include "utils/log.h"
 #include "securec.h"
 namespace OHOS::Util {
-    RationalNumber::RationalNumber(napi_env env, int num, int den)
+    RationalNumber::RationalNumber(napi_env env, int molecule, int denominator)
     {
         env_ = env;
         napi_value result = nullptr;
-        den < 0 ? num *= -1, den *= -1 : 0;
+        int num = molecule;
+        int den = denominator;
+        num = den < 0 ?  num * (-1) : num;
+        den = den < 0 ?  den * (-1) : den;
         if (den == 0) {
             if (num > 0) {
                 mnum = 1;

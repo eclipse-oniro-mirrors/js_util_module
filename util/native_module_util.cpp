@@ -27,8 +27,6 @@
 
 extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
-extern const char _binary_util_abc_start[];
-extern const char _binary_util_abc_end[];
 namespace OHOS::Util {
     static std::string temp = "cdfijoOs";
     napi_value RationalNumberClass = nullptr;
@@ -832,17 +830,6 @@ namespace OHOS::Util {
         }
         if (buflen != nullptr) {
             *buflen = _binary_util_js_js_end - _binary_util_js_js_start;
-        }
-    }
-    // util JS register
-    extern "C"
-    __attribute__((visibility("default"))) void NAPI_util_GetABCCode(const char** buf, int* buflen)
-    {
-        if (buf != nullptr) {
-            *buf = _binary_util_abc_start;
-        }
-        if (buflen != nullptr) {
-            *buflen = _binary_util_abc_end - _binary_util_abc_start;
         }
     }
 }
