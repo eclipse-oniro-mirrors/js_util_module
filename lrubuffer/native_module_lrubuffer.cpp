@@ -22,8 +22,7 @@ static napi_value LruBufferInit(napi_env env, napi_value exports)
     const char *lruBufferClassName = "lrubuffer";
     napi_value lruBufferClass = nullptr;
     NAPI_CALL(env, napi_define_class(env, lruBufferClassName, strlen(lruBufferClassName), nullptr,
-    nullptr, 0, nullptr,
-    &lruBufferClass));
+                                     nullptr, 0, nullptr, &lruBufferClass));
     static napi_property_descriptor desc[] = {
         DECLARE_NAPI_PROPERTY("lrubuffer", lruBufferClass),
     };
