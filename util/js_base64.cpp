@@ -371,11 +371,11 @@ namespace OHOS::Util {
         return stdEncodeInfo_->promise;
     }
 
-    void Base64::CreatePromise(unsigned char *inputEncode, size_t length, size_t flag)
+    void Base64::CreatePromise(unsigned char *inputDecode, size_t length, size_t flag)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
-        stdEncodeInfo_->sinputEncode = inputEncode;
+        stdEncodeInfo_->sinputEncode = inputDecode;
         stdEncodeInfo_->slength = length;
         stdEncodeInfo_->sflag = flag;
         stdEncodeInfo_->env = env;
@@ -386,11 +386,11 @@ namespace OHOS::Util {
         napi_queue_async_work(env, stdEncodeInfo_->worker);
     }
 
-    void Base64::CreatePromise01(unsigned char *inputEncode, size_t length, size_t flag)
+    void Base64::CreatePromise01(unsigned char *inputDecode, size_t length, size_t flag)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
-        stdEncodeInfo_->sinputEncode = inputEncode;
+        stdEncodeInfo_->sinputEncode = inputDecode;
         stdEncodeInfo_->slength = length;
         stdEncodeInfo_->sflag = flag;
         napi_create_promise(env, &stdEncodeInfo_->deferred, &stdEncodeInfo_->promise);
@@ -642,7 +642,7 @@ namespace OHOS::Util {
                 if (i == temp) {
                     break;
                 }
-                retDecode[index++] = (char)((bitWise >> ((TRAGET_TWO - i) * TRAGET_EIGHT)) & XFF_FLG);
+                retDecode[index++] = static_cast<char>((bitWise >> ((TRAGET_TWO - i) * TRAGET_EIGHT)) & XFF_FLG);
             }
         }
         retDecode[index] = 0;

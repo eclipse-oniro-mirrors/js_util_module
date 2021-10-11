@@ -55,7 +55,7 @@ namespace OHOS::Util {
     };
 
     unsigned char *EncodeAchieves(EncodeInfo *encodeInfo);
-    unsigned char *DecodeAchieves(DecodeInfo *encodeInfo);
+    unsigned char *DecodeAchieves(DecodeInfo *decodeInfo);
 
     class Base64 {
     public:
