@@ -23,19 +23,51 @@
 #define BASE_COMPILERUNTIME_JS_UTIL_MODULE_BASE64_CLASS_H
 
 namespace OHOS::Util {
+    struct EncodeInfo {
+        napi_async_work worker = nullptr;
+        napi_deferred deferred = nullptr;
+        napi_value promise = nullptr;
+        unsigned char *sinputEncode = nullptr;
+        unsigned char *sinputEncoding = nullptr;
+        size_t slength = 0;
+        size_t sflag = 0;
+        size_t soutputLen = 0;
+        napi_env env;
+    };
+
+    struct DecodeInfo {
+        napi_async_work worker = nullptr;
+        napi_deferred deferred = nullptr;
+        napi_value promise = nullptr;
+        char *sinputDecode = nullptr;
+        unsigned char *sinputDecoding = nullptr;
+        size_t slength = 0;
+        size_t sflag = 0;
+        size_t decodeOutLen = 0;
+        size_t retLen = 0;
+        napi_env env;
+    };
+
+    enum ConverterFlags {
+        BIT_FLG = 0x40,
+        SIXTEEN_FLG = 0x3F,
+        XFF_FLG = 0xFF,
+    };
+
+    unsigned char *EncodeAchieves(EncodeInfo *encodeInfo);
+    unsigned char *DecodeAchieves(DecodeInfo *decodeInfo);
+
     class Base64 {
-    public:
-        enum ConverterFlags {
-            BIT_FLG = 0x40,
-            SIXTEEN_FLG = 0x3F,
-            XFF_FLG = 0xFF,
-        };
     public:
         explicit Base64(napi_env env);
         virtual ~Base64(){}
         napi_value Encode(napi_value src, napi_value flags);
         napi_value EncodeToString(napi_value src, napi_value flags);
         napi_value Decode(napi_value src, napi_value flags);
+
+        napi_value EncodeAsync(napi_value src, napi_value flags);
+        napi_value EncodeToStringAsync(napi_value src, napi_value flags);
+        napi_value DecodeAsync(napi_value src, napi_value flags);
     private:
         napi_env env;
         unsigned char *DecodeAchieve(const char *input, size_t inputLen, size_t iflag);
@@ -48,9 +80,21 @@ namespace OHOS::Util {
         size_t decodeOutLen = 0;
         size_t outputLen = 0;
         unsigned char *pret = nullptr;
-        const unsigned char *inputEncode = nullptr;
-        const char *inputDecode = nullptr;
+        const unsigned char *inputEncode_ = nullptr;
+        const char *inputDecode_ = nullptr;
         unsigned char *retDecode = nullptr;
+
+        void CreatePromise(unsigned char *inputDecode, size_t length, size_t flag);
+        void CreatePromise01(unsigned char *inputDecode, size_t length, size_t flag);
+        void CreatePromise02(char *inputDecode, size_t length, size_t flag);
+        EncodeInfo *stdEncodeInfo_ = nullptr;
+        DecodeInfo *stdDecodeInfo_ = nullptr;
+        static void ReadStdEncode(napi_env env, void *data);
+        static void EndStdEncode(napi_env env, napi_status status, void *buffer);
+        static void ReadStdEncodeToString(napi_env env, void *data);
+        static void EndStdEncodeToString(napi_env env, napi_status status, void *buffer);
+        static void ReadStdDecode(napi_env env, void *data);
+        static void EndStdDecode(napi_env env, napi_status status, void *buffer);
     };
 }
 #endif

@@ -88,7 +88,7 @@ namespace OHOS::Util {
             return nullptr;
         }
         UChar *target = arr;
-        size_t tarStartPos = (intptr_t)arr;
+        size_t tarStartPos = reinterpret_cast<intptr_t>(arr);
         ucnv_toUnicode(GetConverterPtr(), &target, target + len, &source, source + length, nullptr, flush, &codeFlag);
         size_t resultLength = 0;
         bool omitInitialBom = false;
@@ -179,7 +179,7 @@ namespace OHOS::Util {
         }
         if (U_SUCCESS(codeFlag)) {
             if (decArr.limitLen > 0) {
-                rstLen = (intptr_t)decArr.target - decArr.tarStartPos;
+                rstLen = reinterpret_cast<intptr_t>(decArr.target) - decArr.tarStartPos;
                 if (rstLen > 0 && IsUnicode() && !IsIgnoreBom() && !IsBomFlag()) {
                     bomFlag = (arr[0] == 0xFEFF) ? true : false;
                     label_ |= static_cast<uint32_t>(ConverterFlags::BOM_SEEN_FLG);
