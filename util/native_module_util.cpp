@@ -27,6 +27,8 @@
 
 extern const char _binary_util_js_js_start[];
 extern const char _binary_util_js_js_end[];
+extern const char _binary_util_abc_start[];
+extern const char _binary_util_abc_end[];
 namespace OHOS::Util {
     static std::string temp = "cdfijoOs";
     napi_value RationalNumberClass = nullptr;
@@ -770,6 +772,85 @@ namespace OHOS::Util {
         return result;
     }
 
+    static napi_value EncodeAsync(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        size_t length = 0;
+        void *data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
+        napi_valuetype valuetype1;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
+        NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
+        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64 *object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->EncodeAsync(args[0], args[1]);
+        return result;
+    }
+
+    static napi_value EncodeToStringAsync(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        size_t length = 0;
+        void *data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
+        napi_valuetype valuetype1;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
+        NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
+        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64 *object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->EncodeToStringAsync(args[0], args[1]);
+        return result;
+    }
+
+    static napi_value DecodeAsync(napi_env env, napi_callback_info info)
+    {
+        napi_value thisVar = nullptr;
+        size_t requireArgc = 2;
+        size_t argc = 2;
+        napi_value args[2] = { nullptr };
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
+        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
+        napi_typedarray_type valuetype0;
+        napi_valuetype valuetype1;
+        size_t length = 0;
+        void *data = nullptr;
+        napi_value arraybuffer = nullptr;
+        size_t byteOffset = 0;
+        NAPI_CALL(env, napi_typeof(env, args[0], &valuetype1));
+        if (valuetype1 != napi_valuetype::napi_string) {
+            NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0,
+                                                    &length, &data, &arraybuffer, &byteOffset));
+        }
+        if ((valuetype1 != napi_valuetype::napi_string) && (valuetype0 != napi_typedarray_type::napi_uint8_array)) {
+            napi_throw_error(env, nullptr, "The parameter type is incorrect");
+        }
+        napi_valuetype valuetype2;
+        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype2));
+        NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. Nmuber expected.");
+        Base64 *object = nullptr;
+        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
+        napi_value result = object->DecodeAsync(args[0], args[1]);
+        return result;
+    }
+
     static napi_value Base64Init(napi_env env, napi_value exports)
     {
         const char *base64ClassName = "Base64";
@@ -778,6 +859,9 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("encode", EncodeBase64),
             DECLARE_NAPI_FUNCTION("encodeToString", EncodeToString),
             DECLARE_NAPI_FUNCTION("decode", DecodeBase64),
+            DECLARE_NAPI_FUNCTION("encodeAsync", EncodeAsync),
+            DECLARE_NAPI_FUNCTION("encodeToStringAsync", EncodeToStringAsync),
+            DECLARE_NAPI_FUNCTION("decodeAsync", DecodeAsync),
         };
         NAPI_CALL(env, napi_define_class(env, base64ClassName, strlen(base64ClassName), Base64Constructor,
                                          nullptr, sizeof(base64Desc) / sizeof(base64Desc[0]), base64Desc,
@@ -830,6 +914,16 @@ namespace OHOS::Util {
         }
         if (buflen != nullptr) {
             *buflen = _binary_util_js_js_end - _binary_util_js_js_start;
+        }
+    }
+    extern "C"
+    __attribute__((visibility("default"))) void NAPI_util_GetABCCode(const char** buf, int* buflen)
+    {
+        if (buf != nullptr) {
+            *buf = _binary_util_abc_start;
+        }
+        if (buflen != nullptr) {
+            *buflen = _binary_util_abc_end - _binary_util_abc_start;
         }
     }
 }

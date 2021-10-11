@@ -93,7 +93,7 @@ HWTEST_F(NativeEngineTest, textEncodeTest001, testing::ext::TestSize.Level0)
         env, result, &type, &srcLength, &srcData, &srcBuffer, &byteOffset);
 
     ASSERT_EQ(srcLength, 6);
-    char* res = (char*)srcData;
+    char* res = reinterpret_cast<char*>(srcData);
 
     res[srcLength] = 0;
     ASSERT_STREQ(res, excepted);

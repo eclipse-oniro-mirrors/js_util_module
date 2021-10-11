@@ -90,23 +90,28 @@ namespace OHOS::Util {
         size_t index = (colon != std::string::npos) ? colon : semicolon;
         std::string s1 = buf.substr(0, index);
         std::string s2 = buf.substr(index + 1, buf.size());
-        for (int i = 1; i < s1.size(); i++) {
-            if (((s1[0] == '+') || (s1[0] == '-') || (isdigit(s1[0]))) && (isdigit(s1[i]))) {
-                flag = 1;
-            } else {
-                napi_throw_error(env_, "invalidRational", "string invalid!");
-            }
-        }
+        size_t len1 = s1.size();
+        size_t len2 = s2.size();
+        SetFlag(s1, len1, flag);
         int num1 = stoi(s1) * flag;
-        for (int i = 1; i < s2.size(); i++) {
-            if (((s2[0] == '+') || (s2[0] == '-') || (isdigit(s2[0]))) && (isdigit(s2[i]))) {
-                flag = 1;
-            } else {
-                napi_throw_error(env_, "invalidRational", "string invalid!");
-            }
-        }
+        flag = 0;
+        SetFlag(s2, len2, flag);
         int num2 = stoi(s2) * flag;
         return CreateObj(num1, num2, RationalNumberClass);
+    }
+
+    void RationalNumber::SetFlag(const std::string str, const size_t len, int& flag) const
+    {
+        if (str == "") {
+            return;
+        }
+        for (size_t i = 1; i < len; i++) {
+            if (((str[0] == '+') || (str[0] == '-') || (isdigit(str[0]))) && (isdigit(str[i]))) {
+                flag = 1;
+            } else {
+                napi_throw_error(env_, "invalidRational", "string invalid!");
+            }
+        }
     }
 
     napi_value RationalNumber::CreateObj(int num1, int num2, napi_value RationalNumberClass) const

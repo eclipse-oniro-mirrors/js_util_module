@@ -41,6 +41,7 @@ namespace OHOS::Util {
         int mden = 0;
         napi_env env_;
         napi_value CreateObj(int num1, int num2, napi_value RationalNumberClass) const;
+        void SetFlag(const std::string str, const size_t len, int& flag) const;
     };
 }
 #endif

@@ -28,13 +28,14 @@ namespace OHOS::Util {
         static const size_t TRAGET_FOUR = 4;
         static const size_t TRAGET_SIX = 6;
         static const size_t TRAGET_EIGHT = 8;
-        const char base[] = {
+        static const size_t TRAGET_SIXTYFIVE = 65;
+        const char BASE[] = {
             65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
             83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105,
             106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
             121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47, 61
         };
-        const char base0[] = {
+        const char BASE0[] = {
             65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
             83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105,
             106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
@@ -147,13 +148,13 @@ namespace OHOS::Util {
             bitWise = (bitWise << ((TRAGET_THREE - temp) * TRAGET_EIGHT));
             for (size_t i = 0; i < TRAGET_FOUR; i++) {
                 if (temp < i && iflag == 0) {
-                    *bosom = base[BIT_FLG];
+                    *bosom = BASE[BIT_FLG];
                 } else if (temp < i && iflag != 0) {
-                    *bosom = base0[BIT_FLG];
+                    *bosom = BASE0[BIT_FLG];
                 } else if (temp >= i && iflag == 0) {
-                    *bosom = base[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
+                    *bosom = BASE[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
                 } else if (temp >= i && iflag != 0) {
-                    *bosom = base0[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
+                    *bosom = BASE0[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
                 }
                 bosom++;
             }
@@ -301,14 +302,14 @@ namespace OHOS::Util {
         if (iflag == 0) {
         // 65:Number of elements in the encoding table.
             for (size_t i = 0; i < 65; i++) {
-                if (base[i] == ch) {
+                if (BASE[i] == ch) {
                     couts = i;
                 }
             }
         } else {
         // 65:Number of elements in the encoding table.
             for (size_t i = 0; i < 65; i++) {
-                if (base0[i] == ch) {
+                if (BASE0[i] == ch) {
                     couts = i;
                 }
             }
@@ -332,5 +333,346 @@ namespace OHOS::Util {
             delete[] temp;
             temp = nullptr;
         }
+    }
+
+    napi_value Base64::EncodeAsync(napi_value src, napi_value flags)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void *resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        unsigned char *inputEncode = nullptr;
+        inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
+        int32_t iflag = 0;
+        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
+        size_t flag = 0;
+        flag = static_cast<size_t>(iflag);
+        CreatePromise(inputEncode, length, flag);
+        return stdEncodeInfo_->promise;
+    }
+
+    napi_value Base64::EncodeToStringAsync(napi_value src, napi_value flags)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void *resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        unsigned char *inputEncode = nullptr;
+        inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
+        int32_t iflag = 0;
+        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
+        size_t flag = 0;
+        flag = static_cast<size_t>(iflag);
+        CreatePromise01(inputEncode, length, flag);
+        return stdEncodeInfo_->promise;
+    }
+
+    void Base64::CreatePromise(unsigned char *inputEncode, size_t length, size_t flag)
+    {
+        napi_value resourceName = nullptr;
+        stdEncodeInfo_ = new EncodeInfo();
+        stdEncodeInfo_->sinputEncode = inputEncode;
+        stdEncodeInfo_->slength = length;
+        stdEncodeInfo_->sflag = flag;
+        stdEncodeInfo_->env = env;
+        napi_create_promise(env, &stdEncodeInfo_->deferred, &stdEncodeInfo_->promise);
+        napi_create_string_utf8(env, "ReadStdEncode", NAPI_AUTO_LENGTH, &resourceName);
+        napi_create_async_work(env, nullptr, resourceName, ReadStdEncode, EndStdEncode,
+                               reinterpret_cast<void*>(stdEncodeInfo_), &stdEncodeInfo_->worker);
+        napi_queue_async_work(env, stdEncodeInfo_->worker);
+    }
+
+    void Base64::CreatePromise01(unsigned char *inputEncode, size_t length, size_t flag)
+    {
+        napi_value resourceName = nullptr;
+        stdEncodeInfo_ = new EncodeInfo();
+        stdEncodeInfo_->sinputEncode = inputEncode;
+        stdEncodeInfo_->slength = length;
+        stdEncodeInfo_->sflag = flag;
+        napi_create_promise(env, &stdEncodeInfo_->deferred, &stdEncodeInfo_->promise);
+        napi_create_string_utf8(env, "ReadStdEncodeToString", NAPI_AUTO_LENGTH, &resourceName);
+        napi_create_async_work(env, nullptr, resourceName, ReadStdEncodeToString, EndStdEncodeToString,
+                               reinterpret_cast<void*>(stdEncodeInfo_), &stdEncodeInfo_->worker);
+        napi_queue_async_work(env, stdEncodeInfo_->worker);
+    }
+
+    unsigned char *EncodeAchieves(EncodeInfo *encodeInfo)
+    {
+        const unsigned char *input = encodeInfo->sinputEncode;
+        size_t inputLen = encodeInfo->slength;
+        size_t iflag = encodeInfo->sflag;
+        size_t inp = 0;
+        size_t temp = 0;
+        size_t bitWise = 0;
+        unsigned char *ret = nullptr;
+        size_t index = 0;
+        size_t outputLen = 0;
+        outputLen = (inputLen / TRAGET_THREE) * TRAGET_FOUR;
+        if ((inputLen % TRAGET_THREE) > 0) {
+            outputLen += TRAGET_FOUR;
+        }
+        encodeInfo->soutputLen = outputLen;
+        if (outputLen > 0) {
+            ret = new unsigned char[outputLen + 1];
+            if (memset_s(ret, outputLen + 1, '\0', outputLen + 1) != 0) {
+                napi_throw_error(encodeInfo->env, "-1", "ret path memset_s failed");
+            }
+        } else {
+            napi_throw_error(encodeInfo->env, "-2", "outputLen is error !");
+        }
+        while (inp < inputLen) {
+            temp = 0;
+            bitWise = 0;
+            while (temp < TRAGET_THREE) {
+                if (inp >= inputLen) {
+                    break;
+                }
+                bitWise = ((bitWise << TRAGET_EIGHT) | (input[inp] & XFF_FLG));
+                inp++;
+                temp++;
+            }
+            bitWise = (bitWise << ((TRAGET_THREE - temp) * TRAGET_EIGHT));
+            for (size_t i = 0; i < TRAGET_FOUR; i++) {
+                if (temp < i && iflag == 0) {
+                    ret[index++] = BASE[BIT_FLG];
+                } else if (temp < i && iflag != 0) {
+                    ret[index++] = BASE0[BIT_FLG];
+                } else if (temp >= i && iflag == 0) {
+                    ret[index++] = BASE[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
+                } else if (temp >= i && iflag != 0) {
+                    ret[index++] = BASE0[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
+                }
+            }
+        }
+        ret[index] = 0;
+        return ret;
+    }
+
+    void Base64::ReadStdEncode(napi_env env, void *data)
+    {
+        auto stdEncodeInfo = reinterpret_cast<EncodeInfo*>(data);
+        unsigned char *rets = EncodeAchieves(stdEncodeInfo);
+        stdEncodeInfo->sinputEncoding = rets;
+    }
+
+    void Base64::EndStdEncode(napi_env env, napi_status status, void *buffer)
+    {
+        auto stdEncodeInfo = reinterpret_cast<EncodeInfo*>(buffer);
+        void *data = nullptr;
+        napi_value arrayBuffer = nullptr;
+        size_t bufferSize = stdEncodeInfo->soutputLen;
+        napi_create_arraybuffer(env, bufferSize, &data, &arrayBuffer);
+        if (memcpy_s(data, bufferSize, reinterpret_cast<const void*>(stdEncodeInfo->sinputEncoding), bufferSize) != 0) {
+            HILOG_ERROR("copy ret to arraybuffer error");
+            napi_delete_async_work(env, stdEncodeInfo->worker);
+            return;
+        }
+        napi_value result = nullptr;
+        napi_create_typedarray(env, napi_uint8_array, bufferSize, arrayBuffer, 0, &result);
+        napi_resolve_deferred(env, stdEncodeInfo->deferred, result);
+        napi_delete_async_work(env, stdEncodeInfo->worker);
+        delete[] stdEncodeInfo->sinputEncoding;
+        delete stdEncodeInfo;
+    }
+
+    void Base64::ReadStdEncodeToString(napi_env env, void *data)
+    {
+        auto stdEncodeInfo = reinterpret_cast<EncodeInfo*>(data);
+        unsigned char *rets = EncodeAchieves(stdEncodeInfo);
+        stdEncodeInfo->sinputEncoding = rets;
+    }
+
+    void Base64::EndStdEncodeToString(napi_env env, napi_status status, void *buffer)
+    {
+        auto stdEncodeInfo = reinterpret_cast<EncodeInfo*>(buffer);
+        const char *encString = reinterpret_cast<const char*>(stdEncodeInfo->sinputEncoding);
+        napi_value resultStr = nullptr;
+        napi_create_string_utf8(env, encString, strlen(encString), &resultStr);
+        napi_resolve_deferred(env, stdEncodeInfo->deferred, resultStr);
+        napi_delete_async_work(env, stdEncodeInfo->worker);
+        delete[] stdEncodeInfo->sinputEncoding;
+        delete stdEncodeInfo;
+    }
+
+    napi_value Base64::DecodeAsync(napi_value src, napi_value flags)
+    {
+        napi_valuetype valuetype = napi_undefined;
+        napi_typeof(env, src, &valuetype);
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void *resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        char *inputString = nullptr;
+        char *inputDecode = nullptr;
+        if (valuetype != napi_valuetype::napi_string) {
+            NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        }
+        int32_t iflag = 0;
+        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
+        size_t flag = 0;
+        flag = static_cast<size_t>(iflag);
+        if (valuetype == napi_valuetype::napi_string) {
+            size_t prolen = 0;
+            napi_get_value_string_utf8(env, src, nullptr, 0, &prolen);
+            if (prolen > 0) {
+                inputString = new char[prolen + 1];
+                if (memset_s(inputString, prolen + 1, '\0', prolen + 1) != 0) {
+                    napi_throw_error(env, "-1", "decode inputString memset_s failed");
+                }
+            } else {
+                napi_throw_error(env, "-2", "prolen is error !");
+            }
+            napi_get_value_string_utf8(env, src, inputString, prolen+1, &prolen);
+            CreatePromise02(inputString, prolen, flag);
+        } else if (type == napi_typedarray_type::napi_uint8_array) {
+            inputDecode = static_cast<char*>(resultData) + byteOffset;
+            CreatePromise02(inputDecode, length, flag);
+        }
+        return stdDecodeInfo_->promise;
+        delete[] inputString;
+    }
+
+    void Base64::CreatePromise02(char *inputDecode, size_t length, size_t flag)
+    {
+        napi_value resourceName = nullptr;
+        stdDecodeInfo_ = new DecodeInfo();
+        stdDecodeInfo_->sinputDecode = inputDecode;
+        stdDecodeInfo_->slength = length;
+        stdDecodeInfo_->sflag = flag;
+        stdDecodeInfo_->env = env;
+        napi_create_promise(env, &stdDecodeInfo_->deferred, &stdDecodeInfo_->promise);
+        napi_create_string_utf8(env, "ReadStdDecode", NAPI_AUTO_LENGTH, &resourceName);
+        napi_create_async_work(env, nullptr, resourceName, ReadStdDecode, EndStdDecode,
+                               reinterpret_cast<void*>(stdDecodeInfo_), &stdDecodeInfo_->worker);
+        napi_queue_async_work(env, stdDecodeInfo_->worker);
+    }
+
+    /* Decoding lookup function */
+    size_t Finds(char ch, size_t iflag)
+    {
+        size_t couts = 0;
+        if (iflag == 0) {
+            for (size_t i = 0; i < TRAGET_SIXTYFIVE; i++) {
+                if (BASE[i] == ch) {
+                    couts = i;
+                }
+            }
+        } else {
+            for (size_t i = 0; i < TRAGET_SIXTYFIVE; i++) {
+                if (BASE0[i] == ch) {
+                    couts = i;
+                }
+            }
+        }
+        return couts;
+    }
+
+    size_t DecodeOut(size_t equalCount, size_t retLen, DecodeInfo *decodeInfo)
+    {
+        if (equalCount == 1) {
+            decodeInfo->decodeOutLen -= 1;
+        }
+        if (equalCount == TRAGET_TWO) {
+            decodeInfo->decodeOutLen -= TRAGET_TWO;
+        }
+        switch (equalCount) {
+            case 0:
+                retLen += TRAGET_FOUR;
+                break;
+            case 1:
+                retLen += TRAGET_FOUR;
+                break;
+            case TRAGET_TWO:
+                retLen += TRAGET_THREE;
+                break;
+            default:
+                retLen += TRAGET_TWO;
+                break;
+        }
+        return retLen;
+    }
+
+    unsigned char *DecodeAchieves(DecodeInfo *decodeInfo)
+    {
+        const char *input = decodeInfo->sinputDecode;
+        size_t inputLen = decodeInfo->slength;
+        size_t iflag = decodeInfo->sflag;
+        size_t retLen = 0;
+        retLen = (inputLen / TRAGET_FOUR) * TRAGET_THREE;
+        decodeInfo->decodeOutLen = retLen;
+        size_t equalCount = 0;
+        size_t inp = 0;
+        size_t temp = 0;
+        size_t bitWise = 0;
+        size_t index = 0;
+        unsigned char *retDecode = nullptr;
+        if (*(input + inputLen - 1) == '=') {
+            equalCount++;
+        }
+        if (*(input + inputLen - TRAGET_TWO) == '=') {
+            equalCount++;
+        }
+        retLen = DecodeOut(equalCount, retLen, decodeInfo);
+        if (retLen > 0) {
+            retDecode = new unsigned char[retLen + 1];
+            if (memset_s(retDecode, retLen + 1, '\0', retLen + 1) != 0) {
+                napi_throw_error(decodeInfo->env, "-1", "decode retDecode memset_s failed");
+            }
+        } else {
+            napi_throw_error(decodeInfo->env, "-2", "retLen is error !");
+        }
+        while (inp < (inputLen - equalCount)) {
+            temp = 0;
+            bitWise = 0;
+            while (temp < TRAGET_FOUR) {
+                if (inp >= (inputLen - equalCount)) {
+                    break;
+                }
+                bitWise = (bitWise << TRAGET_SIX) | (Finds(input[inp], iflag));
+                inp++;
+                temp++;
+            }
+            bitWise = bitWise << ((TRAGET_FOUR - temp) * TRAGET_SIX);
+            for (size_t i = 0; i < TRAGET_THREE; i++) {
+                if (i == temp) {
+                    break;
+                }
+                retDecode[index++] = (char)((bitWise >> ((TRAGET_TWO - i) * TRAGET_EIGHT)) & XFF_FLG);
+            }
+        }
+        retDecode[index] = 0;
+        return retDecode;
+    }
+
+    void Base64::ReadStdDecode(napi_env env, void *data)
+    {
+        auto stdDecodeInfo = reinterpret_cast<DecodeInfo*>(data);
+        unsigned char *rets = DecodeAchieves(stdDecodeInfo);
+        stdDecodeInfo->sinputDecoding = rets;
+    }
+
+    void Base64::EndStdDecode(napi_env env, napi_status status, void *buffer)
+    {
+        auto stdDecodeInfo = reinterpret_cast<DecodeInfo*>(buffer);
+        void *data = nullptr;
+        napi_value arrayBuffer = nullptr;
+        size_t bufferSize = stdDecodeInfo->decodeOutLen;
+        napi_create_arraybuffer(env, bufferSize, &data, &arrayBuffer);
+        if (memcpy_s(data, bufferSize, reinterpret_cast<const void*>(stdDecodeInfo->sinputDecoding), bufferSize) != 0) {
+            HILOG_ERROR("copy ret to arraybuffer error");
+            napi_delete_async_work(env, stdDecodeInfo->worker);
+            return;
+        }
+        napi_value result = nullptr;
+        napi_create_typedarray(env, napi_uint8_array, bufferSize, arrayBuffer, 0, &result);
+        napi_resolve_deferred(env, stdDecodeInfo->deferred, result);
+        napi_delete_async_work(env, stdDecodeInfo->worker);
+        delete[] stdDecodeInfo->sinputDecoding;
+        delete stdDecodeInfo;
     }
 }
