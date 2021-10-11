@@ -10,46 +10,48 @@
 
 ## Introduction
 The interface of util is used for character Textencoder, TextDecoder and HelpFunction module.The TextEncoder represents a text encoder that accepts a string as input, encodes it in UTF-8 format, and outputs UTF-8 byte stream. The TextDecoder interface represents a text decoder. The decoder takes the byte stream as the input and outputs the Stirng string. HelpFunction is mainly used to callback and promise functions, write and output error codes, and format class strings.
-Encodes all bytes from the specified u8 array into a newly-allocated u8 array using the Base64 encoding scheme or Encodes the specified byte array into a String using the Base64 encoding scheme.Decodes a Base64 encoded String or input u8 array into a newly-allocated u8 array using the Base64 encoding scheme.The rational number is mainly to compare rational numbers and obtain the numerator and denominator.LruBuffer  The algorithm replaces the least used data with new data when the buffer space is insufficient. The algorithm derives from the need to access resources: recently accessed data can be Will visit again in the near future. The least accessed data is the least valuable data that should be kicked out of the cache space. The Scope interface is used to describe the valid range of a field. The constructor for the Scope instance is used to create objects with specified lower and upper bounds and require that these objects be comparable
-
+Encodes all bytes from the specified u8 array into a newly-allocated u8 array using the Base64 encoding scheme or Encodes the specified byte array into a String using the Base64 encoding scheme.Decodes a Base64 encoded String or input u8 array into a newly-allocated u8 array using the Base64 encoding scheme.The rational number is mainly to compare rational numbers and obtain the numerator and denominator.The LruBuffer algorithm replaces the least used data with new data when the buffer space is insufficient. The algorithm derives from the need to access resources: recently accessed data can be Will visit again in the near future. The least accessed data is the least valuable data that should be kicked out of the cache space. The Scope interface is used to describe the valid range of a field. The constructor for the Scope instance is used to create objects with specified lower and upper bounds and require that these objects be comparable.
 ## 目录
 
 ```
 base/compileruntime/js_util_module/
 ├── Class:TextEncoder                   # TextEncoder class
-│   ├──  new TextEncoder()             	# create textencoder object
-│   ├──  encode()                      	# encode method
-│   ├──  encoding                     	# encoding property
+│   ├──  new TextEncoder()              # create textencoder object
+│   ├──  encode()                       # encode method
+│   ├──  encoding                       # encoding property
 │   └──  encodeInto()                   # encodeInto method
 ├── Class:TextDecoder                   # TextDecoder class
 │   ├──  new TextDecoder()              # create TextDecoder object
-│   ├──  decode()             		    # decode method
-│   ├──  encoding                      	# encoding property
-│   ├──  fatal	                     	# fatal property
+│   ├──  decode()                       # decode method
+│   ├──  encoding                       # encoding property
+│   ├──  fatal	                        # fatal property
 │   └──  ignoreBOM                     	# ignoreBOM property
-├── printf()			                # printf method
-├── getErrorString()			        # getErrorString method
-├── callbackWrapper()		            # callbackWrapper method
-├── promiseWrapper()		            # promiseWrapper method
+├── printf()                            # printf method
+├── getErrorString()                    # getErrorString method
+├── callbackWrapper()                   # callbackWrapper method
+├── promiseWrapper()                    # promiseWrapper method
 ├── Class:Base64                        # Base64 class
-│   ├──  new Base64()             	    # create Base64 object
-│   ├──  encode()                      	# encode method
+│   ├──  new Base64()                   # create Base64 object
+│   ├──  encode()                       # encode method
 │   ├──  encodeToString()               # encodeToString method
-│   └──  decode()                       # decode method
+│   ├──  decode()                       # decode method
+│   ├──  encodeAsync()                  # encodeAsync method
+│   ├──  encodeToStringAsync()          # encodeToStringAsync method
+│   └──  decodeAsync()                  # decodeAsync method
 ├── Class:RationalNumber                # RationalNumber class
 │   ├──  new RationalNumber()           # create RationalNumber object
-│   ├──  CreateRationalFromString()     # CreatRationalFromString method
-│   ├──  CompareTo()                    # CompareTo method
-│   ├──  Equals()                       # Equals method
-│   ├──  Value()                        # Value method
-│   ├──  GetCommonDivisor()             # GetCommonDivisor method
-│   ├──  GetDenominator()               # GetDenominator method
-│   ├──  GetNumerator()                 # GetNumerator method
-│   ├──  IsFinite()                     # IsFinite method
-│   ├──  IsNaN()                        # IsNaN method
-│   ├──  IsZero()                       # IsZero method
-│   └──  ToString()                     # ToString method
-├── Class:LruBuffer                 	# LruBuffer class
+│   ├──  createRationalFromString()     # creatRationalFromString method
+│   ├──  compareTo()                    # compareTo method
+│   ├──  equals()                       # equals method
+│   ├──  value()                        # value method
+│   ├──  getCommonDivisor()             # getCommonDivisor method
+│   ├──  getDenominator()               # getDenominator method
+│   ├──  getNumerator()                 # getNumerator method
+│   ├──  isFinite()                     # isFinite method
+│   ├──  isNaN()                        # isNaN method
+│   ├──  isZero()                       # isZero method
+│   └──  toString()                     # toString method
+├── Class:LruBuffer                     # LruBuffer class
 │   ├──  new LruBuffer()                # create RationalNumber object
 │   ├──  updateCapacity()               # updateCapacity method
 │   ├──  toString()                     # toString method
@@ -68,9 +70,9 @@ base/compileruntime/js_util_module/
 │   ├──  keys()                         # keys method
 │   ├──  remove()                       # remove method
 │   ├──  afterRemoval()                 # afterRemoval method
-│   ├──  contains()                		# contains method
+│   ├──  contains()                     # contains method
 │   ├──  createDefault()                # createDefault method
-│   ├──  entries()               		# entries method
+│   ├──  entries()                      # entries method
 │   └──  [Symbol.iterator]()            # Symboliterator method
 └── Class:Scope                         # Scope class
     ├── constructor()                   # create Scope object
@@ -90,76 +92,77 @@ base/compileruntime/js_util_module/
 ## Description
 
 ### Interface description
-
-
 | Interface name | Description |
 | -------- | -------- |
-| readonly encoding : string | Get the encoding format, only UTF-8 is supported. |
+| readonly encoding : string | In the TextEncoder module, get the encoding format, only UTF-8 is supported. |
 | encode(input : string) : Uint8Array | Input stirng string, encode and output UTF-8 byte stream. |
 | encodeInto(input : string, dest : Uint8Array) : {read : number, written : number} | Enter the stirng string, dest represents the storage location after encoding, and returns an object, read represents the number of characters that have been encoded,and written represents the size of bytes occupied by the encoded characters. |
 | constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean}) | Constructor, the first parameter encoding indicates the format of decoding.The second parameter represents some attributes.Fatal in the attribute indicates whether an exception is thrown, and ignoreBOM indicates whether to ignore the bom flag. |
-| readonly encoding : string | Get the set decoding format. |
+| readonly encoding : string | In the TextDecoder module, get the set decoding format. |
 | readonly fatal : boolean | Get the setting that throws the exception. |
 | readonly ignoreBOM : boolean | Get whether to ignore the setting of the bom flag. |
-| decode(input : ArrayBuffer | Input the data to be decoded, and solve the corresponding string character string.The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false. |
+| decode(input : Uint8Array, options?: { stream?: false }) : string | Input the data to be decoded, and solve the corresponding string character string.The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false. |
+| encode(src: Uint8Array, flag: number): Uint8Array; | Encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToString(src: Uint8Array, flag: number): string; | Encodes the specified byte array as a String using the Base64 encoding scheme. |
+| decode(src: Uint8Array \| string, flag: number): Uint8Array; | Decodes the Base64-encoded string or input u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeAsync(src: Uint8Array, flag: number): Promise\<Uint8Array\>; | Asynchronously encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToStringAsync(src: Uint8Array, flag: number): Promise\<string\>; | Asynchronously encodes the specified byte array into a String using the Base64 encoding scheme. |
+| decodeAsync(src: Uint8Array \| string, flag: number): Promise\<Uint8Array\>; | Use the Base64 encoding scheme to asynchronously decode a Base64-encoded string or input u8 array into a newly allocated u8 array. |
+| static createRationalFromString(rationalString: string): RationalNumber | Create a RationalNumber object based on the given string. |
+| compareTo(another: RationalNumber): number | Compare the current RationalNumber object with the given object. |
+| equals(obj: object): number | Check if the given object is the same as the current RationalNumber object.|
+| value(): number | Take the current RationalNumber object to an integer value or a floating point value. |
+| static getCommonDivisor(number1: number, number2: number,): number | Obtain the greatest common divisor of two specified numbers. |
+| getDenominator(): number | Get the denominator of the current RationalNumber object. |
+| getNumerator(): number | Get the numerator of the current RationalNumber object. |
+| isFinite(): boolean | Check that the current RationalNumber object is limited. |
+| isNaN(): boolean | Check whether the current RationalNumber object represents a non-number (NaN) value. |
+| isZero(): boolean | Check whether the current RationalNumber object represents a zero value. |
+| toString(): string | Get the string representation of the current RationalNumber object. |
+| constructor(capacity?: number) | The Create Default constructor is used to create a new LruBuffer instance with a default capacity of 64. |
+| updateCapacity(newCapacity: number): void | Updates the buffer capacity to the specified capacity. This exception is thrown if newCapacity is less than or equal to 0. |
+| toString(): string | Returns the string representation of the object and outputs the string representation of the object. |
+| values(): V[ ] | Gets a list of all values in the current buffer, and the output returns a list of all values in the current buffer in ascending order, from most recently accessed to least recently accessed. |
+| size(): number | Gets the total number of values in the current buffer. The output returns the total number of values in the current buffer. |
+| capacity(): number | Gets the capacity of the current buffer. The output returns the capacity of the current buffer. |
+| clear(): void | The key value pairs are cleared from the current buffer, after the key value is cleared, the afterRemoval () method is invoked to perform subsequent operations in turn. |
+| getCreateCount(): number | Get the number of times the returned value of createdefault(), and output the number of times the returned value of createdefault(). |
+| getMissCount(): number | Get the number of times the query value does not match, and output the number of times the query value does not match. |
+| getRemovalCount(): number | Gets the number of evictions from the buffer, and outputs the number of evictions from the buffer. |
+| getMatchCount​(): number | Obtain the number of successful matching of query values, and output the number of successful matching of query values. |
+| getPutCount(): number | Gets the number of times the value was added to the buffer, and the output returns the number of times the value was added to the buffer. |
+| isEmpty(): boolean | Checks whether the current buffer is empty and returns true if the current buffer does not contain any values. |
+| get(k: key):V \| undefined | Indicates the key to query. If the specified key exists in the buffer, the value associated with the key will be returned; Otherwise, undefined is returned. |
+| put(K: key, V: value): V | Adding the key value pair to the buffer and outputting the value associated with the added key; If the key to be added already exists, the original value is returned. If the key or value is empty, this exception is thrown. |
+| keys(): K[ ] | Get the key list of the value in the current buffer, and the output returns the key list sorted from the most recent access to the least recent access. |
+| remove​(k: key):V \| undefined | Deletes the specified key and its associated value from the current buffer. |
+| afterRemoval(boolean: isEvict, K: key, V: value, V: newValue):void | Perform subsequent operations after deleting the value. |
+| contains(k: key):boolean | Checks whether the current buffer contains the specified key, and returns true if the buffer contains the specified key. |
+| createDefault(k: key): V | If the value of a specific key is not calculated, subsequent operations are performed. The parameter represents the missing key, and the output returns the value associated with the key. |
+| entries(): [K,V] | Allows you to iterate over all key value pairs contained in this object. The keys and values of each pair are objects. |
+| \[Symbol.iterator\](): [K,V]| Returns a two-dimensional array in the form of key value pairs. |
+| constructor(lowerObj: ScopeType, upperObj: ScopeType) | Creates and returns a Scope object that creates a constructor for a scope instance that specifies a lower and upper bound. |
+| toString():string | The stringification method returns a  string representation that contains the current range. |
+| intersect(range: Scope): Scope | Gets the intersection of the given range and the current range. |
+| intersect(lowerObj: ScopeType, upperObj: ScopeType): Scope | Gets the intersection of the current range with a given lower and upper bound range. |
+| getUpper(): ScopeType | Gets the upper bound of the current scope. |
+| getLower(): ScopeType | Gets the lower bound of the current scope. |
+| expand(lowerObj: ScopeType, upperObj:  ScopeType): Scope | Creates and returns a union that includes the current range and a given lower and upper bound. |
+| expand(range: Scope): Scope | Creates and returns a union that includes the current range and the given range. |
+| expand(value: ScopeType): Scope | Creates and returns a union that includes the current range and the given value. |
+| contains(value: ScopeType): boolean | Checks whether the given value is included in the current range. |
+| contains(range: Scope): boolean | Checks whether the given range is within the current range. |
+| clamp(value: ScopeType): ScopeType | Clips the specified value to the current range. |
 | function printf(format: string, ...args: Object[]): string | The util.format() method returns a formatted string using the first argument as a printf-like format string which can contain zero or more format specifiers. |
 | function getErrorString(errno: number): string |  The geterrorstring () method uses a system error number as a parameter to return system error information. |
 | function callbackWrapper(original: Function): (err: Object, value: Object) => void | Takes an async function (or a function that returns a Promise) and returns a function following the error-first callback style, i.e. taking an (err, value) => ... callback as the last argument. In the callback, the first argument will be the rejection reason (or null if the Promise resolved), and the second argument will be the resolved value. |
-| function promiseWrapper(original: (err: Object, value: Object) => void): Object |     Takes a function following the common error-first callback style, i.e. taking an (err, value) => ... callback as the last argument, and returns a version that returns promises. |
-| encode(src: Uint8Array): Uint8Array; | Encodes all bytes from the specified u8 array into a newly-allocated u8 array using the Base64 encoding scheme. |
-| encodeToString(src: Uint8Array): string; | Encodes the specified byte array into a String using the Base64 encoding scheme. |
-| decode(src: Uint8Array | string): Uint8Array; |
-| Decodes a Base64 encoded String or input u8 array into a newly-allocated u8 array using the Base64 encoding scheme. ||
-| CreateRationalFromString(src: string): Rational | Create a RationalNumber object based on the given string |
-| CompareTo(src: RationalNumber): number | Compare the current RationalNumber object with the given object |
-| Equals(src: object): number | Check if the given object is the same as the current RationalNumber object |
-| Value(): number | Take the current RationalNumber object to an integer value or a floating point value |
-| GetCommonDivisor(arg1: int, arg2: int,): number | Obtain the greatest common divisor of two specified numbers |
-| GetDenominator(): number | Get the denominator of the current RationalNumber object |
-| GetNumerator(): number | Get the numerator of the current RationalNumber object |
-| IsFinite(): bool | Check that the current RationalNumber object is limited |
-| IsNaN(): bool | Check whether the current RationalNumber object represents a non-number (NaN) value |
-| IsZero(): bool | Check whether the current RationalNumber object represents a zero value |
-| ToString(): string | Get the string representation of the current RationalNumber object |
-| updateCapacity(newCapacity:number):void | Updates the buffer capacity to the specified capacity. This exception is thrown if newCapacity is less than or equal to 0 |
-| toString():string | Returns the string representation of the object and outputs the string representation of the object |
-| values():V[ ] | Gets a list of all values in the current buffer, and the output returns a list of all values in the current buffer in ascending order, from most recently accessed to least recently accessed |
-| size():number | Gets the total number of values in the current buffer. The output returns the total number of values in the current buffer |
-| capacity():number | Gets the capacity of the current buffer. The output returns the capacity of the current buffer |
-| clear():void | The key value pairs are cleared from the current buffer, after the key value is cleared, the afterRemoval () method is invoked to perform subsequent operations in turn |
-| getCreateCount():number | Get the number of times the returned value of createdefault(), and output the number of times the returned value of createdefault() |
-| getMissCount():number | Get the number of times the query value does not match, and output the number of times the query value does not match |
-| getRemovalCount():number | Gets the number of evictions from the buffer, and outputs the number of evictions from the buffer |
-| getMatchCount​():number | Obtain the number of successful matching of query values, and output the number of successful matching of query values |
-| getPutCount():number | Gets the number of times the value was added to the buffer, and the output returns the number of times the value was added to the buffer |
-| isEmpty():boolean | Checks whether the current buffer is empty and returns true if the current buffer does not contain any values |
-| get(k:key):V / undefined | Indicates the key to query. If the specified key exists in the buffer, the value associated with the key will be returned; Otherwise, undefined is returned |
-| put(K key, V value):V | Adding the key value pair to the buffer and outputting the value associated with the added key; If the key to be added already exists, the original value is returned. If the key or value is empty, this exception is thrown |
-| keys():V[ ] | Get the key list of the value in the current buffer, and the output returns the key list sorted from the most recent access to the least recent access |
-| remove​(k:key):V / undefined | Deletes the specified key and its associated value from the current buffer |
-| afterRemoval(boolean isEvict, K key, V value, V newValue):void | Perform subsequent operations after deleting the value |
-| contains(k:key):boolean | Checks whether the current buffer contains the specified key, and returns true if the buffer contains the specified key |
-| createDefault(k:key):V | If the value of a specific key is not calculated, subsequent operations are performed. The parameter represents the missing key, and the output returns the value associated with the key |
-| entries() : [K,V] | Allows you to iterate over all key / value pairs contained in this object. The keys and values of each pair are objects |
-| [Symbol.iterator]():[K,V]| Returns a two-dimensional array in the form of key value pairs |
-| constructor(lowerObj: ScopeType, upperObj: ScopeType) | Creates and returns a Scope object that creates a constructor for a scope instance that specifies a lower and upper bound. |
-| toString():string | The stringification method returns a  string representation that contains the current range. |
-| intersect(range: Scope): Scope | This method returns the intersection of a given range and the current range. |
-| intersect(lowerObj: ScopeType, upperObj: ScopeType): Scope | Passing in the upper and lower bounds of the given range returns the intersection of the current range and the range specified by the given lower and upper bounds. |
-| getUpper(): ScopeType | Gets the upper bound of the current scope and returns a value of type ScopeType. |
-| getLower(): ScopeType | Gets the lower bound of the current scope and returns a value of type ScopeType. |
-| expand(lowerObj: ScopeType, upperObj:  ScopeType): Scope | This method creates and returns a union that includes the current range and a given lower and upper bound. |
-| expand(range: Scope): Scope | This method creates and returns a union that includes the current range and the given range. |
-| expand(value: ScopeType): Scope | This method creates and returns a union that includes the current range and the given value. |
-| contains(value: ScopeType): boolean | Checks whether the given value is included in the current range. If yes, true is returned. Otherwise, false is returned. |
-| contains(range: Scope): boolean | Checks whether the given range is within the current range. Returns true if in, false otherwise. |
-| clamp(value: ScopeType): ScopeType | Clips the specified value to the current range. If the value is less than the lower limit, lowerObj is returned. If the value is greater than the upper limit, upperObj is returned. Returns value if within the current range. |
+| function promiseWrapper(original: (err: Object, value: Object) => void): Object | Takes a function following the common error-first callback style, i.e. taking an (err, value) => ... callback as the last argument, and returns a version that returns promises. |
 
 Each specifier in printf is replaced with a converted value from the corresponding parameter. Supported specifiers are:
 | Stylized character | Style requirements |
 | -------- | -------- |
-|    %s: | String will be used to convert all values except BigInt, Object and -0. |
-|    %d: | Number will be used to convert all values except BigInt and Symbol. |
+|    %s:  | String will be used to convert all values except BigInt, Object and -0. |
+|    %d:  | Number will be used to convert all values except BigInt and Symbol. |
 |    %i:  | parseInt(value, 10) is used for all values except BigInt and Symbol. |
 |    %f:  | parseFloat(value) is used for all values expect Symbol. |
 |    %j:  | JSON. Replaced with the string '[Circular]' if the argument contains circular references. |
@@ -287,224 +290,286 @@ var buff = 'czEz';
 var num = 0;
 var result = that.decode(buff,num);
 ```
-16.createRationalFromString()
+16.encodeAsync()
+```
+import util from '@ohos.util'
+it('EncodeAsync_test_001', 0, async function () {
+    var that = new util.Base64()
+    var array = new Uint8Array([115,49,51]);
+    var rarray = new Uint8Array([99,122,69,122]);
+    var num = 0;
+    that.encodeAsync(array,num).then(val=>{
+    }
+})
+```
+7.encodeToStringAsync()
+```
+import util from '@ohos.util'
+it('EncodeToStringAsync_test_001', 0, async function () {
+    var that = new util.Base64()
+    var array = new Uint8Array([115,49,51]);
+    var num = 0;
+    that.encodeToStringAsync(array,num).then(val=>{
+    })
+}),
+```
+18.decodeAsync()
+```
+import util from '@ohos.util'
+it('DecodeAsync_test_001', 0, async function () {
+    var that = new util.Base64()
+    var buff = 'czEz';
+    var array = new Uint8Array([115,49,51]);
+    var num = 0;
+    that.decodeAsync(buff,num).then(val=>{
+    })
+}),
+```
+19.createRationalFromString()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(0, 0);
 var res = pro.createRationalFromString("-1:2");
 var result1 = res.value();
 ```
-17.compareTo()
+20.compareTo()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var proc = new util.RationalNumber(3, 4);
 var res = pro.compareTo(proc);
 ```
-18.equals()
+21.equals()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var proc = new util.RationalNumber(3, 4);
 var res = pro.equals(proc);
 ```
-19.value()
+22.value()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var res = pro.value();
 ```
-20.getCommonDivisor()
+23.getCommonDivisor()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(0, 0);
 var res = pro.getCommonDivisor(4, 8);
 ```
-21.getDenominator()
+24.getDenominator()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var res = pro.getDenominator();
 ```
-22.getNumerator()
+25.getNumerator()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.getNumerator();
 ```
-23.isFinite()
+26.isFinite()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isFinite();
 ```
-24.isNaN()
+27.isNaN()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isNaN();
 ```
-25.isZero()
+28.isZero()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isZero();
+
 ```
-26.toString()
+29.toString()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.toString();
+
 ```
-27.updateCapacity() 
+30.updateCapacity() 
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-pro.updateCapacity(100);
+var result = pro.updateCapacity(100);
 ```
-28.toString()
+31.toString()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2);
 pro.remove(20);
-var temp = pro.toString();
+var result = pro.toString();
 ```
-29.values()
+32.values()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.put(2,"anhu");
 pro.put("afaf","grfb");
-var temp = pro.values();
+var result = pro.values();
 ```
-30.size()
+33.size()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.put(1,8);
-var temp = pro.size();
+var result = pro.size();
 ```
-31.capacity()
+34.capacity()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-var temp = pro.capacity();
+var result = pro.capacity();
 ```
-32.clear() 
+35.clear() 
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.clear();
 ```
-33.getCreatCount()
+36.getCreatCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(1,8);
-var temp = pro.getCreatCount();
+var result = pro.getCreatCount();
 ```
-34.getMissCount()
+37.getMissCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2)
-var temp = pro.getMissCount();
+var result = pro.getMissCount();
 ```
-35.getRemovalCount()
+38.getRemovalCount()
 ```
-
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.updateCapacity(2);
 pro.put(50,22);
-var temp = pro.getRemovalCount();
-
+var result = pro.getRemovalCount();
 ```
-36.getMatchCount
+39.getMatchCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2);
-var temp5 = pro.getMatchCount();
+var result = pro.getMatchCount();
 ```
-37.getPutCount()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.getPutCount();
-```
-38.isEmpty()
+40.getPutCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.isEmpty();
+var result = pro.getPutCount();
 ```
-39.get()
-
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.get(2);
-```
-40.put()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-var temp = pro.put(2,10);
-```
-41.keys()
+41.isEmpty()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.keys();
+var result = pro.isEmpty();
 ```
-42.remove()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.remove(20);
-```
-43.contains()
+42.get()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.contains(20);
+var result = pro.get(2);
 ```
-44.createDefault()
+43.put()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-var trmp = pro .createDefault(50);
+var result = pro.put(2,10);
 ```
-45.entries()
+44.keys()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.entries();
+var result = pro.keys();
 ```
-46.[Symbol.iterator]()
+45.remove()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-pro .put(2,10);
-var temp = pro[symbol.iterator]();
+pro.put(2,10);
+var result = pro.remove(20);
 ```
-Construct a new class in the scope interface to implement the compareTo method.
+46.contains()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro.contains(20);
+```
+47.createDefault()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+var result = pro.createDefault(50);
+```
+48.entries()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro.entries();
+```
+49.\[Symbol.iterator\]()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = aa[symbol.iterator]();
+```
+50.afterRemoval() 
+```
+import util from '@ohos.util'
+var arr = [];
+class ChildLruBuffer extends util.LruBuffer
+{
+    constructor()
+    {
+        super();
+    }
+    static getInstance()
+    {
+        if(this.instance ==  null)
+        {
+            this.instance = new ChildLruBuffer();
+        }
+        return this.instance;
+    }
+    afterRemoval(isEvict, key, value, newValue)
+    {
+        if (isEvict === false)
+        {
+            arr = [key, value, newValue];
+        }
+    }
+}
+ChildLruBuffer.getInstance().afterRemoval(false,10,30,null)
+```
+Construct a new class in the Scope interface to implement the compareTo method.
 
 ```
 class Temperature {
@@ -522,26 +587,20 @@ class Temperature {
     }
 }
 ```
-
-47.constructor()
-
+51.constructor()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 ```
-
-48.toString()
-
+52.toString()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.toString() // => [30,40]
+var result = range.toString() // => [30,40]
 ```
-
-49.intersect()
-
+53.intersect()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -549,51 +608,41 @@ var range = new Scope(tempLower, tempUpper);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var rangeFir = new Scope(tempMiDF, tempMidS);
-range.intersect(rangeFir)  // => [35,39]
+var result = range.intersect(rangeFir)  // => [35,39]
 ```
-
-50.intersect()
-
+54.intersect()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
-range.intersect(tempMiDF, tempMidS)  // => [35,39]
+var result = range.intersect(tempMiDF, tempMidS)  // => [35,39]
 ```
-
-51.getUpper()
-
+55.getUpper()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.getUpper() // => 40
+var result = range.getUpper() // => 40
 ```
-
-52.getLower()
-
+56.getLower()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.getLower() // => 30
+var result = range.getLower() // => 30
 ```
-
-53.expand()
-
+57.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
-range.expand(tempMiDF, tempMidS)  // => [30,40]
+var result = range.expand(tempMiDF, tempMidS)  // => [30,40]
 ```
-
-54.expand()
-
+58.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -601,31 +650,25 @@ var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
 var rangeFir = new Scope(tempMiDF, tempMidS);
-range.expand(rangeFir) // => [30,40]
+var result = range.expand(rangeFir) // => [30,40]
 ```
-
-55.expand()
-
+59.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.expand(tempMiDF)  // => [30,40]
+var result = range.expand(tempMiDF)  // => [30,40]
 ```
-
-56.contains()
-
+60.contains()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.contains(tempMiDF) // => true
+var result = range.contains(tempMiDF) // => true
 ```
-
-57.contains()
-
+61.contains()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -633,23 +676,19 @@ var range = new Scope(tempLower, tempUpper);
 var tempLess = new Temperature(20);
 var tempMore = new Temperature(45);
 var rangeSec = new Scope(tempLess, tempMore);
-range.contains(rangeSec) // => true
+var result = range.contains(rangeSec) // => true
 ```
-
-58.clamp()
-
+62.clamp()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.clamp(tempMiDF) // => 35
+var result = range.clamp(tempMiDF) // => 35
 ```
-
-
-
 ## Related warehouse
 
 [js_util_module subsystem](https://gitee.com/OHOS_STD/js_util_module)
 
 [base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
+
