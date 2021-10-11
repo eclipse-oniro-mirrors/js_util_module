@@ -23,7 +23,6 @@
 #define BASE_COMPILERUNTIME_JS_UTIL_MODULE_BASE64_CLASS_H
 
 namespace OHOS::Util {
-
     struct EncodeInfo {
         napi_async_work worker = nullptr;
         napi_deferred deferred = nullptr;
@@ -58,7 +57,6 @@ namespace OHOS::Util {
     unsigned char *EncodeAchieves(EncodeInfo *encodeInfo);
     unsigned char *DecodeAchieves(DecodeInfo *encodeInfo);
 
-
     class Base64 {
     public:
         explicit Base64(napi_env env);
@@ -82,8 +80,8 @@ namespace OHOS::Util {
         size_t decodeOutLen = 0;
         size_t outputLen = 0;
         unsigned char *pret = nullptr;
-        const unsigned char *inputEncode = nullptr;
-        const char *inputDecode = nullptr;
+        const unsigned char *inputEncode_ = nullptr;
+        const char *inputDecode_ = nullptr;
         unsigned char *retDecode = nullptr;
 
         void CreatePromise(unsigned char *inputDecode, size_t length, size_t flag);

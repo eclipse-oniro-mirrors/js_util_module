@@ -53,12 +53,12 @@ namespace OHOS::Util {
         void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-        inputEncode = static_cast<const unsigned char*>(resultData) + byteOffset;
+        inputEncode_ = static_cast<const unsigned char*>(resultData) + byteOffset;
         int32_t iflag = 0;
         NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
         size_t flag = 0;
         flag = static_cast<size_t>(iflag);
-        const unsigned char *rets = EncodeAchieve(inputEncode, length, flag);
+        const unsigned char *rets = EncodeAchieve(inputEncode_, length, flag);
         void *data = nullptr;
         napi_value arrayBuffer = nullptr;
         size_t bufferSize = outputLen;
@@ -83,12 +83,12 @@ namespace OHOS::Util {
         void *resultData = nullptr;
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-        inputEncode = static_cast<const unsigned char*>(resultData) + byteOffset;
+        inputEncode_ = static_cast<const unsigned char*>(resultData) + byteOffset;
         int32_t iflag = 0;
         NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
         size_t flag = 0;
         flag = static_cast<size_t>(iflag);
-        unsigned char *ret = EncodeAchieve(inputEncode, length, flag);
+        unsigned char *ret = EncodeAchieve(inputEncode_, length, flag);
         char *rstring = nullptr;
         if (outputLen > 0) {
             rstring = new char[outputLen + 1];
@@ -196,8 +196,8 @@ namespace OHOS::Util {
             napi_get_value_string_utf8(env, src, inputString, prolen + 1, &prolen);
             pret = DecodeAchieve(inputString, prolen, flag);
         } else if (type == napi_typedarray_type::napi_uint8_array) {
-            inputDecode = static_cast<const char*>(resultData) + byteOffset;
-            pret = DecodeAchieve(inputDecode, length, flag);
+            inputDecode_ = static_cast<const char*>(resultData) + byteOffset;
+            pret = DecodeAchieve(inputDecode_, length, flag);
         }
         void *data = nullptr;
         napi_value arrayBuffer = nullptr;
