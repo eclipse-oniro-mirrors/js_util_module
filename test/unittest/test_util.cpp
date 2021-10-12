@@ -193,7 +193,7 @@ HWTEST_F(NativeEngineTest, GetEncoding001, testing::ext::TestSize.Level0)
     size_t strLength = 0;
     char* buffer = nullptr;
     if (bufferSize > 0) {
-        buffer = new char[bufferSize + 1]{ 0 };
+        buffer = new char[bufferSize + 1]();
         napi_get_value_string_utf8(env, testString, buffer, bufferSize + 1, &strLength);
     }
     const char *result = tmpTestStr.c_str();

@@ -102,12 +102,12 @@ base/compileruntime/js_util_module/
 | readonly fatal : boolean | Get the setting that throws the exception. |
 | readonly ignoreBOM : boolean | Get whether to ignore the setting of the bom flag. |
 | decode(input : Uint8Array, options?: { stream?: false }) : string | Input the data to be decoded, and solve the corresponding string character string.The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false. |
-| encode(src: Uint8Array, flag: number): Uint8Array; | Encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
-| encodeToString(src: Uint8Array, flag: number): string; | Encodes the specified byte array as a String using the Base64 encoding scheme. |
-| decode(src: Uint8Array \| string, flag: number): Uint8Array; | Decodes the Base64-encoded string or input u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
-| encodeAsync(src: Uint8Array, flag: number): Promise\<Uint8Array\>; | Asynchronously encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
-| encodeToStringAsync(src: Uint8Array, flag: number): Promise\<string\>; | Asynchronously encodes the specified byte array into a String using the Base64 encoding scheme. |
-| decodeAsync(src: Uint8Array \| string, flag: number): Promise\<Uint8Array\>; | Use the Base64 encoding scheme to asynchronously decode a Base64-encoded string or input u8 array into a newly allocated u8 array. |
+| encode(src: Uint8Array): Uint8Array; | Encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToString(src: Uint8Array): string; | Encodes the specified byte array as a String using the Base64 encoding scheme. |
+| decode(src: Uint8Array \| string): Uint8Array; | Decodes the Base64-encoded string or input u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeAsync(src: Uint8Array): Promise\<Uint8Array\>; | Asynchronously encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToStringAsync(src: Uint8Array): Promise\<string\>; | Asynchronously encodes the specified byte array into a String using the Base64 encoding scheme. |
+| decodeAsync(src: Uint8Array \| string): Promise\<Uint8Array\>; | Use the Base64 encoding scheme to asynchronously decode a Base64-encoded string or input u8 array into a newly allocated u8 array. |
 | static createRationalFromString(rationalString: string): RationalNumber | Create a RationalNumber object based on the given string. |
 | compareTo(another: RationalNumber): number | Compare the current RationalNumber object with the given object. |
 | equals(obj: object): number | Check if the given object is the same as the current RationalNumber object.|
@@ -271,59 +271,45 @@ newPromiseObj.then(res => {
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encode(array,num);
+var result = that.encode(array);
 ```
 14.encodeToString()
 ```
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encodeToString(array,num);
+var result = that.encodeToString(array);
 ```
 15.decode()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-var num = 0;
-var result = that.decode(buff,num);
+var result = that.decode(buff);
 ```
 16.encodeAsync()
 ```
 import util from '@ohos.util'
-it('EncodeAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var array = new Uint8Array([115,49,51]);
-    var rarray = new Uint8Array([99,122,69,122]);
-    var num = 0;
-    that.encodeAsync(array,num).then(val=>{
-    }
-})
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+that.encodeAsync(array).then(val=>{
+}
 ```
 7.encodeToStringAsync()
 ```
 import util from '@ohos.util'
-it('EncodeToStringAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var array = new Uint8Array([115,49,51]);
-    var num = 0;
-    that.encodeToStringAsync(array,num).then(val=>{
-    })
-}),
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+that.encodeToStringAsync(array).then(val=>{
+})
 ```
 18.decodeAsync()
 ```
 import util from '@ohos.util'
-it('DecodeAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var buff = 'czEz';
-    var array = new Uint8Array([115,49,51]);
-    var num = 0;
-    that.decodeAsync(buff,num).then(val=>{
-    })
-}),
+var that = new util.Base64()
+var buff = 'czEz';
+that.decodeAsync(buff).then(val=>{
+})
 ```
 19.createRationalFromString()
 ```

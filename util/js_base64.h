@@ -30,7 +30,6 @@ namespace OHOS::Util {
         unsigned char *sinputEncode = nullptr;
         unsigned char *sinputEncoding = nullptr;
         size_t slength = 0;
-        size_t sflag = 0;
         size_t soutputLen = 0;
         napi_env env;
     };
@@ -42,7 +41,6 @@ namespace OHOS::Util {
         char *sinputDecode = nullptr;
         unsigned char *sinputDecoding = nullptr;
         size_t slength = 0;
-        size_t sflag = 0;
         size_t decodeOutLen = 0;
         size_t retLen = 0;
         napi_env env;
@@ -61,18 +59,18 @@ namespace OHOS::Util {
     public:
         explicit Base64(napi_env env);
         virtual ~Base64(){}
-        napi_value Encode(napi_value src, napi_value flags);
-        napi_value EncodeToString(napi_value src, napi_value flags);
-        napi_value Decode(napi_value src, napi_value flags);
+        napi_value Encode(napi_value src);
+        napi_value EncodeToString(napi_value src);
+        napi_value Decode(napi_value src);
 
-        napi_value EncodeAsync(napi_value src, napi_value flags);
-        napi_value EncodeToStringAsync(napi_value src, napi_value flags);
-        napi_value DecodeAsync(napi_value src, napi_value flags);
+        napi_value EncodeAsync(napi_value src);
+        napi_value EncodeToStringAsync(napi_value src);
+        napi_value DecodeAsync(napi_value src);
     private:
         napi_env env;
-        unsigned char *DecodeAchieve(const char *input, size_t inputLen, size_t iflag);
-        unsigned char *EncodeAchieve(const unsigned char *input, size_t inputLen, size_t iflag);
-        size_t Finds(char ch, size_t iflag);
+        unsigned char *DecodeAchieve(const char *input, size_t inputLen);
+        unsigned char *EncodeAchieve(const unsigned char *input, size_t inputLen);
+        size_t Finds(char ch);
         size_t DecodeOut(size_t equalCount, size_t retLen);
         void FreeMemory(const unsigned char *address);
         void FreeMemory(const char *address);
@@ -84,9 +82,9 @@ namespace OHOS::Util {
         const char *inputDecode_ = nullptr;
         unsigned char *retDecode = nullptr;
 
-        void CreatePromise(unsigned char *inputDecode, size_t length, size_t flag);
-        void CreatePromise01(unsigned char *inputDecode, size_t length, size_t flag);
-        void CreatePromise02(char *inputDecode, size_t length, size_t flag);
+        void CreatePromise(unsigned char *inputDecode, size_t length);
+        void CreatePromise01(unsigned char *inputDecode, size_t length);
+        void CreatePromise02(char *inputDecode, size_t length);
         EncodeInfo *stdEncodeInfo_ = nullptr;
         DecodeInfo *stdDecodeInfo_ = nullptr;
         static void ReadStdEncode(napi_env env, void *data);
