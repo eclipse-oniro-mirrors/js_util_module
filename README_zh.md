@@ -103,12 +103,12 @@ base/compileruntime/js_util_module/
 | readonly fatal : boolean | 获取抛出异常的设置。 |
 | readonly ignoreBOM : boolean | 获取是否忽略bom标志的设置。 |
 | decode(input : Uint8Array, options?: { stream?: false }) : string | 输入要解码的数据，解出对应的string字符串。第一个参数input表示要解码的数据，第二个参数options表示一个bool标志，表示将跟随附加数据，默认为false。 |
-| encode(src: Uint8Array, flag: number): Uint8Array; | 使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中。 |
-| encodeToString(src: Uint8Array,flag: number): string; | 使用Base64编码方案将指定的字节数组编码为String。 |
-| decode(src: Uint8Array \| string, flag: number): Uint8Array; | 使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。 |
-| encodeAsync(src: Uint8Array, flag: number): Promise\<Uint8Array\>; | 使用Base64编码方案将指定u8数组中的所有字节异步编码到新分配的u8数组中。 |
-| encodeToStringAsync(src: Uint8Array, flag: number): Promise\<string\>; | 使用Base64编码方案将指定的字节数组异步编码为String。 |
-| decodeAsync(src: Uint8Array \| string, flag: number): Promise\<Uint8Array\>; | 使用Base64编码方案将Base64编码的字符串或输入u8数组异步解码为新分配的u8数组。 |
+| encode(src: Uint8Array): Uint8Array; | 使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中。 |
+| encodeToString(src: Uint8Array): string; | 使用Base64编码方案将指定的字节数组编码为String。 |
+| decode(src: Uint8Array \| string): Uint8Array; | 使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。 |
+| encodeAsync(src: Uint8Array): Promise\<Uint8Array\>; | 使用Base64编码方案将指定u8数组中的所有字节异步编码到新分配的u8数组中。 |
+| encodeToStringAsync(src: Uint8Array): Promise\<string\>; | 使用Base64编码方案将指定的字节数组异步编码为String。 |
+| decodeAsync(src: Uint8Array \| string): Promise\<Uint8Array\>; | 使用Base64编码方案将Base64编码的字符串或输入u8数组异步解码为新分配的u8数组。 |
 | static createRationalFromString(rationalString: string): RationalNumber | 基于给定的字符串创建一个RationalNumber对象。 |
 | compareTo(another: RationalNumber): number | 将当前的RationalNumber对象与给定的对象进行比较。 |
 | equals(obj: object): number | 检查给定对象是否与当前 RationalNumber 对象相同。 |
@@ -270,60 +270,46 @@ newPromiseObj.then(res => {
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encode(array,num);
+var result = that.encode(array);
 ```
 14.encodeToString()
 ```
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encodeToString(array,num);
+var result = that.encodeToString(array);
 ```
 15.decode()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-var num = 0;
-var result = that.decode(buff,num);
+var result = that.decode(buff);
 
 ```
 16.encodeAsync()
 ```
 import util from '@ohos.util'
-it('EncodeAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var array = new Uint8Array([115,49,51]);
-    var rarray = new Uint8Array([99,122,69,122]);
-    var num = 0;
-    that.encodeAsync(array,num).then(val=>{
-    }
-})
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+that.encodeAsync(array).then(val=>{
+}
 ```
 17.encodeToStringAsync()
 ```
 import util from '@ohos.util'
-it('EncodeToStringAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var array = new Uint8Array([115,49,51]);
-    var num = 0;
-    that.encodeToStringAsync(array,num).then(val=>{
-    })
-}),
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+that.encodeToStringAsync(array).then(val=>{
+})
 ```
 18.decodeAsync()
 ```
 import util from '@ohos.util'
- it('DecodeAsync_test_001', 0, async function () {
-    var that = new util.Base64()
-    var buff = 'czEz';
-    var array = new Uint8Array([115,49,51]);
-    var num = 0;
-    that.decodeAsync(buff,num).then(val=>{
-    })
-}),
+var that = new util.Base64()
+var buff = 'czEz';
+that.decodeAsync(buff).then(val=>{
+})
 ```
 19.createRationalFromString()
 ```

@@ -35,17 +35,11 @@ namespace OHOS::Util {
             106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
             121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47, 61
         };
-        const char BASE0[] = {
-            65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
-            83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105,
-            106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
-            121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 45, 95, 61
-        };
     }
     Base64::Base64(napi_env env_) : env(env_) {}
 
     /* base64 encode */
-    napi_value Base64::Encode(napi_value src, napi_value flags)
+    napi_value Base64::Encode(napi_value src)
     {
         napi_typedarray_type type;
         size_t byteOffset = 0;
@@ -54,11 +48,7 @@ namespace OHOS::Util {
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         inputEncode_ = static_cast<const unsigned char*>(resultData) + byteOffset;
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
-        const unsigned char *rets = EncodeAchieve(inputEncode_, length, flag);
+        const unsigned char *rets = EncodeAchieve(inputEncode_, length);
         void *data = nullptr;
         napi_value arrayBuffer = nullptr;
         size_t bufferSize = outputLen;
@@ -75,7 +65,7 @@ namespace OHOS::Util {
     }
 
     /* base64 encodeToString */
-    napi_value Base64::EncodeToString(napi_value src, napi_value flags)
+    napi_value Base64::EncodeToString(napi_value src)
     {
         napi_typedarray_type type;
         size_t byteOffset = 0;
@@ -84,42 +74,21 @@ namespace OHOS::Util {
         napi_value resultBuffer = nullptr;
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         inputEncode_ = static_cast<const unsigned char*>(resultData) + byteOffset;
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
-        unsigned char *ret = EncodeAchieve(inputEncode_, length, flag);
-        char *rstring = nullptr;
-        if (outputLen > 0) {
-            rstring = new char[outputLen + 1];
-            if (memset_s(rstring, outputLen + 1, '\0', outputLen + 1) != 0) {
-                FreeMemory(ret);
-                FreeMemory(rstring);
-                napi_throw_error(env, "-1", "decode rstring memset_s failed");
-            }
-        } else {
-            napi_throw_error(env, "-2", "outputLen is error !");
-        }
-        for (size_t i = 0; i < outputLen; i++) {
-            rstring[i] = char(ret[i]);
-        }
-        std::string finalString = rstring;
-        const char *outString = finalString.c_str();
-        const char *encString = static_cast<const char*>(outString);
+        unsigned char *ret = EncodeAchieve(inputEncode_, length);
+        const char *encString = reinterpret_cast<const char*>(ret);
         napi_value resultStr = nullptr;
         NAPI_CALL(env, napi_create_string_utf8(env, encString, strlen(encString), &resultStr));
         FreeMemory(ret);
-        FreeMemory(rstring);
         return resultStr;
     }
 
-    unsigned char *Base64::EncodeAchieve(const unsigned char *input, size_t inputLen, size_t iflag)
+    unsigned char *Base64::EncodeAchieve(const unsigned char *input, size_t inputLen)
     {
         size_t inp = 0;
         size_t temp = 0;
         size_t bitWise = 0;
         unsigned char *ret = nullptr;
-        unsigned char *bosom = nullptr;
+        size_t index = 0;
         outputLen = (inputLen / TRAGET_THREE) * TRAGET_FOUR;
         if ((inputLen % TRAGET_THREE) > 0) {
             outputLen += TRAGET_FOUR;
@@ -133,7 +102,6 @@ namespace OHOS::Util {
         } else {
             napi_throw_error(env, "-2", "outputLen is error !");
         }
-        bosom = ret;
         while (inp < inputLen) {
             temp = 0;
             bitWise = 0;
@@ -147,24 +115,19 @@ namespace OHOS::Util {
             }
             bitWise = (bitWise << ((TRAGET_THREE - temp) * TRAGET_EIGHT));
             for (size_t i = 0; i < TRAGET_FOUR; i++) {
-                if (temp < i && iflag == 0) {
-                    *bosom = BASE[BIT_FLG];
-                } else if (temp < i && iflag != 0) {
-                    *bosom = BASE0[BIT_FLG];
-                } else if (temp >= i && iflag == 0) {
-                    *bosom = BASE[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
-                } else if (temp >= i && iflag != 0) {
-                    *bosom = BASE0[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
+                if (temp < i) {
+                    ret[index++] = BASE[BIT_FLG];
+                } else if (temp >= i) {
+                    ret[index++] = BASE[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
                 }
-                bosom++;
             }
         }
-        *bosom = '\0';
+        ret[index] = 0;
         return ret;
     }
 
     /* base64 decode */
-    napi_value Base64::Decode(napi_value src, napi_value flags)
+    napi_value Base64::Decode(napi_value src)
     {
         napi_valuetype valuetype = napi_undefined;
         napi_typeof(env, src, &valuetype);
@@ -177,10 +140,6 @@ namespace OHOS::Util {
         if (valuetype != napi_valuetype::napi_string) {
             NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         }
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
         if (valuetype == napi_valuetype::napi_string) {
             size_t prolen = 0;
             napi_get_value_string_utf8(env, src, nullptr, 0, &prolen);
@@ -194,10 +153,10 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-2", "prolen is error !");
             }
             napi_get_value_string_utf8(env, src, inputString, prolen + 1, &prolen);
-            pret = DecodeAchieve(inputString, prolen, flag);
+            pret = DecodeAchieve(inputString, prolen);
         } else if (type == napi_typedarray_type::napi_uint8_array) {
             inputDecode_ = static_cast<const char*>(resultData) + byteOffset;
-            pret = DecodeAchieve(inputDecode_, length, flag);
+            pret = DecodeAchieve(inputDecode_, length);
         }
         void *data = nullptr;
         napi_value arrayBuffer = nullptr;
@@ -216,12 +175,12 @@ namespace OHOS::Util {
         return result;
     }
 
-    unsigned char *Base64::DecodeAchieve(const char *input, size_t inputLen, size_t iflag)
+    unsigned char *Base64::DecodeAchieve(const char *input, size_t inputLen)
     {
         retLen = (inputLen / TRAGET_FOUR) * TRAGET_THREE;
         decodeOutLen = retLen;
         size_t equalCount = 0;
-        unsigned char *bosom = nullptr;
+        size_t index = 0;
         size_t inp = 0;
         size_t temp = 0;
         size_t bitWise = 0;
@@ -244,7 +203,6 @@ namespace OHOS::Util {
         } else {
             napi_throw_error(env, "-2", "retLen is error !");
         }
-        bosom = retDecode;
         while (inp < (inputLen - equalCount)) {
             temp = 0;
             bitWise = 0;
@@ -252,7 +210,7 @@ namespace OHOS::Util {
                 if (inp >= (inputLen - equalCount)) {
                     break;
                 }
-                bitWise = (bitWise << TRAGET_SIX) | (Finds(input[inp], iflag));
+                bitWise = (bitWise << TRAGET_SIX) | (Finds(input[inp]));
                 inp++;
                 temp++;
             }
@@ -261,11 +219,10 @@ namespace OHOS::Util {
                 if (i == temp) {
                     break;
                 }
-                *bosom = static_cast<char>((bitWise >> ((TRAGET_TWO - i) * TRAGET_EIGHT)) & XFF_FLG);
-                bosom++;
+                retDecode[index++] = static_cast<char>((bitWise >> ((TRAGET_TWO - i) * TRAGET_EIGHT)) & XFF_FLG);
             }
         }
-        *bosom = '\0';
+        retDecode[index] = 0;
         return retDecode;
     }
 
@@ -296,22 +253,13 @@ namespace OHOS::Util {
     }
 
     /* Decoding lookup function */
-    size_t Base64::Finds(char ch, size_t iflag)
+    size_t Base64::Finds(char ch)
     {
         size_t couts = 0;
-        if (iflag == 0) {
         // 65:Number of elements in the encoding table.
-            for (size_t i = 0; i < 65; i++) {
-                if (BASE[i] == ch) {
-                    couts = i;
-                }
-            }
-        } else {
-        // 65:Number of elements in the encoding table.
-            for (size_t i = 0; i < 65; i++) {
-                if (BASE0[i] == ch) {
-                    couts = i;
-                }
+        for (size_t i = 0; i < 65; i++) {
+            if (BASE[i] == ch) {
+                couts = i;
             }
         }
         return couts;
@@ -335,7 +283,7 @@ namespace OHOS::Util {
         }
     }
 
-    napi_value Base64::EncodeAsync(napi_value src, napi_value flags)
+    napi_value Base64::EncodeAsync(napi_value src)
     {
         napi_typedarray_type type;
         size_t byteOffset = 0;
@@ -345,15 +293,11 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         unsigned char *inputEncode = nullptr;
         inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
-        CreatePromise(inputEncode, length, flag);
+        CreateEncodePromise(inputEncode, length);
         return stdEncodeInfo_->promise;
     }
 
-    napi_value Base64::EncodeToStringAsync(napi_value src, napi_value flags)
+    napi_value Base64::EncodeToStringAsync(napi_value src)
     {
         napi_typedarray_type type;
         size_t byteOffset = 0;
@@ -363,21 +307,16 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         unsigned char *inputEncode = nullptr;
         inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
-        CreatePromise01(inputEncode, length, flag);
+        CreateEncodeToStringPromise(inputEncode, length);
         return stdEncodeInfo_->promise;
     }
 
-    void Base64::CreatePromise(unsigned char *inputDecode, size_t length, size_t flag)
+    void Base64::CreateEncodePromise(unsigned char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
         stdEncodeInfo_->sinputEncode = inputDecode;
         stdEncodeInfo_->slength = length;
-        stdEncodeInfo_->sflag = flag;
         stdEncodeInfo_->env = env;
         napi_create_promise(env, &stdEncodeInfo_->deferred, &stdEncodeInfo_->promise);
         napi_create_string_utf8(env, "ReadStdEncode", NAPI_AUTO_LENGTH, &resourceName);
@@ -386,13 +325,12 @@ namespace OHOS::Util {
         napi_queue_async_work(env, stdEncodeInfo_->worker);
     }
 
-    void Base64::CreatePromise01(unsigned char *inputDecode, size_t length, size_t flag)
+    void Base64::CreateEncodeToStringPromise(unsigned char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
         stdEncodeInfo_->sinputEncode = inputDecode;
         stdEncodeInfo_->slength = length;
-        stdEncodeInfo_->sflag = flag;
         napi_create_promise(env, &stdEncodeInfo_->deferred, &stdEncodeInfo_->promise);
         napi_create_string_utf8(env, "ReadStdEncodeToString", NAPI_AUTO_LENGTH, &resourceName);
         napi_create_async_work(env, nullptr, resourceName, ReadStdEncodeToString, EndStdEncodeToString,
@@ -404,7 +342,6 @@ namespace OHOS::Util {
     {
         const unsigned char *input = encodeInfo->sinputEncode;
         size_t inputLen = encodeInfo->slength;
-        size_t iflag = encodeInfo->sflag;
         size_t inp = 0;
         size_t temp = 0;
         size_t bitWise = 0;
@@ -437,14 +374,10 @@ namespace OHOS::Util {
             }
             bitWise = (bitWise << ((TRAGET_THREE - temp) * TRAGET_EIGHT));
             for (size_t i = 0; i < TRAGET_FOUR; i++) {
-                if (temp < i && iflag == 0) {
+                if (temp < i) {
                     ret[index++] = BASE[BIT_FLG];
-                } else if (temp < i && iflag != 0) {
-                    ret[index++] = BASE0[BIT_FLG];
-                } else if (temp >= i && iflag == 0) {
+                } else if (temp >= i) {
                     ret[index++] = BASE[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
-                } else if (temp >= i && iflag != 0) {
-                    ret[index++] = BASE0[(bitWise >> ((TRAGET_THREE - i) * TRAGET_SIX)) & SIXTEEN_FLG];
                 }
             }
         }
@@ -498,7 +431,7 @@ namespace OHOS::Util {
         delete stdEncodeInfo;
     }
 
-    napi_value Base64::DecodeAsync(napi_value src, napi_value flags)
+    napi_value Base64::DecodeAsync(napi_value src)
     {
         napi_valuetype valuetype = napi_undefined;
         napi_typeof(env, src, &valuetype);
@@ -512,10 +445,6 @@ namespace OHOS::Util {
         if (valuetype != napi_valuetype::napi_string) {
             NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         }
-        int32_t iflag = 0;
-        NAPI_CALL(env, napi_get_value_int32(env, flags, &iflag));
-        size_t flag = 0;
-        flag = static_cast<size_t>(iflag);
         if (valuetype == napi_valuetype::napi_string) {
             size_t prolen = 0;
             napi_get_value_string_utf8(env, src, nullptr, 0, &prolen);
@@ -528,22 +457,21 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-2", "prolen is error !");
             }
             napi_get_value_string_utf8(env, src, inputString, prolen+1, &prolen);
-            CreatePromise02(inputString, prolen, flag);
+            CreateDecodePromise(inputString, prolen);
         } else if (type == napi_typedarray_type::napi_uint8_array) {
             inputDecode = static_cast<char*>(resultData) + byteOffset;
-            CreatePromise02(inputDecode, length, flag);
+            CreateDecodePromise(inputDecode, length);
         }
         return stdDecodeInfo_->promise;
         delete[] inputString;
     }
 
-    void Base64::CreatePromise02(char *inputDecode, size_t length, size_t flag)
+    void Base64::CreateDecodePromise(char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdDecodeInfo_ = new DecodeInfo();
         stdDecodeInfo_->sinputDecode = inputDecode;
         stdDecodeInfo_->slength = length;
-        stdDecodeInfo_->sflag = flag;
         stdDecodeInfo_->env = env;
         napi_create_promise(env, &stdDecodeInfo_->deferred, &stdDecodeInfo_->promise);
         napi_create_string_utf8(env, "ReadStdDecode", NAPI_AUTO_LENGTH, &resourceName);
@@ -553,20 +481,12 @@ namespace OHOS::Util {
     }
 
     /* Decoding lookup function */
-    size_t Finds(char ch, size_t iflag)
+    size_t Finds(char ch)
     {
         size_t couts = 0;
-        if (iflag == 0) {
-            for (size_t i = 0; i < TRAGET_SIXTYFIVE; i++) {
-                if (BASE[i] == ch) {
-                    couts = i;
-                }
-            }
-        } else {
-            for (size_t i = 0; i < TRAGET_SIXTYFIVE; i++) {
-                if (BASE0[i] == ch) {
-                    couts = i;
-                }
+        for (size_t i = 0; i < TRAGET_SIXTYFIVE; i++) {
+            if (BASE[i] == ch) {
+                couts = i;
             }
         }
         return couts;
@@ -601,7 +521,6 @@ namespace OHOS::Util {
     {
         const char *input = decodeInfo->sinputDecode;
         size_t inputLen = decodeInfo->slength;
-        size_t iflag = decodeInfo->sflag;
         size_t retLen = 0;
         retLen = (inputLen / TRAGET_FOUR) * TRAGET_THREE;
         decodeInfo->decodeOutLen = retLen;
@@ -633,7 +552,7 @@ namespace OHOS::Util {
                 if (inp >= (inputLen - equalCount)) {
                     break;
                 }
-                bitWise = (bitWise << TRAGET_SIX) | (Finds(input[inp], iflag));
+                bitWise = (bitWise << TRAGET_SIX) | (Finds(input[inp]));
                 inp++;
                 temp++;
             }

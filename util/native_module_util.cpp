@@ -696,9 +696,9 @@ namespace OHOS::Util {
     static napi_value EncodeBase64(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -707,22 +707,19 @@ namespace OHOS::Util {
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
-        napi_valuetype valuetype1;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
-        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->Encode(args[0], args[1]);
+        napi_value result = object->Encode(args[0]);
         return result;
     }
 
     static napi_value EncodeToString(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -731,22 +728,19 @@ namespace OHOS::Util {
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
-        napi_valuetype valuetype1;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
-        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeToString(args[0], args[1]);
+        napi_value result = object->EncodeToString(args[0]);
         return result;
     }
 
     static napi_value DecodeBase64(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -763,21 +757,18 @@ namespace OHOS::Util {
         if ((valuetype1 != napi_valuetype::napi_string) && (valuetype0 != napi_typedarray_type::napi_uint8_array)) {
             napi_throw_error(env, nullptr, "The parameter type is incorrect");
         }
-        napi_valuetype valuetype2;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype2));
-        NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->Decode(args[0], args[1]);
+        napi_value result = object->Decode(args[0]);
         return result;
     }
 
     static napi_value EncodeAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -786,22 +777,19 @@ namespace OHOS::Util {
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
-        napi_valuetype valuetype1;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
-        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeAsync(args[0], args[1]);
+        napi_value result = object->EncodeAsync(args[0]);
         return result;
     }
 
     static napi_value EncodeToStringAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -810,22 +798,19 @@ namespace OHOS::Util {
         napi_value arraybuffer = nullptr;
         size_t byteOffset = 0;
         NAPI_CALL(env, napi_get_typedarray_info(env, args[0], &valuetype0, &length, &data, &arraybuffer, &byteOffset));
-        napi_valuetype valuetype1;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype1));
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
-        NAPI_ASSERT(env, valuetype1 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeToStringAsync(args[0], args[1]);
+        napi_value result = object->EncodeToStringAsync(args[0]);
         return result;
     }
 
     static napi_value DecodeAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
-        size_t requireArgc = 2;
-        size_t argc = 2;
-        napi_value args[2] = { nullptr };
+        size_t requireArgc = 1;
+        size_t argc = 1;
+        napi_value args[1] = { nullptr };
         NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, &thisVar, nullptr));
         NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
         napi_typedarray_type valuetype0;
@@ -842,12 +827,9 @@ namespace OHOS::Util {
         if ((valuetype1 != napi_valuetype::napi_string) && (valuetype0 != napi_typedarray_type::napi_uint8_array)) {
             napi_throw_error(env, nullptr, "The parameter type is incorrect");
         }
-        napi_valuetype valuetype2;
-        NAPI_CALL(env, napi_typeof(env, args[1], &valuetype2));
-        NAPI_ASSERT(env, valuetype2 == napi_number, "Wrong argument type. Nmuber expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->DecodeAsync(args[0], args[1]);
+        napi_value result = object->DecodeAsync(args[0]);
         return result;
     }
 
