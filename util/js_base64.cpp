@@ -293,7 +293,7 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         unsigned char *inputEncode = nullptr;
         inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
-        CreatePromise(inputEncode, length);
+        CreateEncodePromise(inputEncode, length);
         return stdEncodeInfo_->promise;
     }
 
@@ -307,11 +307,11 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_get_typedarray_info(env, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         unsigned char *inputEncode = nullptr;
         inputEncode = static_cast<unsigned char*>(resultData) + byteOffset;
-        CreatePromise01(inputEncode, length);
+        CreateEncodeToStringPromise(inputEncode, length);
         return stdEncodeInfo_->promise;
     }
 
-    void Base64::CreatePromise(unsigned char *inputDecode, size_t length)
+    void Base64::CreateEncodePromise(unsigned char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
@@ -325,7 +325,7 @@ namespace OHOS::Util {
         napi_queue_async_work(env, stdEncodeInfo_->worker);
     }
 
-    void Base64::CreatePromise01(unsigned char *inputDecode, size_t length)
+    void Base64::CreateEncodeToStringPromise(unsigned char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdEncodeInfo_ = new EncodeInfo();
@@ -457,16 +457,16 @@ namespace OHOS::Util {
                 napi_throw_error(env, "-2", "prolen is error !");
             }
             napi_get_value_string_utf8(env, src, inputString, prolen+1, &prolen);
-            CreatePromise02(inputString, prolen);
+            CreateDecodePromise(inputString, prolen);
         } else if (type == napi_typedarray_type::napi_uint8_array) {
             inputDecode = static_cast<char*>(resultData) + byteOffset;
-            CreatePromise02(inputDecode, length);
+            CreateDecodePromise(inputDecode, length);
         }
         return stdDecodeInfo_->promise;
         delete[] inputString;
     }
 
-    void Base64::CreatePromise02(char *inputDecode, size_t length)
+    void Base64::CreateDecodePromise(char *inputDecode, size_t length)
     {
         napi_value resourceName = nullptr;
         stdDecodeInfo_ = new DecodeInfo();

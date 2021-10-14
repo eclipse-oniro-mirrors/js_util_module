@@ -82,9 +82,9 @@ namespace OHOS::Util {
         const char *inputDecode_ = nullptr;
         unsigned char *retDecode = nullptr;
 
-        void CreatePromise(unsigned char *inputDecode, size_t length);
-        void CreatePromise01(unsigned char *inputDecode, size_t length);
-        void CreatePromise02(char *inputDecode, size_t length);
+        void CreateEncodePromise(unsigned char *inputDecode, size_t length);
+        void CreateEncodeToStringPromise(unsigned char *inputDecode, size_t length);
+        void CreateDecodePromise(char *inputDecode, size_t length);
         EncodeInfo *stdEncodeInfo_ = nullptr;
         DecodeInfo *stdDecodeInfo_ = nullptr;
         static void ReadStdEncode(napi_env env, void *data);
