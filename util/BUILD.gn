@@ -19,15 +19,20 @@ import("//foundation/ace/ace_engine/ace_config.gni")
 # compile .ts to .js.
 action("build_ts_js") {
   script = "//base/compileruntime/js_util_module/util/build_ts_js.py"
+
+  args = [
+    "--dst-file",
+    rebase_path(target_out_dir + "/util_js.js"),
+  ]
   depfile = "$target_gen_dir/$target_name.d"
   outputs = [ target_out_dir + "/util_js.js" ]
 }
-
 base_output_path = get_label_info(":util_js", "target_out_dir")
-js_util_obj_path = base_output_path + "/util.o"
+util_js_obj_path = base_output_path + "/util.o"
+
 gen_js_obj("util_js") {
   input = "$target_out_dir/util_js.js"
-  output = js_util_obj_path
+  output = util_js_obj_path
   dep = ":build_ts_js"
 }
 
@@ -77,7 +82,6 @@ ohos_shared_library("util") {
 
   sources = [
     "js_base64.cpp",
-    "js_rational.cpp",
     "js_textdecoder.cpp",
     "js_textencoder.cpp",
     "native_module_util.cpp",
