@@ -14,7 +14,7 @@
 # limitations under the License.
 import os
 import platform
-import argparse    
+import argparse
 
 if __name__ == '__main__':
     
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--dst-file',
                         help='the converted target file')
     input_arguments = parser.parse_args()
-    
+
     os.system('../../../../prebuilts/build-tools/common/nodejs/node-v12.18.4-linux-x64/bin/node '
               '../../../../ark/ts2abc/ts2panda/node_modules/typescript/bin/tsc')
     os.system('cp -r ./out/util_js.js ' + input_arguments.dst_file)
