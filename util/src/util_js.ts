@@ -16,7 +16,6 @@ declare function requireInternal(s : string) : any;
 const helpUtil = requireInternal('util');
 let TextEncoder = helpUtil.TextEncoder;
 let TextDecoder = helpUtil.TextDecoder;
-let RationalNumber = helpUtil.RationalNumber;
 let Base64 = helpUtil.Base64;
 
 function switchLittleObject(enter : string, obj : any, count : number)
@@ -635,6 +634,178 @@ class LruBuffer
     }
 }
 
+class RationalNumber
+{
+    private mnum : number = 0;
+    private mden : number = 0;
+    public constructor(num : number, den : number)
+    {
+        num = den < 0 ?  num * (-1) : num;
+        den = den < 0 ?  den * (-1) : den;
+        if (den == 0) {
+            if (num > 0) {
+                this.mnum = 1;
+                this.mden = 0;
+            } else if (num < 0) {
+                this.mnum = -1;
+                this.mden = 0;
+            } else {
+                this.mnum = 0;
+                this.mden = 0;
+            }
+        } else if (num == 0) {
+            this.mnum = 0;
+            this.mden = 1;
+        } else {
+            let gnum : number = 0;
+            gnum = this.getCommonDivisor(num, den);
+            if (gnum != 0) {
+                this.mnum = num / gnum;
+                this.mden = den / gnum;
+            }
+        }
+    }
+
+    public createRationalFromString(str : string)
+    {
+        if (str == null) {
+            throw new Error('string invalid!');
+        }
+        if (str == 'NaN') {
+            return new RationalNumber(0, 0);
+        }
+        let colon : number = str.indexOf(':');
+        let semicolon : number = str.indexOf('/');
+        if ((colon < 0 && semicolon < 0) || (colon > 0 && semicolon > 0)) {
+            throw new Error('string invalid!');
+        }
+        let index : number = (colon > 0) ? colon : semicolon;
+        let s1 : string = str.substr(0, index);
+        let s2 : string = str.substr(index + 1, str.length);
+        let num1 : number = Number(s1);
+        let num2 : number = Number(s2);
+        return new RationalNumber(num1, num2);
+    }
+
+    public compareTo(other : RationalNumber)
+    {
+        if (this.mnum == other.mnum && this.mden == other.mden) {
+            return 0;
+        } else if (this.mnum == 0 && this.mden == 0) {
+            return 1;
+        } else if ((other.mnum == 0) && (other.mden == 0)) {
+            return -1;
+        } else if ((this.mden == 0 && this.mnum > 0) || (other.mden == 0 && other.mnum < 0)) {
+            return 1;
+        } else if ((this.mden == 0 && this.mnum < 0) || (other.mden == 0 && other.mnum > 0)) {
+            return -1;
+        }
+        let thisnum : number = this.mnum * other.mden;
+        let othernum : number = other.mnum * this.mden;
+        if (thisnum < othernum) {
+            return -1;
+        } else if (thisnum > othernum) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public equals(obj : object)
+    {
+        if (!(obj instanceof RationalNumber)) {
+            return false;
+        }
+        let thisnum : number = this.mnum * obj.mden;
+        let objnum : number = obj.mnum * this.mden;
+        if (this.mnum == obj.mnum && this.mden == obj.mden) {
+            return true;
+        } else if ((thisnum == objnum) && (this.mnum != 0 && this.mden != 0) && (obj.mnum != 0 && obj.mden != 0)) {
+            return true;
+        } else if ((this.mnum == 0 && this.mden != 0) && (obj.mnum == 0 && obj.mden != 0)) {
+            return true;
+        } else if ((this.mnum > 0 && this.mden == 0) && (obj.mnum > 0 && obj.mden == 0)) {
+            return true;
+        } else if ((this.mnum < 0 && this.mden == 0) && (obj.mnum < 0 && obj.mden == 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public value()
+    {
+        if (this.mnum > 0 && this.mden == 0) {
+            return Number.POSITIVE_INFINITY;
+        } else if (this.mnum < 0 && this.mden == 0) {
+            return Number.NEGATIVE_INFINITY;
+        } else if ((this.mnum == 0) && (this.mden == 0)) {
+            return Number.NaN;
+        } else {
+            return this.mnum / this.mden;
+        }
+    }
+
+    public getCommonDivisor(number1 : number, number2 : number)
+    {
+        if (number1 == 0 || number2 == 0) {
+            throw new Error("Parameter cannot be zero!");
+        }
+        let temp : number = 0;
+        if (number1 < number2) {
+            temp = number1;
+            number1 = number2;
+            number2 = temp;
+        }
+        while (number1 % number2 != 0) {
+            temp = number1 % number2;
+            number1 = number2;
+            number2 = temp;
+        }
+        return number2;
+    }
+
+    public getDenominator()
+    {
+        return this.mden;
+    }
+
+    public getNumerator()
+    {
+        return this.mnum;
+    }
+
+    public isFinite()
+    {
+        return this.mden != 0;
+    }
+
+    public isNaN()
+    {
+        return this.mnum == 0 && this.mden == 0;
+    }
+
+    public isZero()
+    {
+        return this.mnum == 0 && this.mden != 0;
+    }
+
+    public toString()
+    {
+        let buf : string;
+        if (this.mnum == 0 && this.mden == 0) {
+            buf = "NaN";
+        } else if (this.mnum > 0 && this.mden == 0) {
+            buf = "Infinity";
+        } else if (this.mnum < 0 && this.mden == 0) {
+            buf = "-Infinity";
+        } else {
+            buf = String(this.mnum) + '/' + String(this.mden);
+        }
+        return buf;
+    }
+}
+
 interface ScopeComparable {
     compareTo(other: ScopeComparable): boolean;
 }
@@ -788,8 +959,8 @@ export default {
     promiseWrapper: promiseWrapper,
     TextEncoder: TextEncoder,
     TextDecoder: TextDecoder,
-    RationalNumber: RationalNumber,
     Base64: Base64,
     LruBuffer: LruBuffer,
+    RationalNumber : RationalNumber,
     Scope : Scope,
 };
