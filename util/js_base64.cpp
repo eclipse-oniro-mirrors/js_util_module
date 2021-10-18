@@ -462,8 +462,8 @@ namespace OHOS::Util {
             inputDecode = static_cast<char*>(resultData) + byteOffset;
             CreateDecodePromise(inputDecode, length);
         }
-        return stdDecodeInfo_->promise;
         delete[] inputString;
+        return stdDecodeInfo_->promise;
     }
 
     void Base64::CreateDecodePromise(char *inputDecode, size_t length)

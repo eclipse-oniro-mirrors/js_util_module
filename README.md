@@ -293,7 +293,7 @@ import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
 that.encodeAsync(array).then(val=>{
-}
+}）
 ```
 7.encodeToStringAsync()
 ```
