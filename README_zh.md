@@ -121,29 +121,29 @@ base/compileruntime/js_util_module/
 | isZero(): boolean | 检查当前RationalNumber对象是否表示零值。 |
 | toString(): string | 获取当前RationalNumber对象的字符串表示形式。 |
 | constructor(capacity?: number) | 创建默认构造函数用于创建一个新的LruBuffer实例，默认容量为64。 |
-| updateCapacity(newCapacity:number):void | 将缓冲区容量更新为指定容量，如果 newCapacity 小于或等于 0，则抛出此异常。 |
-| toString():string | 返回对象的字符串表示形式，输出对象的字符串表示  |
-| values():V[] | 获取当前缓冲区中所有值的列表，输出按升序返回当前缓冲区中所有值的列表，从最近访问到最近最少访问。 |
-| size():number | 获取当前缓冲区中值的总数，输出返回当前缓冲区中值的总数。 |
-| capacity():number | 获取当前缓冲区的容量，输出返回当前缓冲区的容量。 |
-| clear():void | 从当前缓冲区清除键值对，清除键值对后，调用afterRemoval()方法依次对其执行后续操作。 |
-| getCreateCount():number | 获取createDefault()返回值的次数,输出返回createDefault()返回值的次数。 |
-| getMissCount():number | 获取查询值不匹配的次数，输出返回查询值不匹配的次数。 |
-| getRemovalCount():number | 获取从缓冲区中逐出值的次数，输出从缓冲区中驱逐的次数。 |
-| getMatchCount​():number | 获取查询值匹配成功的次数，输出返回查询值匹配成功的次数。 |
-| getPutCount():number | 获取将值添加到缓冲区的次数，输出返回将值添加到缓冲区的次数。 |
-| isEmpty():boolean | 检查当前缓冲区是否为空，输出如果当前缓冲区不包含任何值，则返回 true 。 |
-| get(k:key):V \| undefined | 表示要查询的键，输出如果指定的键存在于缓冲区中，则返回与键关联的值；否则返回undefined。 |
-| put(K key, V value):V | 将键值对添加到缓冲区，输出与添加的键关联的值；如果要添加的键已经存在，则返回原始值，如果键或值为空，则抛出此异常。 |
-| keys():K[ ] | 获取当前缓冲区中值的键列表，输出返回从最近访问到最近最少访问排序的键列表。 |
-| remove​(k:key):V \| undefined |  从当前缓冲区中删除指定的键及其关联的值。 |
-| afterRemoval(boolean isEvict, K key, V value, V newValue):void | 删除值后执行后续操作。 |
-| contains(k:key):boolean | 检查当前缓冲区是否包含指定的键，输出如果缓冲区包含指定的键，则返回 true 。 |
-| createDefault(k:key):V | 如果未计算特定键的值，则执行后续操作，参数表示丢失的键,输出返回与键关联的值。 |
-| entries():[K,V] | 允许迭代包含在这个对象中的所有键值对。每对的键和值都是对象。 |
-| Symbol.iterator():[K,V] | 返回以键值对得形式得一个二维数组。 |
-| constructor(lowerObj: ScopeType, upperObj: ScopeType) | 创建并返回一个Scope对象，用于创建指定下限和上限的作用域实例的构造函数。 |
-| toString():string | 该字符串化方法返回一个包含当前范围的字符串表示形式。 |
+| updateCapacity(newCapacity: number): void | 将缓冲区容量更新为指定容量，如果 newCapacity 小于或等于 0，则抛出此异常。 |
+| toString(): string | 返回对象的字符串表示形式，输出对象的字符串表示  |
+| values(): V[] | 获取当前缓冲区中所有值的列表，输出按升序返回当前缓冲区中所有值的列表，从最近访问到最近最少访问。 |
+| size(): number | 获取当前缓冲区中值的总数，输出返回当前缓冲区中值的总数。 |
+| capacity(): number | 获取当前缓冲区的容量，输出返回当前缓冲区的容量。 |
+| clear(): void | 从当前缓冲区清除键值对，清除键值对后，调用afterRemoval()方法依次对其执行后续操作。 |
+| getCreateCount(): number | 获取createDefault()返回值的次数,输出返回createDefault()返回值的次数。 |
+| getMissCount(): number | 获取查询值不匹配的次数，输出返回查询值不匹配的次数。 |
+| getRemovalCount(): number | 获取从缓冲区中逐出值的次数，输出从缓冲区中驱逐的次数。 |
+| getMatchCount​(): number | 获取查询值匹配成功的次数，输出返回查询值匹配成功的次数。 |
+| getPutCount(): number | 获取将值添加到缓冲区的次数，输出返回将值添加到缓冲区的次数。 |
+| isEmpty(): boolean | 检查当前缓冲区是否为空，输出如果当前缓冲区不包含任何值，则返回 true 。 |
+| get(key: K) : V \| undefined | 表示要查询的键，输出如果指定的键存在于缓冲区中，则返回与键关联的值；否则返回undefined。 |
+| put(key: K , value: V): V | 将键值对添加到缓冲区，输出与添加的键关联的值；如果要添加的键已经存在，则返回原始值，如果键或值为空，则抛出此异常。 |
+| keys(): K[ ] | 获取当前缓冲区中值的键列表，输出返回从最近访问到最近最少访问排序的键列表。 |
+| remove​(key: K): V \| undefined |  从当前缓冲区中删除指定的键及其关联的值。 |
+| afterRemoval(isEvict: boolean, key: K, value : V, newValue : V):void | 删除值后执行后续操作。 |
+| contains(key: K): boolean | 检查当前缓冲区是否包含指定的键，输出如果缓冲区包含指定的键，则返回 true 。 |
+| createDefault(key: K): V | 如果未计算特定键的值，则执行后续操作，参数表示丢失的键,输出返回与键关联的值。 |
+| entries(): [K,V] | 允许迭代包含在这个对象中的所有键值对。每对的键和值都是对象。 |
+| \[Symbol.iterator\](): [K,V] | 返回以键值对得形式得一个二维数组。 |
+| constructor(lowerObj: ScopeType, upperObj : ScopeType) | 创建并返回一个Scope对象，用于创建指定下限和上限的作用域实例的构造函数。 |
+| toString(): string | 该字符串化方法返回一个包含当前范围的字符串表示形式。 |
 | intersect(range: Scope): Scope | 获取给定范围和当前范围的交集。 |
 | intersect(lowerObj: ScopeType, upperObj: ScopeType): Scope | 获取当前范围与给定下限和上限范围的交集。 |
 | getUpper(): ScopeType | 获取当前范围的上限。 |
@@ -157,7 +157,7 @@ base/compileruntime/js_util_module/
 | function printf(format: string, ...args: Object[]): string | printf()方法使用第一个参数作为格式字符串（其可以包含零个或多个格式说明符）来返回格式化的字符串。 |
 | function getErrorString(errno: number): string | getErrorString()方法使用一个系统的错误数字作为参数，用来返回系统的错误信息。 |
 | function callbackWrapper(original: Function): (err: Object, value: Object) => void | 参数为一个采用 async 函数（或返回 Promise 的函数）并返回遵循错误优先回调风格的函数，即将 (err, value) => ... 回调作为最后一个参数。 在回调中，第一个参数将是拒绝原因（如果 Promise 已解决，则为 null），第二个参数将是已解决的值。 |
-| function promiseWrapper(original: (err: Object, value: Object) => void): Object |     参数为采用遵循常见的错误优先的回调风格的函数（也就是将 (err, value) => ... 回调作为最后一个参数），并返回一个返回 promise 的版本。 |
+| function promiseWrapper(original: (err: Object, value: Object) => void): Object | 参数为采用遵循常见的错误优先的回调风格的函数（也就是将 (err, value) => ... 回调作为最后一个参数），并返回一个返回 promise 的版本。 |
 
 printf中每个说明符都替换为来自相应参数的转换后的值。 支持的说明符有:
 | 式样化字符 | 式样要求 |
@@ -292,24 +292,27 @@ var result = that.decode(buff);
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-that.encodeAsync(array).then(val=>{
-}）
+await that.encodeAsync(array).then(val=>{
+})
+done()
 ```
 17.encodeToStringAsync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-that.encodeToStringAsync(array).then(val=>{
+await that.encodeToStringAsync(array).then(val=>{
 })
+done()
 ```
 18.decodeAsync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-that.decodeAsync(buff).then(val=>{
+await that.decodeAsync(buff).then(val=>{
 })
+done()
 ```
 19.createRationalFromString()
 ```

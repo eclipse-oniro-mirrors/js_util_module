@@ -472,7 +472,7 @@ class LruBuffer
         } else {
             value = this.put(key, createValue);
             this.createCount++;
-            if (value !== null) {
+            if (value !== undefined) {
                 this.put(key, value);
                 this.afterRemoval(false, key, createValue, value);
                 return value;
