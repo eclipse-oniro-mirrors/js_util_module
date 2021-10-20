@@ -58,7 +58,7 @@ namespace OHOS::Util {
     class Base64 {
     public:
         explicit Base64(napi_env env);
-        virtual ~Base64(){}
+        virtual ~Base64() {}
         napi_value Encode(napi_value src);
         napi_value EncodeToString(napi_value src);
         napi_value Decode(napi_value src);
