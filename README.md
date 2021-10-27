@@ -132,13 +132,13 @@ base/compileruntime/js_util_module/
 | getMatchCount​(): number | Obtain the number of successful matching of query values, and output the number of successful matching of query values. |
 | getPutCount(): number | Gets the number of times the value was added to the buffer, and the output returns the number of times the value was added to the buffer. |
 | isEmpty(): boolean | Checks whether the current buffer is empty and returns true if the current buffer does not contain any values. |
-| get(k: key):V \| undefined | Indicates the key to query. If the specified key exists in the buffer, the value associated with the key will be returned; Otherwise, undefined is returned. |
-| put(K: key, V: value): V | Adding the key value pair to the buffer and outputting the value associated with the added key; If the key to be added already exists, the original value is returned. If the key or value is empty, this exception is thrown. |
+| get(key: K):V \| undefined | Indicates the key to query. If the specified key exists in the buffer, the value associated with the key will be returned; Otherwise, undefined is returned. |
+| put(key: K, value: V): V | Adding the key value pair to the buffer and outputting the value associated with the added key; If the key to be added already exists, the original value is returned. If the key or value is empty, this exception is thrown. |
 | keys(): K[ ] | Get the key list of the value in the current buffer, and the output returns the key list sorted from the most recent access to the least recent access. |
-| remove​(k: key):V \| undefined | Deletes the specified key and its associated value from the current buffer. |
-| afterRemoval(boolean: isEvict, K: key, V: value, V: newValue):void | Perform subsequent operations after deleting the value. |
-| contains(k: key):boolean | Checks whether the current buffer contains the specified key, and returns true if the buffer contains the specified key. |
-| createDefault(k: key): V | If the value of a specific key is not calculated, subsequent operations are performed. The parameter represents the missing key, and the output returns the value associated with the key. |
+| remove​(key: K):V \| undefined | Deletes the specified key and its associated value from the current buffer. |
+| afterRemoval(isEvict: boolean, key: K, value: V, newValue: V): void | Perform subsequent operations after deleting the value. |
+| contains(key: K): boolean | Checks whether the current buffer contains the specified key, and returns true if the buffer contains the specified key. |
+| createDefault(key: K): V | If the value of a specific key is not calculated, subsequent operations are performed. The parameter represents the missing key, and the output returns the value associated with the key. |
 | entries(): [K,V] | Allows you to iterate over all key value pairs contained in this object. The keys and values of each pair are objects. |
 | \[Symbol.iterator\](): [K,V]| Returns a two-dimensional array in the form of key value pairs. |
 | constructor(lowerObj: ScopeType, upperObj: ScopeType) | Creates and returns a Scope object that creates a constructor for a scope instance that specifies a lower and upper bound. |
@@ -292,24 +292,27 @@ var result = that.decode(buff);
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-that.encodeAsync(array).then(val=>{
-}）
+await that.encodeAsync(array).then(val=>{
+})
+done()
 ```
-7.encodeToStringAsync()
+17.encodeToStringAsync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-that.encodeToStringAsync(array).then(val=>{
+await that.encodeToStringAsync(array).then(val=>{
 })
+done()
 ```
 18.decodeAsync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-that.decodeAsync(buff).then(val=>{
+await that.decodeAsync(buff).then(val=>{
 })
+done()
 ```
 19.createRationalFromString()
 ```

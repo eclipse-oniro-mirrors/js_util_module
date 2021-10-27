@@ -376,23 +376,32 @@ function getErrorString(errnum : number)
 }
 
 function callbackified(original : any, ...args : any)
-    {
-        const maybeCb = args.pop();
-        if (typeof maybeCb !== 'function') {
-            throw new Error('maybe is not function');
-        }
-        const cb = (...args : any) => {
-            Reflect.apply(maybeCb, this, args);
-        };
-        Reflect.apply(original, this, args).then((ret : any) => cb(null, ret), (rej : any) => cb(rej));
+{
+    const maybeCb = args.pop();
+    if (typeof maybeCb !== 'function') {
+        throw new Error('maybe is not function');
     }
+    const cb = (...args : any) => {
+        Reflect.apply(maybeCb, this, args);
+    };
+    Reflect.apply(original, this, args).then((ret : any) => cb(null, ret), (rej : any) => cb(rej));
+}
+
+function getOwnPropertyDescriptors(obj : any)
+{
+    const result : any = {};
+        for (let key of Reflect.ownKeys(obj)) {
+        result[key] = Object.getOwnPropertyDescriptor(obj, key);
+    }
+    return result;
+}
 
 function callbackWrapper(original : any)
 {
     if (typeof original !== 'function') {
         throw new Error('original is not function');
     }
-    const descriptors = Object.getOwnPropertyDescriptors(original);
+    const descriptors = getOwnPropertyDescriptors(original);
     if (typeof descriptors.length.value === 'number') {
         descriptors.length.value++;
     }
@@ -472,7 +481,7 @@ class LruBuffer
         } else {
             value = this.put(key, createValue);
             this.createCount++;
-            if (value !== null) {
+            if (value !== undefined) {
                 this.put(key, value);
                 this.afterRemoval(false, key, createValue, value);
                 return value;
