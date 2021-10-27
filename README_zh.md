@@ -430,12 +430,12 @@ var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.clear();
 ```
-36.getCreatCount()
+36.getCreateCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(1,8);
-var result = pro.getCreatCount();
+var result = pro.getCreateCount();
 ```
 37.getMissCount()
 ```
