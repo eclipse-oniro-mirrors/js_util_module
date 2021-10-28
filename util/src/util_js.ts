@@ -507,7 +507,7 @@ class LruBuffer
         this.cache.set(key, value);
         return former;
     }
-    public getCreatCount() 
+    public getCreateCount()
     {   
         return this.createCount;
     }
