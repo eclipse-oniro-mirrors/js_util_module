@@ -528,7 +528,7 @@ var result = pro.entries();
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var result = aa[symbol.iterator]();
+var result = pro[symbol.iterator]();
 ```
 50.afterRemoval() 
 ```
