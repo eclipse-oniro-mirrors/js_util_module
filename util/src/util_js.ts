@@ -17,6 +17,7 @@ const helpUtil = requireInternal('util');
 let TextEncoder = helpUtil.TextEncoder;
 let TextDecoder = helpUtil.TextDecoder;
 let Base64 = helpUtil.Base64;
+let Types = helpUtil.Types;
 
 function switchLittleObject(enter : string, obj : any, count : number)
 {
@@ -373,6 +374,12 @@ function getErrorString(errnum : number)
 {
     var errorString = helpUtil.geterrorstring(errnum);
     return errorString;
+}
+
+function createExternalType()
+{
+    var externalType = helpUtil.createExternalType();
+    return externalType;
 }
 
 function callbackified(original : any, ...args : any)
@@ -966,9 +973,11 @@ export default {
     getErrorString: getErrorString,
     callbackWrapper: callbackWrapper,
     promiseWrapper: promiseWrapper,
+    createExternalType: createExternalType,
     TextEncoder: TextEncoder,
     TextDecoder: TextDecoder,
     Base64: Base64,
+    Types: Types,
     LruBuffer: LruBuffer,
     RationalNumber : RationalNumber,
     Scope : Scope,

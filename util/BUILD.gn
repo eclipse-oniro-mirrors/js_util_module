@@ -84,6 +84,7 @@ ohos_shared_library("util") {
     "js_base64.cpp",
     "js_textdecoder.cpp",
     "js_textencoder.cpp",
+    "js_types.cpp",
     "native_module_util.cpp",
   ]
 
