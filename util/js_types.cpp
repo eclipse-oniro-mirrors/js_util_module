@@ -23,7 +23,7 @@
 
 namespace OHOS::Util {
     Types::Types(napi_env env_) : env_(env_) {}
-  
+
     napi_value Types::IsAnyArrayBuffer(napi_value src)
     {
         bool flag = false;
@@ -72,18 +72,18 @@ namespace OHOS::Util {
         return rst;
     }
 
-	napi_value Types::IsArgumentsObject(napi_value src)
-	{
-    	napi_valuetype result;
-    	NAPI_CALL(env_, napi_typeof(env_, src, &result));
-    	bool flag = false;
-    	if (result == napi_object) {
-    	   NAPI_CALL(env_, napi_is_arguments_object(env_, src, &flag));
-    	}
-    	napi_value rst = nullptr;
-    	napi_get_boolean(env_, flag, &rst);
-    	return rst;
-	}
+    napi_value Types::IsArgumentsObject(napi_value src)
+    {
+        napi_valuetype result;
+        NAPI_CALL(env_, napi_typeof(env_, src, &result));
+        bool flag = false;
+        if (result == napi_object) {
+            NAPI_CALL(env_, napi_is_arguments_object(env_, src, &flag));
+        }
+        napi_value rst = nullptr;
+        napi_get_boolean(env_, flag, &rst);
+        return rst;
+    }
 
     napi_value Types::IsArrayBuffer(napi_value src)
     {
@@ -158,7 +158,7 @@ namespace OHOS::Util {
 
     napi_value Types::IsBoxedPrimitive(napi_value src)
     {
-		bool flag = false;
+        bool flag = false;
         if (IsNumberObject(src) ||
             IsStringObject(src) ||
             IsBooleanObject(src) ||
@@ -257,290 +257,289 @@ namespace OHOS::Util {
         return rst;
     }
 
-  	napi_value Types::IsGeneratorObject(napi_value src)
-	{
-    	bool flag = false;
-    	NAPI_CALL(env_, napi_is_generator_object(env_, src, &flag));
-    	napi_value result = nullptr;
-    	napi_get_boolean(env_, flag, &result);
-    	return result;
-  	}
-
-  	napi_value Types::IsInt8Array(napi_value src)
-  	{
-      	napi_typedarray_type type;
-      	size_t byteOffset = 0;
-      	size_t length = 0;
-      	void* resultData = nullptr;
-      	napi_value resultBuffer = nullptr;
-      	napi_value result = nullptr;
+    napi_value Types::IsGeneratorObject(napi_value src)
+    {
         bool flag = false;
-      	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-      	if (type == napi_typedarray_type::napi_int8_array) {
-      		flag = true;
-      	} 
+        NAPI_CALL(env_, napi_is_generator_object(env_, src, &flag));
+        napi_value result = nullptr;
         napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsInt16Array(napi_value src)
-  	{
-      	napi_typedarray_type type;
-      	size_t byteOffset = 0;
-      	size_t length = 0;
-      	void* resultData = nullptr;
-      	napi_value resultBuffer = nullptr;
-      	napi_value result = nullptr;
-      	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-      	bool flag = false;
+    napi_value Types::IsInt8Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
+        bool flag = false;
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        if (type == napi_typedarray_type::napi_int8_array) {
+            flag = true;
+        } 
+        napi_get_boolean(env_, flag, &result);
+        return result;
+      }
+
+    napi_value Types::IsInt16Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        bool flag = false;
         if (type == napi_typedarray_type::napi_int16_array) {
-      	  	flag = true;
-      	}
+            flag = true;
+        }
         napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsInt32Array(napi_value src)
-  	{
-      	napi_typedarray_type type;
-      	size_t byteOffset = 0;
-      	size_t length = 0;
-      	void* resultData = nullptr;
-      	napi_value resultBuffer = nullptr;
-      	napi_value result = nullptr;
-      	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-      	bool flag = false;
+    napi_value Types::IsInt32Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        bool flag = false;
         if (type == napi_typedarray_type::napi_int32_array) {
-      	  	flag = true;
-      	}
+            flag = true;
+        }
         napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsKeyObject(napi_value src)
-  	{
-      	bool flag = false;
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
+    napi_value Types::IsKeyObject(napi_value src)
+    {
+        bool flag = false;
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
         HILOG_INFO("The type is not supported!");
-      	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsMap(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_map(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsMap(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_map(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsMapIterator(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_map_iterator(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsMapIterator(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_map_iterator(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsModuleNamespaceObject(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_module_namespace_object(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
+    napi_value Types::IsModuleNamespaceObject(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_module_namespace_object(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
         HILOG_INFO("The type is not supported!");
-      	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsNativeError(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_error(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsNativeError(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_error(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsNumberObject(napi_value src)
-  	{
+    napi_value Types::IsNumberObject(napi_value src)
+    {
         bool flag = false;
         napi_valuetype valuetype;
         napi_value result = nullptr;
         NAPI_CALL(env_, napi_typeof(env_, src, &valuetype));
         if (valuetype == napi_valuetype::napi_object) {
-         	NAPI_CALL(env_, napi_is_number_object(env_, src, &flag));
+             NAPI_CALL(env_, napi_is_number_object(env_, src, &flag));
         }
         napi_get_boolean(env_, flag, &result);
         return result;
-  	}
+    }
 
-  	napi_value Types::IsPromise(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_promise(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsPromise(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_promise(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsProxy(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_proxy(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsProxy(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_proxy(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsRegExp(napi_value src)
-  	{
-      	bool flag = false;
-      	NAPI_CALL(env_, napi_is_reg_exp(env_, src, &flag));
-      	napi_value result = nullptr;
-      	napi_get_boolean(env_, flag, &result);
-      	return result;
-  	}
+    napi_value Types::IsRegExp(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_reg_exp(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsSet(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_set(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
+    napi_value Types::IsSet(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_set(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsSetIterator(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_set_iterator(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
+    napi_value Types::IsSetIterator(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_set_iterator(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsSharedArrayBuffer(napi_value src)
-  	{
-     	bool flag = false;
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-        HILOG_INFO("The type is not supported!");
-     	return result;
-  	}
-
-  	napi_value Types::IsStringObject(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_string_object(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
-
-  	napi_value Types::IsSymbolObject(napi_value src)
-  	{
+    napi_value Types::IsSharedArrayBuffer(napi_value src)
+    {
         bool flag = false;
         napi_value result = nullptr;
-       	NAPI_CALL(env_, napi_is_symbol_object(env_, src, &flag));
         napi_get_boolean(env_, flag, &result);
-     	  return result;
-  	}
+        HILOG_INFO("The type is not supported!");
+        return result;
+    }
 
-  	napi_value Types::IsTypedArray(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_typedarray(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
-
-  	napi_value Types::IsUint8Array(napi_value src)
-  	{
-    	napi_typedarray_type type;
-    	size_t byteOffset = 0;
-    	size_t length = 0;
-    	void* resultData = nullptr;
-    	napi_value resultBuffer = nullptr;
-    	napi_value result = nullptr;
+    napi_value Types::IsStringObject(napi_value src)
+    {
         bool flag = false;
-    	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-    	if (type == napi_typedarray_type::napi_uint8_array) {
+        NAPI_CALL(env_, napi_is_string_object(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
+
+    napi_value Types::IsSymbolObject(napi_value src)
+    {
+        bool flag = false;
+        napi_value result = nullptr;
+        NAPI_CALL(env_, napi_is_symbol_object(env_, src, &flag));
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
+
+    napi_value Types::IsTypedArray(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_typedarray(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
+
+    napi_value Types::IsUint8Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
+        bool flag = false;
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        if (type == napi_typedarray_type::napi_uint8_array) {
             flag = true;
-    	}
+        }
         napi_get_boolean(env_, flag, &result);
-    	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsUint8ClampedArray(napi_value src)
-  	{
-    	napi_typedarray_type type;
-    	size_t byteOffset = 0;
-    	size_t length = 0;
-    	void* resultData = nullptr;
-    	napi_value resultBuffer = nullptr;
-    	napi_value result = nullptr;
+    napi_value Types::IsUint8ClampedArray(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
         bool flag = false;
-    	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-    	if (type == napi_typedarray_type::napi_uint8_clamped_array) {
-    		flag = true;
-    	}  	
-    	napi_get_boolean(env_, flag, &result);
-    	return result;
-  	}
-
-	napi_value Types::IsUint16Array(napi_value src)
-  	{
-    	napi_typedarray_type type;
-    	size_t byteOffset = 0;
-    	size_t length = 0;
-    	void* resultData = nullptr;
-    	napi_value resultBuffer = nullptr;
-    	napi_value result = nullptr;
-        bool flag = false;
-    	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-    	if (type == napi_typedarray_type::napi_uint16_array) {
-    		flag = true;
-    	}  	
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        if (type == napi_typedarray_type::napi_uint8_clamped_array) {
+            flag = true;
+        }
         napi_get_boolean(env_, flag, &result);
-    	return result;
-  	}
+        return result;
+    }
 
-  	napi_value Types::IsUint32Array(napi_value src)
-  	{
-    	napi_typedarray_type type;
-    	size_t byteOffset = 0;
-    	size_t length = 0;
-    	void* resultData = nullptr;
-    	napi_value resultBuffer = nullptr;
-    	napi_value result = nullptr;
+    napi_value Types::IsUint16Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
         bool flag = false;
-    	NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
-    	if (type == napi_typedarray_type::napi_uint32_array) {
-    		flag = true;
-    	}
-    	napi_get_boolean(env_, flag, &result);
-    	return result;
-  	}
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        if (type == napi_typedarray_type::napi_uint16_array) {
+            flag = true;
+        }  	
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsWeakMap(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_weak_map(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
+    napi_value Types::IsUint32Array(napi_value src)
+    {
+        napi_typedarray_type type;
+        size_t byteOffset = 0;
+        size_t length = 0;
+        void* resultData = nullptr;
+        napi_value resultBuffer = nullptr;
+        napi_value result = nullptr;
+        bool flag = false;
+        NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+        if (type == napi_typedarray_type::napi_uint32_array) {
+            flag = true;
+        }
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
-  	napi_value Types::IsWeakSet(napi_value src)
-  	{
-     	bool flag = false;
-     	NAPI_CALL(env_, napi_is_weak_set(env_, src, &flag));
-     	napi_value result = nullptr;
-     	napi_get_boolean(env_, flag, &result);
-     	return result;
-  	}
+    napi_value Types::IsWeakMap(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_weak_map(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 
+    napi_value Types::IsWeakSet(napi_value src)
+    {
+        bool flag = false;
+        NAPI_CALL(env_, napi_is_weak_set(env_, src, &flag));
+        napi_value result = nullptr;
+        napi_get_boolean(env_, flag, &result);
+        return result;
+    }
 }
