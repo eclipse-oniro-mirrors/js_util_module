@@ -74,19 +74,61 @@ base/compileruntime/js_util_module/
 │   ├──  createDefault()                # createDefault方法
 │   ├──  entries()                      # entries方法
 │   └──  [Symbol.iterator]()            # Symboliterator方法
-└── Class:Scope                         # Scope类
-    ├── constructor()                   # 创建Scope对象
-    ├── toString()                      # toString方法
-    ├── intersect()                     # intersect方法
-    ├── intersect()                     # intersect方法
-    ├── getUpper()                      # getUpper方法
-    ├── getLower()                      # getLower方法
-    ├── expand()                        # expand方法 
-    ├── expand()                        # expand方法
-    ├── expand()                        # expand法
-    ├── contains()                      # contains方法
-    ├── contains()                      # contains方法
-    └── clamp()                         # clamp方法
+|—— Class:Scope                         # Scope类
+|   ├── constructor()                   # 创建Scope对象
+|   ├── toString()                      # toString方法
+|   ├── intersect()                     # intersect方法
+|   ├── intersect()                     # intersect方法
+|   ├── getUpper()                      # getUpper方法
+|   ├── getLower()                      # getLower方法
+|   ├── expand()                        # expand方法 
+|   ├── expand()                        # expand方法
+|   ├── expand()                        # expand法
+|   ├── contains()                      # contains方法
+|   ├── contains()                      # contains方法
+|   └── clamp()                         # clamp方法
+└── Class:Types                         # Types类
+    ├── isAnyArrayBuffer()              # isAnyArrayBuffer方法
+    ├── isArrayBufferView()             # isArrayBufferView方法
+    ├── isArgumentsObject()             # isArgumentsObject方法
+    ├── isArrayBuffer()                 # isArrayBuffer方法
+    ├── isAsyncFunction()               # isAsyncFunction方法
+    ├── isBigInt64Array()               # isBigInt64Array方法
+    ├── isBigUint64Array()              # isBigUint64Array方法
+    ├── isBooleanObject()               # isBooleanObject方法
+    ├── isBoxedPrimitive()              # isBoxedPrimitive方法
+    ├── isCryptoKey()                   # isCryptoKey方法
+    ├── isDataView()                    # isDataView方法
+    ├── isDate()                        # isDate方法
+    ├── isExternal()                    # isExternal方法
+    ├── isFloat32Array()                # isFloat32Array方法
+    ├── isFloat64Array()                # isFloat64Array方法
+    ├── isGeneratorFunction()           # isGeneratorFunction方法
+    ├── isGeneratorObject()             # isGeneratorObject方法
+    ├── isInt8Array()                   # isInt8Array方法
+    ├── isInt16Array()                  # isInt16Array方法
+    ├── isInt32Array()                  # isInt32Array方法
+    ├── isKeyObject()                   # isKeyObject方法
+    ├── isMap()                         # isMap方法
+    ├── isMapIterator()                 # isMapIterator方法
+    ├── isModuleNamespaceObject()       # isModuleNamespaceObject方法
+    ├── isNativeError()                 # isNativeError方法
+    ├── isNumberObject()                # isNumberObject方法
+    ├── isPromise()                     # isPromise方法
+    ├── isProxy()                       # isProxy方法
+    ├── isRegExp()                      # isRegExp方法
+    ├── isSet()                         # isSet方法
+    ├── isSetIterator()                 # isSetIterator方法
+    ├── isSharedArrayBuffer()           # isSharedArrayBuffer方法
+    ├── isStringObject()                # isStringObject方法
+    ├── isSymbolObject()                # isSymbolObject方法
+    ├── isTypedArray()                  # isTypedArray方法
+    ├── isUint8Array()                  # isUint8Array方法
+    ├── isUint8ClampedArray()           # isUint8ClampedArray方法
+    ├── isUint16Array()                 # isUint16Array方法
+    ├── isUint32Array()                 # isUint32Array方法
+    ├── isWeakMap()                     # isWeakMap方法
+    └── isWeakSet()                     # isWeakSet方法
 ```
 ## 说明
 
@@ -158,6 +200,47 @@ base/compileruntime/js_util_module/
 | function getErrorString(errno: number): string | getErrorString()方法使用一个系统的错误数字作为参数，用来返回系统的错误信息。 |
 | function callbackWrapper(original: Function): (err: Object, value: Object) => void | 参数为一个采用 async 函数（或返回 Promise 的函数）并返回遵循错误优先回调风格的函数，即将 (err, value) => ... 回调作为最后一个参数。 在回调中，第一个参数将是拒绝原因（如果 Promise 已解决，则为 null），第二个参数将是已解决的值。 |
 | function promiseWrapper(original: (err: Object, value: Object) => void): Object | 参数为采用遵循常见的错误优先的回调风格的函数（也就是将 (err, value) => ... 回调作为最后一个参数），并返回一个返回 promise 的版本。 |
+| isAnyArrayBuffer(value: Object): boolean | 检查输入的value是否是ArrayBuffer或SharedArrayBuffer类型。 |
+| isArrayBufferView(value: Object): boolean | 检查输入的value是否是napi_int8_array或napi_uint8_array或napi_uint8_clamped_array或napi_int16_array或napi_uint16_array或napi_int32_array或napi_uint32_array或napi_float32_array或napi_float64_array数组或DataView类型。 |
+| isArgumentsObject(value: Object): boolean | 检查输入的value是否是一个arguments对象类型。 |
+| isArrayBuffer(value: Object): boolean | 检查输入的value是否是ArrayBuffer类型。 |
+| isAsyncFunction(value: Object): boolean | 检查输入的value是否是异步函数类型。 |
+| isBigInt64Array(value: Object): boolean | 检查输入的value是否是BigInt64Array数组类型。 |
+| isBigUint64Array(value: Object): boolean | 检查输入的value是否是BigUint64Array数组类型。 |
+| isBooleanObject(value: Object): boolean | 检查输入的value是否是一个布尔对象类型。 |
+| isBoxedPrimitive(value: Object): boolean | 检查输入的value是否是Boolean或Number或String或Symbol对象类型。 |
+| isCryptoKey(value: Object): boolean | 检查输入的value是否是CryptoKey对象类型。 |
+| isDataView(value: Object): boolean | 检查输入的value是否是DataView类型。 |
+| isDate(value: Object): boolean | 检查输入的value是否是Date类型。 |
+| isExternal(value: Object): boolean | 检查输入的value是否是一个native External值类型。 |
+| isFloat32Array(value: Object): boolean | 检查输入的value是否是Float32Array数组类型。 |
+| isFloat64Array(value: Object): boolean | 检查输入的value是否是Float64Array数组类型。 |
+| isGeneratorFunction(value: Object): boolean | 检查输入的value是否是一个generator函数类型。 |
+| isGeneratorObject(value: Object): boolean | 检查输入的value是否是一个generator对象类型。 |
+| isInt8Array(value: Object): boolean | 检查输入的value是否是Int8Array数组类型。 |
+| isInt16Array(value: Object): boolean | 检查输入的value是否是Int16Array数组类型。 |
+| isInt32Array(value: Object): boolean | 检查输入的value是否是Int32Array数组类型。 |
+| isKeyObject(value: Object): boolean | 检查输入的value是否是KeyObject对象类型。 |
+| isMap(value: Object): boolean | 检查输入的value是否是Map类型。 |
+| isMapIterator(value: Object): boolean | 检查输入的value是否是Map的iterator类型。 |
+| isModuleNamespaceObject(value: Object): boolean | 检查输入的value是否是Module Namespace Object对象类型。 |
+| isNativeError(value: Object): boolean | 检查输入的value是否是Error类型。 |
+| isNumberObject(value: Object): boolean | 检查输入的value是否是Number对象类型。 |
+| isPromise(value: Object): boolean | 检查输入的value是否是Promise类型。 |
+| isProxy(value: Object): boolean | 检查输入的value是否是Proxy类型。 |
+| isRegExp(value: Object): boolean | 检查输入的value是否是RegExp类型。 |
+| isSet(value: Object): boolean | 检查输入的value是否是Set类型。 |
+| isSetIterator(value: Object): boolean | 检查输入的value是否是Set的iterator类型。 |
+| isSharedArrayBuffer(value: Object): boolean | 检查输入的value是否是SharedArrayBuffer类型。 |
+| isStringObject(value: Object): boolean | 检查输入的value是否是一个String对象类型。 |
+| isSymbolObject(value: Object): boolean | 检查输入的value是否是一个Symbol对象类型。 |
+| isTypedArray(value: Object): boolean | 检查输入的value是否是TypedArray包含的类型。 |
+| isUint8Array(value: Object): boolean | 检查输入的value是否是Uint8Array数组类型。 |
+| isUint8ClampedArray(value: Object): boolean | 检查输入的value是否是Uint8ClampedArray数组类型。 |
+| isUint16Array(value: Object): boolean | 检查输入的value是否是Uint16Array数组类型。 |
+| isUint32Array(value: Object): boolean | 检查输入的value是否是Uint32Array数组类型。 |
+| isWeakMap(value: Object): boolean | 检查输入的value是否是WeakMap类型。 |
+| isWeakSet(value: Object): boolean | 检查输入的value是否是WeakSet类型。 |
 
 printf中每个说明符都替换为来自相应参数的转换后的值。 支持的说明符有:
 | 式样化字符 | 式样要求 |
@@ -675,6 +758,261 @@ var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
 var result = range.clamp(tempMiDF) // => 35
+```
+63.isAnyArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAnyArrayBuffer(new ArrayBuffer([]))
+```
+64.isArrayBufferView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBufferView(new DataView(new ArrayBuffer(16)));
+```
+65.isArgumentsObject()
+```
+import util from '@ohos.util'
+function foo() {
+        var result = proc.isArgumentsObject(arguments);
+    }
+var f = foo();
+```
+66.isArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBuffer(new ArrayBuffer([]));
+```
+67.isAsyncFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAsyncFunction(async function foo() {});
+```
+68.isBigInt64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigInt64Array(new Int16Array([]));
+```
+69.isBigUint64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigUint64Array(new Int16Array([]));
+```
+70.isBooleanObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBooleanObject(new Boolean(false));
+```
+71.isBoxedPrimitive()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBoxedPrimitive(new Boolean(false));
+```
+72.isCryptoKey()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isCryptoKey(false);
+```
+73.isDataView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const ab = new ArrayBuffer(20);
+var result = proc.isDataView(new DataView(ab));
+```
+74.isDate()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isDate(new Date());
+```
+75.isExternal()
+```
+import util from '@ohos.util'
+const data = util.createExternalType();
+var reult13 = proc.isExternal(data);
+```
+76.isFloat32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat32Array(new Float32Array([]));
+```
+77.isFloat64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat64Array(new Float64Array([]));
+```
+78.isGeneratorFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isGeneratorFunction(function* foo() {});
+```
+79.isGeneratorObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+function* foo() {}
+const generator = foo();
+var result = proc.isGeneratorObject(generator);
+```
+80.isInt8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt8Array(new Int8Array([]));
+```
+81.isInt16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt16Array(new Int16Array([]));
+```
+82.isInt32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt32Array(new Int32Array([]));
+```
+83.isKeyObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isKeyObject(0);
+```
+84.isMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMap(new Map());
+```
+85.isMapIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMapIterator(map.keys());
+```
+86.isModuleNamespaceObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isModuleNamespaceObject(util);
+```
+87.isNativeError()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNativeError(new TypeError());
+```
+88.isNumberObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNumberObject(new Number(0));
+```
+89.isPromise()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isPromise(Promise.resolve(42));
+```
+90.isProxy()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const target = {};
+const proxy = new Proxy(target, {});
+var result = proc.isProxy(proxy);
+```
+91.isRegExp()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isRegExp(new RegExp('abc'));
+```
+92.isSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSet(new Set());
+```
+93.isSetIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const set = new Set();
+var result = proc.isSetIterator(set.keys());
+```
+94.isSharedArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSharedArrayBuffer(new ArrayBuffer([]));
+```
+95.isStringObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isStringObject(new String('foo'));
+```
+96.isSymbolObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const symbols = Symbol('foo');
+var result = proc.isSymbolObject(Object(symbols));
+```
+97.isTypedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isTypedArray(new Float64Array([]));
+```
+98.isUint8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8Array(new Uint8Array([]));
+```
+99.isUint8ClampedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8ClampedArray(new Uint8ClampedArray([]));
+```
+100.isUint16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint16Array(new Uint16Array([]));
+```
+101.isUint32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint32Array(new Uint32Array([]));
+```
+102.isWeakMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakMap(new WeakMap());
+```
+103.isWeakSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakSet(new WeakSet());
 ```
 ## 相关仓
 

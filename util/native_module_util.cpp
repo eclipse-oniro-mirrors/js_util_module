@@ -660,8 +660,8 @@ namespace OHOS::Util {
         }
         return result;
     }
-    
-   	static napi_value TypesConstructor(napi_env env, napi_callback_info info)
+
+    static napi_value TypesConstructor(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
         void* data = nullptr;
@@ -939,7 +939,7 @@ namespace OHOS::Util {
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsKeyObject(args);
         return result;
-    } 
+    }
 
     static napi_value IsMap(napi_env env, napi_callback_info info)
     {
@@ -1230,7 +1230,7 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("isBigUint64Array", IsBigUint64Array),
             DECLARE_NAPI_FUNCTION("isBooleanObject", IsBooleanObject),
             DECLARE_NAPI_FUNCTION("isBoxedPrimitive", IsBoxedPrimitive),
-            DECLARE_NAPI_FUNCTION("isAnyArrayBuffer", IsAnyArrayBuffer),	
+            DECLARE_NAPI_FUNCTION("isAnyArrayBuffer", IsAnyArrayBuffer),
             DECLARE_NAPI_FUNCTION("isArrayBufferView", IsArrayBufferView),
             DECLARE_NAPI_FUNCTION("isArgumentsObject", IsArgumentsObject),
             DECLARE_NAPI_FUNCTION("isArrayBuffer", IsArrayBuffer),
@@ -1269,10 +1269,9 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("isAsyncFunction", IsAsyncFunction),
         };
         NAPI_CALL(env, napi_define_class(env, typeofClassName, strlen(typeofClassName), TypesConstructor,
-                                         nullptr, sizeof(typeofDesc) / sizeof(typeofDesc[0]), typeofDesc, &typeofClass));
-        static napi_property_descriptor desc[] = {
-            DECLARE_NAPI_PROPERTY("Types", typeofClass)
-        };
+                                         nullptr, sizeof(typeofDesc) / sizeof(typeofDesc[0]), typeofDesc,
+                                         &typeofClass));
+        static napi_property_descriptor desc[] = { DECLARE_NAPI_PROPERTY("Types", typeofClass) };
         NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
         return exports;
     }

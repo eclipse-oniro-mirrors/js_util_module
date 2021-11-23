@@ -100,7 +100,7 @@ namespace OHOS::Util {
         NAPI_CALL(env_, napi_typeof(env_, src, &result));
         bool flag = false;
         if (result == napi_function) {
-           NAPI_CALL(env_, napi_is_async_function(env_, src, &flag));
+            NAPI_CALL(env_, napi_is_async_function(env_, src, &flag));
         }
         napi_value rst = nullptr;
         napi_get_boolean(env_, flag, &rst);
@@ -224,7 +224,7 @@ namespace OHOS::Util {
         }
         napi_value rst = nullptr;
         napi_get_boolean(env_, flag, &rst);
-        return rst;    
+        return rst;
     }
 
     napi_value Types::IsFloat64Array(napi_value src)
@@ -250,7 +250,7 @@ namespace OHOS::Util {
         NAPI_CALL(env_, napi_typeof(env_, src, &result));
         bool flag = false;
         if (result == napi_function) {
-           NAPI_CALL(env_, napi_is_generator_function(env_, src, &flag));
+            NAPI_CALL(env_, napi_is_generator_function(env_, src, &flag));
         }
         napi_value rst = nullptr;
         napi_get_boolean(env_, flag, &rst);
@@ -278,10 +278,10 @@ namespace OHOS::Util {
         NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         if (type == napi_typedarray_type::napi_int8_array) {
             flag = true;
-        } 
+        }
         napi_get_boolean(env_, flag, &result);
         return result;
-      }
+    }
 
     napi_value Types::IsInt16Array(napi_value src)
     {
@@ -370,7 +370,7 @@ namespace OHOS::Util {
         napi_value result = nullptr;
         NAPI_CALL(env_, napi_typeof(env_, src, &valuetype));
         if (valuetype == napi_valuetype::napi_object) {
-             NAPI_CALL(env_, napi_is_number_object(env_, src, &flag));
+            NAPI_CALL(env_, napi_is_number_object(env_, src, &flag));
         }
         napi_get_boolean(env_, flag, &result);
         return result;
@@ -503,7 +503,7 @@ namespace OHOS::Util {
         NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
         if (type == napi_typedarray_type::napi_uint16_array) {
             flag = true;
-        }  	
+        }
         napi_get_boolean(env_, flag, &result);
         return result;
     }
