@@ -234,7 +234,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_float32_array) {
                 flag = true;
             }
@@ -255,7 +256,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_float64_array) {
                 flag = true;
             }
@@ -298,7 +300,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_int8_array) {
                 flag = true;
             }
@@ -319,7 +322,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_int16_array) {
                 flag = true;
             }
@@ -340,7 +344,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_int32_array) {
                 flag = true;
             }
@@ -467,7 +472,7 @@ namespace OHOS::Util {
         bool flag = false;
         napi_valuetype valuetype;
         NAPI_CALL(env_, napi_typeof(env_, src, &valuetype));
-        if (valuetype == napi_valuetype::napi_object) { 
+        if (valuetype == napi_valuetype::napi_object) {
             NAPI_CALL(env_, napi_is_string_object(env_, src, &flag));
         }
         napi_value result = nullptr;
@@ -481,7 +486,7 @@ namespace OHOS::Util {
         napi_value result = nullptr;
         napi_valuetype valuetype;
         NAPI_CALL(env_, napi_typeof(env_, src, &valuetype));
-        if (valuetype == napi_valuetype::napi_object) { 
+        if (valuetype == napi_valuetype::napi_object) {
             NAPI_CALL(env_, napi_is_symbol_object(env_, src, &flag));
         }
         napi_get_boolean(env_, flag, &result);
@@ -509,7 +514,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_uint8_array) {
                 flag = true;
             }
@@ -530,7 +536,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_uint8_clamped_array) {
                 flag = true;
             }
@@ -551,7 +558,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_uint16_array) {
                 flag = true;
             }
