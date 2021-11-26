@@ -580,7 +580,8 @@ namespace OHOS::Util {
             size_t length = 0;
             void* resultData = nullptr;
             napi_value resultBuffer = nullptr;
-            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length, &resultData, &resultBuffer, &byteOffset));
+            NAPI_CALL(env_, napi_get_typedarray_info(env_, src, &type, &length,
+                                                     &resultData, &resultBuffer, &byteOffset));
             if (type == napi_typedarray_type::napi_uint32_array) {
                 flag = true;
             }
