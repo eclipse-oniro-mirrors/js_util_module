@@ -74,19 +74,61 @@ base/compileruntime/js_util_module/
 │   ├──  createDefault()                # createDefault method
 │   ├──  entries()                      # entries method
 │   └──  [Symbol.iterator]()            # Symboliterator method
-└── Class:Scope                         # Scope class
-    ├── constructor()                   # create Scope object
-    ├── toString()                      # toString method
-    ├── intersect()                     # intersect method
-    ├── intersect()                     # intersect method
-    ├── getUpper()                      # getUpper method
-    ├── getLower()                      # getLower method
-    ├── expand()                        # expand method 
-    ├── expand()                        # expand method
-    ├── expand()                        # expand method 
-    ├── contains()                      # contains method
-    ├── contains()                      # contains method
-    └── clamp()                         # clamp method 
+├── Class:Scope                         # Scope class
+|   ├── constructor()                   # create Scope object
+|   ├── toString()                      # toString method
+|   ├── intersect()                     # intersect method
+|   ├── intersect()                     # intersect method
+|   ├── getUpper()                      # getUpper method
+|   ├── getLower()                      # getLower method
+|   ├── expand()                        # expand method 
+|   ├── expand()                        # expand method
+|   ├── expand()                        # expand method 
+|   ├── contains()                      # contains method
+|   ├── contains()                      # contains method
+|   └── clamp()                         # clamp method
+└── Class:Types                         # Types class
+    ├── isAnyArrayBuffer()              # isAnyArrayBuffer method
+    ├── isArrayBufferView()             # isArrayBufferView method
+    ├── isArgumentsObject()             # isArgumentsObject method
+    ├── isArrayBuffer()                 # isArrayBuffer method
+    ├── isAsyncFunction()               # isAsyncFunction method
+    ├── isBigInt64Array()               # isBigInt64Array method
+    ├── isBigUint64Array()              # isBigUint64Array method
+    ├── isBooleanObject()               # isBooleanObject method
+    ├── isBoxedPrimitive()              # isBoxedPrimitive method
+    ├── isCryptoKey()                   # isCryptoKey method
+    ├── isDataView()                    # isDataView method
+    ├── isDate()                        # isDate method
+    ├── isExternal()                    # isExternal method
+    ├── isFloat32Array()                # isFloat32Arraymethod
+    ├── isFloat64Array()                # isFloat64Array method
+    ├── isGeneratorFunction()           # isGeneratorFunction method
+    ├── isGeneratorObject()             # isGeneratorObject method
+    ├── isInt8Array()                   # isInt8Array method
+    ├── isInt16Array()                  # isInt16Array method
+    ├── isInt32Array()                  # isInt32Array method
+    ├── isKeyObject()                   # isKeyObject method
+    ├── isMap()                         # isMap method
+    ├── isMapIterator()                 # isMapIterator method
+    ├── isModuleNamespaceObject()       # isModuleNamespaceObject method
+    ├── isNativeError()                 # isNativeError method
+    ├── isNumberObject()                # isNumberObject method
+    ├── isPromise()                     # isPromise method
+    ├── isProxy()                       # isProxy method
+    ├── isRegExp()                      # isRegExp method
+    ├── isSet()                         # isSet method
+    ├── isSetIterator()                 # isSetIterator method
+    ├── isSharedArrayBuffer()           # isSharedArrayBuffer method
+    ├── isStringObject()                # isStringObject method
+    ├── isSymbolObject()                # isSymbolObject method
+    ├── isTypedArray()                  # isTypedArray method
+    ├── isUint8Array()                  # isUint8Array method
+    ├── isUint8ClampedArray()           # isUint8ClampedArray method
+    ├── isUint16Array()                 # isUint16Array method
+    ├── isUint32Array()                 # isUint32Array method
+    ├── isWeakMap()                     # isWeakMap method
+    └── isWeakSet()                     # isWeakSet method
 ```
 
 ## Description
@@ -157,6 +199,47 @@ base/compileruntime/js_util_module/
 | function getErrorString(errno: number): string |  The geterrorstring () method uses a system error number as a parameter to return system error information. |
 | function callbackWrapper(original: Function): (err: Object, value: Object) => void | Takes an async function (or a function that returns a Promise) and returns a function following the error-first callback style, i.e. taking an (err, value) => ... callback as the last argument. In the callback, the first argument will be the rejection reason (or null if the Promise resolved), and the second argument will be the resolved value. |
 | function promiseWrapper(original: (err: Object, value: Object) => void): Object | Takes a function following the common error-first callback style, i.e. taking an (err, value) => ... callback as the last argument, and returns a version that returns promises. |
+| isAnyArrayBuffer(value: Object): boolean | Check whether the entered value is of arraybuffer or sharedarraybuffer type. |
+| isArrayBufferView(value: Object): boolean | Check whether the entered value is napi_ int8_ array or napi_ uint8_ array or naPi_ uint8_ clamped_ array or naPi_ int16_ array or naPi_ uint16_ array or napi_ int32_ array or napi_ uint32_ array or napi_ float32_ array or napi_ float64_ array array or DataView type. |
+| isArgumentsObject(value: Object): boolean | Check whether the entered value is an arguments object type. |
+| isArrayBuffer(value: Object): boolean | Check whether the entered value is of arraybuffer type. |
+| isAsyncFunction(value: Object): boolean | Check whether the value entered is an asynchronous function type. |
+| isBigInt64Array(value: Object): boolean | Check whether the entered value is of bigint64array array type. |
+| isBigUint64Array(value: Object): boolean | Check whether the entered value is of biguint64array array array type. |
+| isBooleanObject(value: Object): boolean | Check whether the entered value is a Boolean object type. |
+| isBoxedPrimitive(value: Object): boolean | Check whether the entered value is a Boolean or number or string or symbol object type. |
+| isCryptoKey(value: Object): boolean | Check whether the entered value is the cryptokey object type. |
+| isDataView(value: Object): boolean | Check whether the entered value is of DataView type. |
+| isDate(value: Object): boolean | Check whether the entered value is of type date. |
+| isExternal(value: Object): boolean | Check whether the entered value is a native external value type. |
+| isFloat32Array(value: Object): boolean | Check whether the entered value is of float32array array type. |
+| isFloat64Array(value: Object): boolean | Check whether the entered value is of float64array array type. |
+| isGeneratorFunction(value: Object): boolean | Check whether the input value is a generator function type. |
+| isGeneratorObject(value: Object): boolean | Check whether the entered value is a generator object type. |
+| isInt8Array(value: Object): boolean | Check whether the entered value is of int8array array type. |
+| isInt16Array(value: Object): boolean | Check whether the entered value is the int16array type. |
+| isInt32Array(value: Object): boolean | Check whether the entered value is the int32array array type. |
+| isKeyObject(value: Object): boolean | Check whether the entered value is the keyobject object type. |
+| isMap(value: Object): boolean | Check whether the entered value is of map type. |
+| isMapIterator(value: Object): boolean | Check whether the entered value is the iterator type of map. |
+| isModuleNamespaceObject(value: Object): boolean | Check whether the entered value is the module namespace object object type. |
+| isNativeError(value: Object): boolean | Check whether the value entered is of type error. |
+| isNumberObject(value: Object): boolean | Check whether the entered value is of the number object type. |
+| isPromise(value: Object): boolean | Check whether the entered value is of promise type. |
+| isProxy(value: Object): boolean | Check whether the value entered is of proxy type. |
+| isRegExp(value: Object): boolean | Check whether the entered value is of type regexp. |
+| isSet(value: Object): boolean | Check whether the entered value is of type set. |
+| isSetIterator(value: Object): boolean | Check whether the entered value is the iterator type of set. |
+| isSharedArrayBuffer(value: Object): boolean | Check whether the entered value is of type sharedarraybuffer. |
+| isStringObject(value: Object): boolean | Check whether the entered value is a string object type. |
+| isSymbolObject(value: Object): boolean | Check whether the entered value is a symbol object type. |
+| isTypedArray(value: Object): boolean | Check whether the entered value is a type contained in typedarray. |
+| isUint8Array(value: Object): boolean | Check whether the entered value is the uint8array array type. |
+| isUint8ClampedArray(value: Object): boolean | Check whether the entered value is the uint8clapedarray array type. |
+| isUint16Array(value: Object): boolean | Check whether the entered value is the uint16array array array type. |
+| isUint32Array(value: Object): boolean | Check whether the entered value is the uint32array array type. |
+| isWeakMap(value: Object): boolean | Check whether the entered value is of type weakmap. |
+| isWeakSet(value: Object): boolean | Check whether the entered value is of type weakset. |
 
 Each specifier in printf is replaced with a converted value from the corresponding parameter. Supported specifiers are:
 | Stylized character | Style requirements |
@@ -674,6 +757,261 @@ var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
 var result = range.clamp(tempMiDF) // => 35
+```
+63.isAnyArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAnyArrayBuffer(new ArrayBuffer([]))
+```
+64.isArrayBufferView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBufferView(new DataView(new ArrayBuffer(16)));
+```
+65.isArgumentsObject()
+```
+import util from '@ohos.util'
+function foo() {
+        var result = proc.isArgumentsObject(arguments);
+    }
+var f = foo();
+```
+66.isArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBuffer(new ArrayBuffer([]));
+```
+67.isAsyncFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAsyncFunction(async function foo() {});
+```
+68.isBigInt64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigInt64Array(new Int16Array([]));
+```
+69.isBigUint64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigUint64Array(new Int16Array([]));
+```
+70.isBooleanObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBooleanObject(new Boolean(false));
+```
+71.isBoxedPrimitive()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBoxedPrimitive(new Boolean(false));
+```
+72.isCryptoKey()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isCryptoKey(false);
+```
+73.isDataView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const ab = new ArrayBuffer(20);
+var result = proc.isDataView(new DataView(ab));
+```
+74.isDate()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isDate(new Date());
+```
+75.isExternal()
+```
+import util from '@ohos.util'
+const data = util.createExternalType();
+var reult13 = proc.isExternal(data);
+```
+76.isFloat32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat32Array(new Float32Array([]));
+```
+77.isFloat64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat64Array(new Float64Array([]));
+```
+78.isGeneratorFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isGeneratorFunction(function* foo() {});
+```
+79.isGeneratorObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+function* foo() {}
+const generator = foo();
+var result = proc.isGeneratorObject(generator);
+```
+80.isInt8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt8Array(new Int8Array([]));
+```
+81.isInt16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt16Array(new Int16Array([]));
+```
+82.isInt32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt32Array(new Int32Array([]));
+```
+83.isKeyObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isKeyObject(0);
+```
+84.isMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMap(new Map());
+```
+85.isMapIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMapIterator(map.keys());
+```
+86.isModuleNamespaceObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isModuleNamespaceObject(util);
+```
+87.isNativeError()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNativeError(new TypeError());
+```
+88.isNumberObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNumberObject(new Number(0));
+```
+89.isPromise()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isPromise(Promise.resolve(42));
+```
+90.isProxy()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const target = {};
+const proxy = new Proxy(target, {});
+var result = proc.isProxy(proxy);
+```
+91.isRegExp()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isRegExp(new RegExp('abc'));
+```
+92.isSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSet(new Set());
+```
+93.isSetIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const set = new Set();
+var result = proc.isSetIterator(set.keys());
+```
+94.isSharedArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSharedArrayBuffer(new ArrayBuffer([]));
+```
+95.isStringObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isStringObject(new String('foo'));
+```
+96.isSymbolObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const symbols = Symbol('foo');
+var result = proc.isSymbolObject(Object(symbols));
+```
+97.isTypedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isTypedArray(new Float64Array([]));
+```
+98.isUint8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8Array(new Uint8Array([]));
+```
+99.isUint8ClampedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8ClampedArray(new Uint8ClampedArray([]));
+```
+100.isUint16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint16Array(new Uint16Array([]));
+```
+101.isUint32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint32Array(new Uint32Array([]));
+```
+102.isWeakMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakMap(new WeakMap());
+```
+103.isWeakSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakSet(new WeakSet());
 ```
 ## Related warehouse
 
