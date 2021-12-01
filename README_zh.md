@@ -1020,3 +1020,6 @@ var result = proc.isWeakSet(new WeakSet());
 
 [base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
 
+## 许可证
+
+Util在[Mozilla许可证](https://www.mozilla.org/en-US/MPL/)下可用，说明文档详见[说明文档](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE_docs)。有关完整的许可证文本，有关完整的许可证文本，请参见[许可证](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE)
