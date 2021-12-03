@@ -1019,6 +1019,6 @@ var result = proc.isWeakSet(new WeakSet());
 
 [base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
 
-### License
+## License
 
-Util is available under [Mozilla license](https://www.mozilla.org/en-US/MPL/), and the documentation is detailed in [documentation](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE_docs). See [LICENSE](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE) for the full license text.
+Util is available under [Mozilla license](https://www.mozilla.org/en-US/MPL/), and the documentation is detailed in [documentation](https://gitee.com/openharmony/js_util_module/blob/master/mozilla_docs.txt). See [LICENSE](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE) for the full license text.
