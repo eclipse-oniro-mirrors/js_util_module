@@ -1,176 +1,263 @@
-# js_util_module子系统/组件
+# js_util_module Subsystems / components
 
--   [简介](#简介)
--   [目录](#目录)
--   [说明](#说明)
-    -   [接口说明](#接口说明)
-    -   [使用说明](#使用说明)
+-   [Introduction](#Introduction)
+-   [Directory](#Directory)
+-   [Description](#Description)
+    -   [Interface description](#Interface description)
+    -   [Instruction for use](#Instruction for use)
 
--   [相关仓](#相关仓)
+-   [Related warehouse](#Related warehouse)
 
-## 简介
-
-UTIL接口用于字符编码TextEncoder、解码TextDecoder、帮助函数HelpFunction、基于Base64的字节编码encode和解码decode、有理数RationalNumber。TextEncoder表示一个文本编码器，接受字符串作为输入，以UTF-8格式进行编码，输出UTF-8字节流。TextDecoder接口表示一个文本解码器，解码器将字节流作为输入，输出stirng字符串。HelpFunction主要是对函数做callback化、promise化以及对错误码进行编写输出，及类字符串的格式化输出。encode接口使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中或者使用Base64编码方案将指定的字节数组编码为String。decode接口使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。rationalnumber有理数主要是对有理数进行比较，获取分子分母等方法。LruBuffer该算法在缓存空间不够的时候，将近期最少使用的数据替换为新数据。该算法源自这样一种访问资源的需求：近期访问的数据，可能在不久的将来会再次访问。于是最少访问的数据就是价值最小的，是最应该踢出缓存空间的数据。Scope接口用于描述一个字段的有效范围。 Scope实例的构造函数用于创建具有指定下限和上限的对象，并要求这些对象必须具有可比性。 
-
-
+## Introduction
+The interface of util is used for character Textencoder, TextDecoder and HelpFunction module.The TextEncoder represents a text encoder that accepts a string as input, encodes it in UTF-8 format, and outputs UTF-8 byte stream. The TextDecoder interface represents a text decoder. The decoder takes the byte stream as the input and outputs the Stirng string. HelpFunction is mainly used to callback and promise functions, write and output error codes, and format class strings.
+Encodes all bytes from the specified u8 array into a newly-allocated u8 array using the Base64 encoding scheme or Encodes the specified byte array into a String using the Base64 encoding scheme.Decodes a Base64 encoded String or input u8 array into a newly-allocated u8 array using the Base64 encoding scheme.The rational number is mainly to compare rational numbers and obtain the numerator and denominator.The LruBuffer algorithm replaces the least used data with new data when the buffer space is insufficient. The algorithm derives from the need to access resources: recently accessed data can be Will visit again in the near future. The least accessed data is the least valuable data that should be kicked out of the cache space. The Scope interface is used to describe the valid range of a field. The constructor for the Scope instance is used to create objects with specified lower and upper bounds and require that these objects be comparable.
 ## 目录
 
 ```
 base/compileruntime/js_util_module/
-├── Class:TextEncoder                   # TextEncoder类
-│   ├──  new TextEncoder()             	# 创建TextEncoder对象
-│   ├──  encode()                      	# encode方法
-│   ├──  encoding                     	# encoding属性
-│   └──  encodeInto()                   # encodeInto方法
-├── Class:TextDecoder                   # TextDecoder类
-│   ├──  new TextDecoder()              # 创建TextDecoder对象
-│   ├──  decode()             		    # decode方法
-│   ├──  encoding                      	# encoding属性
-│   ├──  fatal	                     	# fatal属性
-│   └──  ignoreBOM                     	# ignoreBOM属性
-├── printf()			                # printf方法
-├── getErrorString()			        # getErrorString方法
-├── callbackWrapper()		            # callbackWrapper方法
-├── promiseWrapper()		            # promiseWrapper方法
-├── Class:Base64                        # Base64类
-│   ├──  new Base64()             	    # 创建Base64对象
-│   ├──  encode()                      	# encode方法
-│   ├──  encodeToString()               # encodeToString方法
-│   └──  decode()                       # decode方法
-├── Class:RationalNumber                # RationalNumber类
-│   ├──  new RationalNumber()           # 创建RationalNumber对象
-│   ├──  CreateRationalFromString()     # CreateRationalFromString方法
-│   ├──  CompareTo()                    # CompareTo方法
-│   ├──  Equals()                       # Equals方法
-│   ├──  Value()                        # Value方法
-│   ├──  GetCommonDivisor()             # GetCommonDivisor方法
-│   ├──  GetDenominator()               # GetDenominator方法
-│   ├──  GetNumerator()                 # GetNumerator方法
-│   ├──  IsFinite()                     # IsFinite方法
-│   ├──  IsNaN()                        # IsNaN方法
-│   ├──  IsZero()                       # IsZero方法
-│   └──  ToString()                     # ToString方法
-├── Class:LruBuffer                 	# LruBuffer类
-│   ├──  new LruBuffer()                # 创建LruBuffer对象
-│   ├──  updateCapacity()               # updateCapacity方法
-│   ├──  toString()                     # toString方法
-│   ├──  values()                       # values方法
-│   ├──  size()                         # size方法
-│   ├──  capacity()                     # capacity方法
-│   ├──  clear()                        # clear方法
-│   ├──  getCreateCount()               # getCreateCount方法
-│   ├──  getMissCount()                 # getMissCount方法
-│   ├──  getRemovalCount()              # getRemovalCount方法
-│   ├──  getMatchCount()                # getMatchCount方法
-│   ├──  getPutCount()                  # getPutCount方法
-│   ├──  isEmpty()                      # isEmpty方法
-│   ├──  get()                          # get方法
-│   ├──  put()                          # put方法
-│   ├──  keys()                         # keys方法
-│   ├──  remove()                       # remove方法
-│   ├──  afterRemoval()                 # afterRemoval方法
-│   ├──  contains()                		# contains方法
-│   ├──  createDefault()                # createDefault方法
-│   ├──  entries()               		# entries方法
-│   └──  [Symbol.iterator]()            # Symboliterator方法
-└── Class:Scope                         # Scope类
-    ├── constructor()                   # 创建Scope对象
-    ├── toString()                      # toString方法
-    ├── intersect()                     # intersect方法
-    ├── intersect()                     # intersect方法
-    ├── getUpper()                      # getUpper方法
-    ├── getLower()                      # getLower方法
-    ├── expand()                        # expand方法 
-    ├── expand()                        # expand方法
-    ├── expand()                        # expand法
-    ├── contains()                      # contains方法
-    ├── contains()                      # contains方法
-    └── clamp()                         # clamp方法
+├── Class:TextEncoder                   # TextEncoder class
+│   ├──  new TextEncoder()              # create textencoder object
+│   ├──  encode()                       # encode method
+│   ├──  encoding                       # encoding property
+│   └──  encodeInto()                   # encodeInto method
+├── Class:TextDecoder                   # TextDecoder class
+│   ├──  new TextDecoder()              # create TextDecoder object
+│   ├──  decode()                       # decode method
+│   ├──  encoding                       # encoding property
+│   ├──  fatal	                        # fatal property
+│   └──  ignoreBOM                     	# ignoreBOM property
+├── printf()                            # printf method
+├── getErrorString()                    # getErrorString method
+├── callbackWrapper()                   # callbackWrapper method
+├── promiseWrapper()                    # promiseWrapper method
+├── Class:Base64                        # Base64 class
+│   ├──  new Base64()                   # create Base64 object
+│   ├──  encode()                       # encode method
+│   ├──  encodeToString()               # encodeToString method
+│   ├──  decode()                       # decode method
+│   ├──  encodeAsync()                  # encodeAsync method
+│   ├──  encodeToStringAsync()          # encodeToStringAsync method
+│   └──  decodeAsync()                  # decodeAsync method
+├── Class:RationalNumber                # RationalNumber class
+│   ├──  new RationalNumber()           # create RationalNumber object
+│   ├──  createRationalFromString()     # creatRationalFromString method
+│   ├──  compareTo()                    # compareTo method
+│   ├──  equals()                       # equals method
+│   ├──  value()                        # value method
+│   ├──  getCommonDivisor()             # getCommonDivisor method
+│   ├──  getDenominator()               # getDenominator method
+│   ├──  getNumerator()                 # getNumerator method
+│   ├──  isFinite()                     # isFinite method
+│   ├──  isNaN()                        # isNaN method
+│   ├──  isZero()                       # isZero method
+│   └──  toString()                     # toString method
+├── Class:LruBuffer                     # LruBuffer class
+│   ├──  new LruBuffer()                # create RationalNumber object
+│   ├──  updateCapacity()               # updateCapacity method
+│   ├──  toString()                     # toString method
+│   ├──  values()                       # values method
+│   ├──  size()                         # size method
+│   ├──  capacity()                     # capacity method
+│   ├──  clear()                        # clear method
+│   ├──  getCreateCount                 # getCreateCount method
+│   ├──  getMissCount()                 # getMissCount method
+│   ├──  getRemovalCount()              # getRemovalCount method
+│   ├──  getMatchCount()                # getMatchCount method
+│   ├──  getPutCount()                  # getPutCount method
+│   ├──  isEmpty()                      # isEmpty method
+│   ├──  get()                          # get method
+│   ├──  put()                          # put method
+│   ├──  keys()                         # keys method
+│   ├──  remove()                       # remove method
+│   ├──  afterRemoval()                 # afterRemoval method
+│   ├──  contains()                     # contains method
+│   ├──  createDefault()                # createDefault method
+│   ├──  entries()                      # entries method
+│   └──  [Symbol.iterator]()            # Symboliterator method
+├── Class:Scope                         # Scope class
+|   ├── constructor()                   # create Scope object
+|   ├── toString()                      # toString method
+|   ├── intersect()                     # intersect method
+|   ├── intersect()                     # intersect method
+|   ├── getUpper()                      # getUpper method
+|   ├── getLower()                      # getLower method
+|   ├── expand()                        # expand method 
+|   ├── expand()                        # expand method
+|   ├── expand()                        # expand method 
+|   ├── contains()                      # contains method
+|   ├── contains()                      # contains method
+|   └── clamp()                         # clamp method
+└── Class:Types                         # Types class
+    ├── isAnyArrayBuffer()              # isAnyArrayBuffer method
+    ├── isArrayBufferView()             # isArrayBufferView method
+    ├── isArgumentsObject()             # isArgumentsObject method
+    ├── isArrayBuffer()                 # isArrayBuffer method
+    ├── isAsyncFunction()               # isAsyncFunction method
+    ├── isBigInt64Array()               # isBigInt64Array method
+    ├── isBigUint64Array()              # isBigUint64Array method
+    ├── isBooleanObject()               # isBooleanObject method
+    ├── isBoxedPrimitive()              # isBoxedPrimitive method
+    ├── isCryptoKey()                   # isCryptoKey method
+    ├── isDataView()                    # isDataView method
+    ├── isDate()                        # isDate method
+    ├── isExternal()                    # isExternal method
+    ├── isFloat32Array()                # isFloat32Arraymethod
+    ├── isFloat64Array()                # isFloat64Array method
+    ├── isGeneratorFunction()           # isGeneratorFunction method
+    ├── isGeneratorObject()             # isGeneratorObject method
+    ├── isInt8Array()                   # isInt8Array method
+    ├── isInt16Array()                  # isInt16Array method
+    ├── isInt32Array()                  # isInt32Array method
+    ├── isKeyObject()                   # isKeyObject method
+    ├── isMap()                         # isMap method
+    ├── isMapIterator()                 # isMapIterator method
+    ├── isModuleNamespaceObject()       # isModuleNamespaceObject method
+    ├── isNativeError()                 # isNativeError method
+    ├── isNumberObject()                # isNumberObject method
+    ├── isPromise()                     # isPromise method
+    ├── isProxy()                       # isProxy method
+    ├── isRegExp()                      # isRegExp method
+    ├── isSet()                         # isSet method
+    ├── isSetIterator()                 # isSetIterator method
+    ├── isSharedArrayBuffer()           # isSharedArrayBuffer method
+    ├── isStringObject()                # isStringObject method
+    ├── isSymbolObject()                # isSymbolObject method
+    ├── isTypedArray()                  # isTypedArray method
+    ├── isUint8Array()                  # isUint8Array method
+    ├── isUint8ClampedArray()           # isUint8ClampedArray method
+    ├── isUint16Array()                 # isUint16Array method
+    ├── isUint32Array()                 # isUint32Array method
+    ├── isWeakMap()                     # isWeakMap method
+    └── isWeakSet()                     # isWeakSet method
 ```
 
-## 说明
+## Description
 
-### 接口说明
-
-
-| 接口名 | 说明 |
+### Interface description
+| Interface name | Description |
 | -------- | -------- |
-| readonly encoding : string | 获取编码的格式，只支持UTF-8。 |
-| encode(input : string) : Uint8Array | 输入stirng字符串，编码并输出UTF-8字节流。 |
-| encodeInto(input : string, dest : Uint8Array) : {read : number, written : number} | 输入stirng字符串，dest表示编码后存放位置，返回一个对象，read表示已经编码的字符的个数，written表示已编码字符所占字节的大小。 |
-| constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean}) | 构造函数，第一个参数encoding表示解码的格式。第二个参数表示一些属性。属性中fatal表示是否抛出异常，ignoreBOM表示是否忽略bom标志。 |
-| readonly encoding : string | 获取设置的解码格式。 |
-| readonly fatal : boolean | 获取抛出异常的设置 |
-| readonly ignoreBOM : boolean | 获取是否忽略bom标志的设置 |
-| decode(input : ArrayBuffer | 输入要解码的数据，解出对应的string字符串。第一个参数input表示要解码的数据，第二个参数options表示一个bool标志，表示将跟随附加数据，默认为false。 |
-| function printf(format: string, ...args: Object[]): string | printf()方法使用第一个参数作为格式字符串（其可以包含零个或多个格式说明符）来返回格式化的字符串。 |
-| function getErrorString(errno: number): string | getErrorString()方法使用一个系统的错误数字作为参数，用来返回系统的错误信息。 |
-| function callbackWrapper(original: Function): (err: Object, value: Object) => void | 参数为一个采用 async 函数（或返回 Promise 的函数）并返回遵循错误优先回调风格的函数，即将 (err, value) => ... 回调作为最后一个参数。 在回调中，第一个参数将是拒绝原因（如果 Promise 已解决，则为 null），第二个参数将是已解决的值。 |
-| function promiseWrapper(original: (err: Object, value: Object) => void): Object |     参数为采用遵循常见的错误优先的回调风格的函数（也就是将 (err, value) => ... 回调作为最后一个参数），并返回一个返回 promise 的版本。 |
-| encode(src: Uint8Array): Uint8Array; | 使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中。 |
-| encodeToString(src: Uint8Array): string; | 使用Base64编码方案将指定的字节数组编码为String。 |
-| decode(src: Uint8Array / string): Uint8Array; | 使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。 |
-| CreateRationalFromString(src: string): Rational | 基于给定的字符串创建一个RationalNumber对象 |
-| CompareTo(src: RationalNumber): number | 将当前的RationalNumber对象与给定的对象进行比较 |
-| Equals(src: object): number | 检查给定对象是否与当前 RationalNumber 对象相同 |
-| Value(): number | 将当前的RationalNumber对象进行取整数值或者浮点数值 |
-| GetCommonDivisor(arg1: int, arg2: int,): number | 获得两个指定数的最大公约数 |
-| GetDenominator(): number | 获取当前的RationalNumber对象的分母 |
-| GetNumerator(): number | 获取当前的RationalNumber对象的分子 |
-| IsFinite(): bool | 检查当前的RationalNumber对象是有限的 |
-| IsNaN(): bool | 检查当前RationalNumber对象是否表示非数字(NaN)值 |
-| IsZero(): bool | 检查当前RationalNumber对象是否表示零值 |
-| ToString(): string | 获取当前RationalNumber对象的字符串表示形式 |
-| updateCapacity(newCapacity:number):void | 将缓冲区容量更新为指定容量，如果 newCapacity 小于或等于 0，则抛出此异常 |
-| toString():string | 返回对象的字符串表示形式，输出对象的字符串表示。 |
-| values():V[ ] | 获取当前缓冲区中所有值的列表，输出按升序返回当前缓冲区中所有值的列表，从最近访问到最近最少访问 |
-| size():number | 获取当前缓冲区中值的总数，输出返回当前缓冲区中值的总数 |
-| capacity():number | 获取当前缓冲区的容量，输出返回当前缓冲区的容量 |
-| clear():void | 从当前缓冲区清除键值对，清除键值对后，调用afterRemoval()方法依次对其执行后续操作 |
-| getCreateCount():number | 获取createDefault()返回值的次数,输出返回createDefault()返回值的次数 |
-| getMissCount():number | 获取查询值不匹配的次数，输出返回查询值不匹配的次数 |
-| getRemovalCount():number | 获取从缓冲区中逐出值的次数，输出从缓冲区中驱逐的次数 |
-| getMatchCount​():number | 获取查询值匹配成功的次数，输出返回查询值匹配成功的次数 |
-| getPutCount():number | 获取将值添加到缓冲区的次数，输出返回将值添加到缓冲区的次数 |
-| isEmpty():boolean | 检查当前缓冲区是否为空，输出如果当前缓冲区不包含任何值，则返回 true |
-| get(k:key):V / undefined | 表示要查询的键，输出如果指定的键存在于缓冲区中，则返回与键关联的值；否则返回 undefined |
-| put(K key, V value):V | 将键值对添加到缓冲区，输出与添加的键关联的值；如果要添加的键已经存在，则返回原始值，如果键或值为空，则抛出此异常 |
-| keys():K[ ] | 获取当前缓冲区中值的键列表，输出返回从最近访问到最近最少访问排序的键列表 |
-| remove​(k:key):V / undefined |  从当前缓冲区中删除指定的键及其关联的值 |
-| afterRemoval(boolean isEvict, K key, V value, V newValue):void | 删除值后执行后续操作 |
-| contains(k:key):boolean | 检查当前缓冲区是否包含指定的键，输出如果缓冲区包含指定的键，则返回 true |
-| createDefault(k:key):V | 如果未计算特定键的值，则执行后续操作，参数表示丢失的键,输出返回与键关联的值 |
-| entries() : [K,V] | 允许迭代包含在这个对象中的所有键/值对。每对的键和值都是对象 |
-| Symbol.iterator():[K,V] | 返回以键值对得形式得一个二维数组 |
-| constructor(lowerObj: ScopeType, upperObj: ScopeType) | 创建并返回一个Scope对象，用于创建指定下限和上限的作用域实例的构造函数。 |
-| toString():string | 该字符串化方法返回一个包含当前范围的字符串表示形式。 |
-| intersect(range: Scope): Scope | 该方法返回一个给定范围和当前范围的交集。 |
-| intersect(lowerObj: ScopeType, upperObj: ScopeType): Scope | 传入给定范围的上限和下限，返回当前范围与给定下限和上限指定的范围的交集。 |
-| getUpper(): ScopeType | 获取当前范围的上界，返回一个ScopeType类型的值。 |
-| getLower(): ScopeType | 获取当前范围的下界，返回一个ScopeType类型的值。 |
-| expand(lowerObj: ScopeType, upperObj:  ScopeType): Scope | 该方法创建并返回包括当前范围和给定下限和上限的并集。 |
-| expand(range: Scope): Scope | 该方法创建并返回包括当前范围和给定范围的并集。 |
-| expand(value: ScopeType): Scope | 该方法创建并返回包括当前范围和给定值的并集。 |
-| contains(value: ScopeType): boolean | 检查给定value是否包含在当前范围内。有则返回true，否则返回false。 |
-| contains(range: Scope): boolean | 检查给定range是否在当前范围内。如果在则返回true，否则返回false。 |
-| clamp(value: ScopeType): ScopeType | 将给定value限定到当前范围内，如果传入的value小于下限，则返回lowerObj；如果大于上限值则返回upperObj；如果在当前范围内，则返回value。 |
+| readonly encoding : string | In the TextEncoder module, get the encoding format, only UTF-8 is supported. |
+| encode(input : string) : Uint8Array | Input stirng string, encode and output UTF-8 byte stream. |
+| encodeInto(input : string, dest : Uint8Array) : {read : number, written : number} | Enter the stirng string, dest represents the storage location after encoding, and returns an object, read represents the number of characters that have been encoded,and written represents the size of bytes occupied by the encoded characters. |
+| constructor(encoding? : string, options? : {fatal? : boolean, ignoreBOM? : boolean}) | Constructor, the first parameter encoding indicates the format of decoding.The second parameter represents some attributes.Fatal in the attribute indicates whether an exception is thrown, and ignoreBOM indicates whether to ignore the bom flag. |
+| readonly encoding : string | In the TextDecoder module, get the set decoding format. |
+| readonly fatal : boolean | Get the setting that throws the exception. |
+| readonly ignoreBOM : boolean | Get whether to ignore the setting of the bom flag. |
+| decode(input : Uint8Array, options?: { stream?: false }) : string | Input the data to be decoded, and solve the corresponding string character string.The first parameter input represents the data to be decoded, and the second parameter options represents a bool flag, which means that additional data will be followed. The default is false. |
+| encode(src: Uint8Array): Uint8Array; | Encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToString(src: Uint8Array): string; | Encodes the specified byte array as a String using the Base64 encoding scheme. |
+| decode(src: Uint8Array \| string): Uint8Array; | Decodes the Base64-encoded string or input u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeAsync(src: Uint8Array): Promise\<Uint8Array\>; | Asynchronously encodes all bytes in the specified u8 array into the newly allocated u8 array using the Base64 encoding scheme. |
+| encodeToStringAsync(src: Uint8Array): Promise\<string\>; | Asynchronously encodes the specified byte array into a String using the Base64 encoding scheme. |
+| decodeAsync(src: Uint8Array \| string): Promise\<Uint8Array\>; | Use the Base64 encoding scheme to asynchronously decode a Base64-encoded string or input u8 array into a newly allocated u8 array. |
+| static createRationalFromString(rationalString: string): RationalNumber | Create a RationalNumber object based on the given string. |
+| compareTo(another: RationalNumber): number | Compare the current RationalNumber object with the given object. |
+| equals(obj: object): number | Check if the given object is the same as the current RationalNumber object.|
+| value(): number | Take the current RationalNumber object to an integer value or a floating point value. |
+| static getCommonDivisor(number1: number, number2: number,): number | Obtain the greatest common divisor of two specified numbers. |
+| getDenominator(): number | Get the denominator of the current RationalNumber object. |
+| getNumerator(): number | Get the numerator of the current RationalNumber object. |
+| isFinite(): boolean | Check that the current RationalNumber object is limited. |
+| isNaN(): boolean | Check whether the current RationalNumber object represents a non-number (NaN) value. |
+| isZero(): boolean | Check whether the current RationalNumber object represents a zero value. |
+| toString(): string | Get the string representation of the current RationalNumber object. |
+| constructor(capacity?: number) | The Create Default constructor is used to create a new LruBuffer instance with a default capacity of 64. |
+| updateCapacity(newCapacity: number): void | Updates the buffer capacity to the specified capacity. This exception is thrown if newCapacity is less than or equal to 0. |
+| toString(): string | Returns the string representation of the object and outputs the string representation of the object. |
+| values(): V[ ] | Gets a list of all values in the current buffer, and the output returns a list of all values in the current buffer in ascending order, from most recently accessed to least recently accessed. |
+| size(): number | Gets the total number of values in the current buffer. The output returns the total number of values in the current buffer. |
+| capacity(): number | Gets the capacity of the current buffer. The output returns the capacity of the current buffer. |
+| clear(): void | The key value pairs are cleared from the current buffer, after the key value is cleared, the afterRemoval () method is invoked to perform subsequent operations in turn. |
+| getCreateCount(): number | Get the number of times the returned value of createdefault(), and output the number of times the returned value of createdefault(). |
+| getMissCount(): number | Get the number of times the query value does not match, and output the number of times the query value does not match. |
+| getRemovalCount(): number | Gets the number of evictions from the buffer, and outputs the number of evictions from the buffer. |
+| getMatchCount​(): number | Obtain the number of successful matching of query values, and output the number of successful matching of query values. |
+| getPutCount(): number | Gets the number of times the value was added to the buffer, and the output returns the number of times the value was added to the buffer. |
+| isEmpty(): boolean | Checks whether the current buffer is empty and returns true if the current buffer does not contain any values. |
+| get(key: K):V \| undefined | Indicates the key to query. If the specified key exists in the buffer, the value associated with the key will be returned; Otherwise, undefined is returned. |
+| put(key: K, value: V): V | Adding the key value pair to the buffer and outputting the value associated with the added key; If the key to be added already exists, the original value is returned. If the key or value is empty, this exception is thrown. |
+| keys(): K[ ] | Get the key list of the value in the current buffer, and the output returns the key list sorted from the most recent access to the least recent access. |
+| remove​(key: K):V \| undefined | Deletes the specified key and its associated value from the current buffer. |
+| afterRemoval(isEvict: boolean, key: K, value: V, newValue: V): void | Perform subsequent operations after deleting the value. |
+| contains(key: K): boolean | Checks whether the current buffer contains the specified key, and returns true if the buffer contains the specified key. |
+| createDefault(key: K): V | If the value of a specific key is not calculated, subsequent operations are performed. The parameter represents the missing key, and the output returns the value associated with the key. |
+| entries(): [K,V] | Allows you to iterate over all key value pairs contained in this object. The keys and values of each pair are objects. |
+| \[Symbol.iterator\](): [K,V]| Returns a two-dimensional array in the form of key value pairs. |
+| constructor(lowerObj: ScopeType, upperObj: ScopeType) | Creates and returns a Scope object that creates a constructor for a scope instance that specifies a lower and upper bound. |
+| toString():string | The stringification method returns a  string representation that contains the current range. |
+| intersect(range: Scope): Scope | Gets the intersection of the given range and the current range. |
+| intersect(lowerObj: ScopeType, upperObj: ScopeType): Scope | Gets the intersection of the current range with a given lower and upper bound range. |
+| getUpper(): ScopeType | Gets the upper bound of the current scope. |
+| getLower(): ScopeType | Gets the lower bound of the current scope. |
+| expand(lowerObj: ScopeType, upperObj:  ScopeType): Scope | Creates and returns a union that includes the current range and a given lower and upper bound. |
+| expand(range: Scope): Scope | Creates and returns a union that includes the current range and the given range. |
+| expand(value: ScopeType): Scope | Creates and returns a union that includes the current range and the given value. |
+| contains(value: ScopeType): boolean | Checks whether the given value is included in the current range. |
+| contains(range: Scope): boolean | Checks whether the given range is within the current range. |
+| clamp(value: ScopeType): ScopeType | Clips the specified value to the current range. |
+| function printf(format: string, ...args: Object[]): string | The util.format() method returns a formatted string using the first argument as a printf-like format string which can contain zero or more format specifiers. |
+| function getErrorString(errno: number): string |  The geterrorstring () method uses a system error number as a parameter to return system error information. |
+| function callbackWrapper(original: Function): (err: Object, value: Object) => void | Takes an async function (or a function that returns a Promise) and returns a function following the error-first callback style, i.e. taking an (err, value) => ... callback as the last argument. In the callback, the first argument will be the rejection reason (or null if the Promise resolved), and the second argument will be the resolved value. |
+| function promiseWrapper(original: (err: Object, value: Object) => void): Object | Takes a function following the common error-first callback style, i.e. taking an (err, value) => ... callback as the last argument, and returns a version that returns promises. |
+| isAnyArrayBuffer(value: Object): boolean | Check whether the entered value is of arraybuffer or sharedarraybuffer type. |
+| isArrayBufferView(value: Object): boolean | Check whether the entered value is napi_ int8_ array or napi_ uint8_ array or naPi_ uint8_ clamped_ array or naPi_ int16_ array or naPi_ uint16_ array or napi_ int32_ array or napi_ uint32_ array or napi_ float32_ array or napi_ float64_ array array or DataView type. |
+| isArgumentsObject(value: Object): boolean | Check whether the entered value is an arguments object type. |
+| isArrayBuffer(value: Object): boolean | Check whether the entered value is of arraybuffer type. |
+| isAsyncFunction(value: Object): boolean | Check whether the value entered is an asynchronous function type. |
+| isBigInt64Array(value: Object): boolean | Check whether the entered value is of bigint64array array type. |
+| isBigUint64Array(value: Object): boolean | Check whether the entered value is of biguint64array array array type. |
+| isBooleanObject(value: Object): boolean | Check whether the entered value is a Boolean object type. |
+| isBoxedPrimitive(value: Object): boolean | Check whether the entered value is a Boolean or number or string or symbol object type. |
+| isCryptoKey(value: Object): boolean | Check whether the entered value is the cryptokey object type. |
+| isDataView(value: Object): boolean | Check whether the entered value is of DataView type. |
+| isDate(value: Object): boolean | Check whether the entered value is of type date. |
+| isExternal(value: Object): boolean | Check whether the entered value is a native external value type. |
+| isFloat32Array(value: Object): boolean | Check whether the entered value is of float32array array type. |
+| isFloat64Array(value: Object): boolean | Check whether the entered value is of float64array array type. |
+| isGeneratorFunction(value: Object): boolean | Check whether the input value is a generator function type. |
+| isGeneratorObject(value: Object): boolean | Check whether the entered value is a generator object type. |
+| isInt8Array(value: Object): boolean | Check whether the entered value is of int8array array type. |
+| isInt16Array(value: Object): boolean | Check whether the entered value is the int16array type. |
+| isInt32Array(value: Object): boolean | Check whether the entered value is the int32array array type. |
+| isKeyObject(value: Object): boolean | Check whether the entered value is the keyobject object type. |
+| isMap(value: Object): boolean | Check whether the entered value is of map type. |
+| isMapIterator(value: Object): boolean | Check whether the entered value is the iterator type of map. |
+| isModuleNamespaceObject(value: Object): boolean | Check whether the entered value is the module namespace object object type. |
+| isNativeError(value: Object): boolean | Check whether the value entered is of type error. |
+| isNumberObject(value: Object): boolean | Check whether the entered value is of the number object type. |
+| isPromise(value: Object): boolean | Check whether the entered value is of promise type. |
+| isProxy(value: Object): boolean | Check whether the value entered is of proxy type. |
+| isRegExp(value: Object): boolean | Check whether the entered value is of type regexp. |
+| isSet(value: Object): boolean | Check whether the entered value is of type set. |
+| isSetIterator(value: Object): boolean | Check whether the entered value is the iterator type of set. |
+| isSharedArrayBuffer(value: Object): boolean | Check whether the entered value is of type sharedarraybuffer. |
+| isStringObject(value: Object): boolean | Check whether the entered value is a string object type. |
+| isSymbolObject(value: Object): boolean | Check whether the entered value is a symbol object type. |
+| isTypedArray(value: Object): boolean | Check whether the entered value is a type contained in typedarray. |
+| isUint8Array(value: Object): boolean | Check whether the entered value is the uint8array array type. |
+| isUint8ClampedArray(value: Object): boolean | Check whether the entered value is the uint8clapedarray array type. |
+| isUint16Array(value: Object): boolean | Check whether the entered value is the uint16array array array type. |
+| isUint32Array(value: Object): boolean | Check whether the entered value is the uint32array array type. |
+| isWeakMap(value: Object): boolean | Check whether the entered value is of type weakmap. |
+| isWeakSet(value: Object): boolean | Check whether the entered value is of type weakset. |
 
-printf中每个说明符都替换为来自相应参数的转换后的值。 支持的说明符有:
-| 式样化字符 | 式样要求 |
+Each specifier in printf is replaced with a converted value from the corresponding parameter. Supported specifiers are:
+| Stylized character | Style requirements |
 | -------- | -------- |
-|    %s: | String 将用于转换除 BigInt、Object 和 -0 之外的所有值。|
-|    %d: |Number 将用于转换除 BigInt 和 Symbol 之外的所有值。|
-|    %i:  |parseInt(value, 10) 用于除 BigInt 和 Symbol 之外的所有值。|
-|    %f:  |parseFloat(value) 用于除 Symbol 之外的所有值。|
-|    %j:  |JSON。 如果参数包含循环引用，则替换为字符串 '[Circular]'。|
-|    %o:  |Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。类似于具有选项 { showHidden: true, showProxy: true } 的 util.inspect()。这将显示完整的对象，包括不可枚举的属性和代理。|
-|    %O:  |Object. 具有通用 JavaScript 对象格式的对象的字符串表示形式。类似于没有选项的 util.inspect()。 这将显示完整的对象，但不包括不可枚举的属性和代理。|
-|    %c:  | 此说明符被忽略，将跳过任何传入的 CSS。|
-|    %%:  |单个百分号 ('%')。 这不消耗待式样化参数。|
+|    %s:  | String will be used to convert all values except BigInt, Object and -0. |
+|    %d:  | Number will be used to convert all values except BigInt and Symbol. |
+|    %i:  | parseInt(value, 10) is used for all values except BigInt and Symbol. |
+|    %f:  | parseFloat(value) is used for all values expect Symbol. |
+|    %j:  | JSON. Replaced with the string '[Circular]' if the argument contains circular references. |
+|    %o:  | Object. A string representation of an object with generic JavaScript object formatting. Similar to util.inspect() with options { showHidden: true, showProxy: true }. This will show the full object including non-enumerable properties and proxies. |
+|    %O:  | Object. A string representation of an object with generic JavaScript object formatting. Similar to util.inspect() without options. This will show the full object not including non-enumerable properties and proxies. |
+|    %c:  | CSS. This specifier is ignored and will skip any CSS passed in. |
+|    %%:  | single percent sign ('%'). This does not consume an argument. |
 
-### 使用说明
+### Instruction for use
 
-各接口使用方法如下：
+
+The use methods of each interface are as follows:
 
 1.readonly encoding()
 
@@ -267,242 +354,294 @@ newPromiseObj.then(res => {
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encode(array,num);
+var result = that.encode(array);
 ```
 14.encodeToString()
 ```
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var num = 0;
-var result = that.encodeToString(array,num);
+var result = that.encodeToString(array);
 ```
 15.decode()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-var num = 0;
-var result = that.decode(buff,num);
+var result = that.decode(buff);
 ```
-16.createRationalFromString()
+16.encodeAsync()
+```
+import util from '@ohos.util'
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+await that.encodeAsync(array).then(val=>{
+})
+done()
+```
+17.encodeToStringAsync()
+```
+import util from '@ohos.util'
+var that = new util.Base64()
+var array = new Uint8Array([115,49,51]);
+await that.encodeToStringAsync(array).then(val=>{
+})
+done()
+```
+18.decodeAsync()
+```
+import util from '@ohos.util'
+var that = new util.Base64()
+var buff = 'czEz';
+await that.decodeAsync(buff).then(val=>{
+})
+done()
+```
+19.createRationalFromString()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(0, 0);
 var res = pro.createRationalFromString("-1:2");
 var result1 = res.value();
 ```
-17.compareTo()
+20.compareTo()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var proc = new util.RationalNumber(3, 4);
 var res = pro.compareTo(proc);
 ```
-18.equals()
+21.equals()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var proc = new util.RationalNumber(3, 4);
 var res = pro.equals(proc);
 ```
-19.value()
+22.value()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var res = pro.value();
 ```
-20.getCommonDivisor()
+23.getCommonDivisor()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(0, 0);
 var res = pro.getCommonDivisor(4, 8);
 ```
-21.getDenominator()
+24.getDenominator()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
 var res = pro.getDenominator();
 ```
-22.getNumerator()
+25.getNumerator()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.getNumerator();
 ```
-23.isFinite()
+26.isFinite()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isFinite();
 ```
-24.isNaN()
+27.isNaN()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isNaN();
 ```
-25.isZero()
+28.isZero()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isZero();
 
 ```
-26.toString()
+29.toString()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.toString();
 
 ```
-27.updateCapacity() 
+30.updateCapacity() 
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-pro.updateCapacity(100);
+var result = pro.updateCapacity(100);
 ```
-28.toString()
+31.toString()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2);
 pro.remove(20);
-var temp = pro.toString();
+var result = pro.toString();
 ```
-29.values()
+32.values()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.put(2,"anhu");
 pro.put("afaf","grfb");
-var temp = pro.values();
+var result = pro.values();
 ```
-30.size()
+33.size()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.put(1,8);
-var temp = pro.size();
+var result = pro.size();
 ```
-31.capacity()
+34.capacity()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-var temp = pro.capacity();
+var result = pro.capacity();
 ```
-32.clear() 
+35.clear() 
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.clear();
 ```
-33.getCreatCount()
+36.getCreateCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(1,8);
-var temp = pro.getCreatCount();
+var result = pro.getCreateCount();
 ```
-34.getMissCount()
+37.getMissCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2)
-var temp = pro.getMissCount();
+var result = pro.getMissCount();
 ```
-35.getRemovalCount()
+38.getRemovalCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.updateCapacity(2);
 pro.put(50,22);
-var temp = pro.getRemovalCount();
+var result = pro.getRemovalCount();
 ```
-36.getMatchCount()
+39.getMatchCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.get(2);
-var temp = pro.getMatchCount();
+var result = pro.getMatchCount();
 ```
-37.getPutCount()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.getPutCount();
-```
-38.isEmpty()
+40.getPutCount()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.isEmpty();
+var result = pro.getPutCount();
 ```
-39.get()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.get(2);
-```
-40.put()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-var temp = pro.put(2,10);
-```
-41.keys()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
- pro.put(2,10);
-var temp = pro.keys();
-```
-42.remove()
+41.isEmpty()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.remove(20);
+var result = pro.isEmpty();
 ```
-43.contains()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-pro.put(2,10);
-var temp = pro.contains(20);
-```
-44.createDefault()
-```
-import util from '@ohos.util'
-var pro = new util.LruBuffer();
-var temp = pro.createDefault(50);
-```
-45.entries()
+42.get()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = pro.entries();
+var result = pro.get(2);
 ```
-46.[Symbol.iterator]()
+43.put()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+var result = pro.put(2,10);
+```
+44.keys()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
-var temp = aa[symbol.iterator]();
+var result = pro.keys();
 ```
-Scope接口中构造新类，实现compareTo方法。
+45.remove()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro.remove(20);
+```
+46.contains()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro.contains(20);
+```
+47.createDefault()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+var result = pro.createDefault(50);
+```
+48.entries()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro.entries();
+```
+49.\[Symbol.iterator\]()
+```
+import util from '@ohos.util'
+var pro = new util.LruBuffer();
+pro.put(2,10);
+var result = pro[symbol.iterator]();
+```
+50.afterRemoval() 
+```
+import util from '@ohos.util'
+var arr = [];
+class ChildLruBuffer extends util.LruBuffer
+{
+    constructor()
+    {
+        super();
+    }
+    static getInstance()
+    {
+        if(this.instance ==  null)
+        {
+            this.instance = new ChildLruBuffer();
+        }
+        return this.instance;
+    }
+    afterRemoval(isEvict, key, value, newValue)
+    {
+        if (isEvict === false)
+        {
+            arr = [key, value, newValue];
+        }
+    }
+}
+ChildLruBuffer.getInstance().afterRemoval(false,10,30,null)
+```
+Construct a new class in the Scope interface to implement the compareTo method.
 
 ```
 class Temperature {
@@ -520,26 +659,20 @@ class Temperature {
     }
 }
 ```
-
-47.constructor()
-
+51.constructor()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 ```
-
-48.toString()
-
+52.toString()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.toString() // => [30,40]
+var result = range.toString() // => [30,40]
 ```
-
-49.intersect()
-
+53.intersect()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -547,51 +680,41 @@ var range = new Scope(tempLower, tempUpper);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var rangeFir = new Scope(tempMiDF, tempMidS);
-range.intersect(rangeFir)  // => [35,39]
+var result = range.intersect(rangeFir)  // => [35,39]
 ```
-
-50.intersect()
-
+54.intersect()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
-range.intersect(tempMiDF, tempMidS)  // => [35,39]
+var result = range.intersect(tempMiDF, tempMidS)  // => [35,39]
 ```
-
-51.getUpper()
-
+55.getUpper()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.getUpper() // => 40
+var result = range.getUpper() // => 40
 ```
-
-52.getLower()
-
+56.getLower()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
-range.getLower() // => 30
+var result = range.getLower() // => 30
 ```
-
-53.expand()
-
+57.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
-range.expand(tempMiDF, tempMidS)  // => [30,40]
+var result = range.expand(tempMiDF, tempMidS)  // => [30,40]
 ```
-
-54.expand()
-
+58.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -599,31 +722,25 @@ var tempMiDF = new Temperature(35);
 var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
 var rangeFir = new Scope(tempMiDF, tempMidS);
-range.expand(rangeFir) // => [30,40]
+var result = range.expand(rangeFir) // => [30,40]
 ```
-
-55.expand()
-
+59.expand()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.expand(tempMiDF)  // => [30,40]
+var result = range.expand(tempMiDF)  // => [30,40]
 ```
-
-56.contains()
-
+60.contains()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.contains(tempMiDF) // => true
+var result = range.contains(tempMiDF) // => true
 ```
-
-57.contains()
-
+61.contains()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -631,23 +748,277 @@ var range = new Scope(tempLower, tempUpper);
 var tempLess = new Temperature(20);
 var tempMore = new Temperature(45);
 var rangeSec = new Scope(tempLess, tempMore);
-range.contains(rangeSec) // => true
+var result = range.contains(rangeSec) // => true
 ```
-
-58.clamp()
-
+62.clamp()
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
-range.clamp(tempMiDF) // => 35
+var result = range.clamp(tempMiDF) // => 35
 ```
+63.isAnyArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAnyArrayBuffer(new ArrayBuffer([]))
+```
+64.isArrayBufferView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBufferView(new DataView(new ArrayBuffer(16)));
+```
+65.isArgumentsObject()
+```
+import util from '@ohos.util'
+function foo() {
+        var result = proc.isArgumentsObject(arguments);
+    }
+var f = foo();
+```
+66.isArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isArrayBuffer(new ArrayBuffer([]));
+```
+67.isAsyncFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isAsyncFunction(async function foo() {});
+```
+68.isBigInt64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigInt64Array(new Int16Array([]));
+```
+69.isBigUint64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBigUint64Array(new Int16Array([]));
+```
+70.isBooleanObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBooleanObject(new Boolean(false));
+```
+71.isBoxedPrimitive()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isBoxedPrimitive(new Boolean(false));
+```
+72.isCryptoKey()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isCryptoKey(false);
+```
+73.isDataView()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const ab = new ArrayBuffer(20);
+var result = proc.isDataView(new DataView(ab));
+```
+74.isDate()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isDate(new Date());
+```
+75.isExternal()
+```
+import util from '@ohos.util'
+const data = util.createExternalType();
+var reult13 = proc.isExternal(data);
+```
+76.isFloat32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat32Array(new Float32Array([]));
+```
+77.isFloat64Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isFloat64Array(new Float64Array([]));
+```
+78.isGeneratorFunction()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isGeneratorFunction(function* foo() {});
+```
+79.isGeneratorObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+function* foo() {}
+const generator = foo();
+var result = proc.isGeneratorObject(generator);
+```
+80.isInt8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt8Array(new Int8Array([]));
+```
+81.isInt16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt16Array(new Int16Array([]));
+```
+82.isInt32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isInt32Array(new Int32Array([]));
+```
+83.isKeyObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isKeyObject(0);
+```
+84.isMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMap(new Map());
+```
+85.isMapIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isMapIterator(map.keys());
+```
+86.isModuleNamespaceObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isModuleNamespaceObject(util);
+```
+87.isNativeError()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNativeError(new TypeError());
+```
+88.isNumberObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isNumberObject(new Number(0));
+```
+89.isPromise()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isPromise(Promise.resolve(42));
+```
+90.isProxy()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const target = {};
+const proxy = new Proxy(target, {});
+var result = proc.isProxy(proxy);
+```
+91.isRegExp()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isRegExp(new RegExp('abc'));
+```
+92.isSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSet(new Set());
+```
+93.isSetIterator()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const set = new Set();
+var result = proc.isSetIterator(set.keys());
+```
+94.isSharedArrayBuffer()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isSharedArrayBuffer(new ArrayBuffer([]));
+```
+95.isStringObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isStringObject(new String('foo'));
+```
+96.isSymbolObject()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+const symbols = Symbol('foo');
+var result = proc.isSymbolObject(Object(symbols));
+```
+97.isTypedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isTypedArray(new Float64Array([]));
+```
+98.isUint8Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8Array(new Uint8Array([]));
+```
+99.isUint8ClampedArray()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint8ClampedArray(new Uint8ClampedArray([]));
+```
+100.isUint16Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint16Array(new Uint16Array([]));
+```
+101.isUint32Array()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isUint32Array(new Uint32Array([]));
+```
+102.isWeakMap()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakMap(new WeakMap());
+```
+103.isWeakSet()
+```
+import util from '@ohos.util'
+var proc = new util.Types();
+var result = proc.isWeakSet(new WeakSet());
+```
+## Related warehouse
 
-
-
-## 相关仓
-
-[js_util_module子系统](https://gitee.com/OHOS_STD/js_util_module)
+[js_util_module subsystem](https://gitee.com/OHOS_STD/js_util_module)
 
 [base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
+
+## License
+
+Util is available under [Mozilla license](https://www.mozilla.org/en-US/MPL/), and the documentation is detailed in [documentation](https://gitee.com/openharmony/js_util_module/blob/master/mozilla_docs.txt). See [LICENSE](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE) for the full license text.
