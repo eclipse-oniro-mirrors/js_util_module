@@ -46,34 +46,31 @@ namespace OHOS::Util {
         napi_env env;
     };
 
-    enum ConverterFlags {
-        BIT_FLG = 0x40,
-        SIXTEEN_FLG = 0x3F,
-        XFF_FLG = 0xFF,
-    };
-
+        enum ConverterFlags {
+            BIT_FLG = 0x40,
+            SIXTEEN_FLG = 0x3F,
+            XFF_FLG = 0xFF,
+        };
     unsigned char *EncodeAchieves(EncodeInfo *encodeInfo);
     unsigned char *DecodeAchieves(DecodeInfo *decodeInfo);
-
     class Base64 {
     public:
         explicit Base64(napi_env env);
         virtual ~Base64() {}
+        napi_value EncodeSync(napi_value src);
+        napi_value EncodeToStringSync(napi_value src);
+        napi_value DecodeSync(napi_value src);
         napi_value Encode(napi_value src);
         napi_value EncodeToString(napi_value src);
         napi_value Decode(napi_value src);
-
-        napi_value EncodeAsync(napi_value src);
-        napi_value EncodeToStringAsync(napi_value src);
-        napi_value DecodeAsync(napi_value src);
     private:
         napi_env env;
         unsigned char *DecodeAchieve(const char *input, size_t inputLen);
         unsigned char *EncodeAchieve(const unsigned char *input, size_t inputLen);
         size_t Finds(char ch);
         size_t DecodeOut(size_t equalCount, size_t retLen);
-        void FreeMemory(const unsigned char *address);
-        void FreeMemory(const char *address);
+        void FreeMemory(unsigned char *address);
+        void FreeMemory(char *address);
         size_t retLen = 0;
         size_t decodeOutLen = 0;
         size_t outputLen = 0;
@@ -81,7 +78,6 @@ namespace OHOS::Util {
         const unsigned char *inputEncode_ = nullptr;
         const char *inputDecode_ = nullptr;
         unsigned char *retDecode = nullptr;
-
         void CreateEncodePromise(unsigned char *inputDecode, size_t length);
         void CreateEncodeToStringPromise(unsigned char *inputDecode, size_t length);
         void CreateDecodePromise(char *inputDecode, size_t length);

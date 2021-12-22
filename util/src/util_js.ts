@@ -441,18 +441,20 @@ function promiseWrapper(func : any) {
 
 class LruBuffer
 {
-    private cache: Map<any, any>;
+    private cache: Map<Object|undefined, Object|undefined>;
     private maxSize : number = 64;
+    private maxNumber : number = 2147483647;
     private putCount : number = 0;
     private createCount : number = 0;
     private evictionCount : number = 0;
     private hitCount : number = 0;
     private missCount : number = 0;
+    public length : number = 0;
 
     public constructor(capacity?: number)
     {
         if(capacity !== undefined) {
-            if (capacity <= 0) {
+            if (capacity <= 0 || capacity%1 !== 0 || capacity > this.maxNumber) {
                 throw new Error('data error');
             }
             this.maxSize = capacity;
@@ -461,14 +463,15 @@ class LruBuffer
     }
     public updateCapacity(newCapacity : number)
     {
-        if (newCapacity <= 0) {
+        if (newCapacity <= 0 || newCapacity%1 !== 0 || newCapacity > this.maxNumber) {
             throw new Error('data error');
         } else if (this.cache.size >newCapacity) {
             this.changeCapacity(newCapacity);
         }
+        this.length = this.cache.size;
         this.maxSize = newCapacity;
     }
-    public get(key : any) 
+    public get(key : any)
     {
         if (key === null) {
             throw new Error('key not be null');
@@ -496,7 +499,7 @@ class LruBuffer
             return createValue;
         }
     }
-    public put(key : any, value : any) 
+    public put(key : any, value : any)
     {
         if (key === null || value === null) {
             throw new Error('key or value not be null');
@@ -510,42 +513,40 @@ class LruBuffer
         } else if (this.cache.size >= this.maxSize) {
             this.cache.delete(this.cache.keys().next().value);
             this.evictionCount++;
-        } 
+        }
         this.cache.set(key, value);
+        this.length = this.cache.size;
         return former;
     }
     public getCreateCount()
-    {   
+    {
         return this.createCount;
     }
     public getMissCount()
     {
         return this.missCount;
     }
-    public getRemovalCount() 
+    public getRemovalCount()
     {
         return this.evictionCount;
     }
-    public getMatchCount()  
+    public getMatchCount()
     {
         return this.hitCount;
     }
-    public getPutCount()  
+    public getPutCount()
     {
         return this.putCount;
     }
-    public capacity()
+    public getCapacity()
     {
          return this.maxSize;
-    }
-    public size() 
-    {
-        return this.cache.size;
     }
     public clear()
     {
         this.cache.clear();
         this.afterRemoval(false, this.cache.keys(), this.cache.values(), null);
+        this.length = this.cache.size;
     }
     public isEmpty()
     {
@@ -565,11 +566,12 @@ class LruBuffer
             value = this.cache.get(key);
             this.cache.delete(key);
             this.cache.set(key, value);
+            this.length = this.cache.size;
             return flag;
         }
         this.missCount++;
         return flag;
-    }   
+    }
     public remove(key : any)
     {
         if (key === null) {
@@ -580,9 +582,11 @@ class LruBuffer
             this.cache.delete(key);
             if (former !== null) {
                 this.afterRemoval(false, key, former, null);
+                this.length = this.cache.size;
                 return former;
             }
-        } 
+        }
+        this.length = this.cache.size;
         return undefined;
     }
     public toString()
@@ -618,13 +622,13 @@ class LruBuffer
     }
     protected afterRemoval(isEvict : boolean, key : any, value : any, newValue : any)
     {
-        
+
     }
     protected createDefault(key : any)
     {
         return undefined;
     }
-    public entries() 
+    public entries()
     {
         let arr = [];
         for (let entry of this.cache.entries()) {
@@ -632,7 +636,7 @@ class LruBuffer
         }
         return arr;
     }
-    public [Symbol.iterator] () 
+    public [Symbol.iterator]()
     {
         let arr = [];
         for (let [key, value] of this.cache) {
@@ -749,7 +753,7 @@ class RationalNumber
         }
     }
 
-    public value()
+    public valueOf()
     {
         if (this.mnum > 0 && this.mden == 0) {
             return Number.POSITIVE_INFINITY;
@@ -953,7 +957,7 @@ class Scope {
             let mUpper = reUpper ? this._upperLimit : y;
             return new Scope(mLower, mUpper);
         }
-    } 
+    }
 
     public toString(): string {
         let strLower = this._lowerLimit.toString();

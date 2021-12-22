@@ -32,18 +32,18 @@ base/compileruntime/js_util_module/
 ├── promiseWrapper()                    # promiseWrapper方法
 ├── Class:Base64                        # Base64类
 │   ├──  new Base64()                   # 创建Base64对象
+│   ├──  encodeSync()                   # encodeSync方法
+│   ├──  encodeToStringSync()           # encodeToStringSync方法
+│   ├──  decodeSync()                   # decodeSync方法
 │   ├──  encode()                       # encode方法
 │   ├──  encodeToString()               # encodeToString方法
-│   ├──  decode()                       # decode方法
-│   ├──  encodeAsync()                  # encodeAsync方法
-│   ├──  encodeToStringAsync()          # encodeToStringAsync方法
-│   └──  decodeAsync()                  # decodeAsync方法
+│   └──  decode()                       # decode方法
 ├── Class:RationalNumber                # RationalNumber类
 │   ├──  new RationalNumber()           # 创建RationalNumber对象
 │   ├──  createRationalFromString()     # createRationalFromString方法
 │   ├──  compareTo()                    # compareTo方法
 │   ├──  equals()                       # equals方法
-│   ├──  value()                        # value方法
+│   ├──  valueOf()                      # valueOf方法
 │   ├──  getCommonDivisor()             # getCommonDivisor方法
 │   ├──  getDenominator()               # getDenominator方法
 │   ├──  getNumerator()                 # getNumerator方法
@@ -56,8 +56,8 @@ base/compileruntime/js_util_module/
 │   ├──  updateCapacity()               # updateCapacity方法
 │   ├──  toString()                     # toString方法
 │   ├──  values()                       # values方法
-│   ├──  size()                         # size方法
-│   ├──  capacity()                     # capacity方法
+│   ├──  length                         # length属性
+│   ├──  getCapacity()                  # getCapacity方法
 │   ├──  clear()                        # clear方法
 │   ├──  getCreateCount()               # getCreateCount方法
 │   ├──  getMissCount()                 # getMissCount方法
@@ -81,7 +81,7 @@ base/compileruntime/js_util_module/
 |   ├── intersect()                     # intersect方法
 |   ├── getUpper()                      # getUpper方法
 |   ├── getLower()                      # getLower方法
-|   ├── expand()                        # expand方法 
+|   ├── expand()                        # expand方法
 |   ├── expand()                        # expand方法
 |   ├── expand()                        # expand法
 |   ├── contains()                      # contains方法
@@ -97,7 +97,6 @@ base/compileruntime/js_util_module/
     ├── isBigUint64Array()              # isBigUint64Array方法
     ├── isBooleanObject()               # isBooleanObject方法
     ├── isBoxedPrimitive()              # isBoxedPrimitive方法
-    ├── isCryptoKey()                   # isCryptoKey方法
     ├── isDataView()                    # isDataView方法
     ├── isDate()                        # isDate方法
     ├── isExternal()                    # isExternal方法
@@ -108,7 +107,6 @@ base/compileruntime/js_util_module/
     ├── isInt8Array()                   # isInt8Array方法
     ├── isInt16Array()                  # isInt16Array方法
     ├── isInt32Array()                  # isInt32Array方法
-    ├── isKeyObject()                   # isKeyObject方法
     ├── isMap()                         # isMap方法
     ├── isMapIterator()                 # isMapIterator方法
     ├── isModuleNamespaceObject()       # isModuleNamespaceObject方法
@@ -145,16 +143,16 @@ base/compileruntime/js_util_module/
 | readonly fatal : boolean | 获取抛出异常的设置。 |
 | readonly ignoreBOM : boolean | 获取是否忽略bom标志的设置。 |
 | decode(input : Uint8Array, options?: { stream?: false }) : string | 输入要解码的数据，解出对应的string字符串。第一个参数input表示要解码的数据，第二个参数options表示一个bool标志，表示将跟随附加数据，默认为false。 |
-| encode(src: Uint8Array): Uint8Array; | 使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中。 |
-| encodeToString(src: Uint8Array): string; | 使用Base64编码方案将指定的字节数组编码为String。 |
-| decode(src: Uint8Array \| string): Uint8Array; | 使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。 |
-| encodeAsync(src: Uint8Array): Promise\<Uint8Array\>; | 使用Base64编码方案将指定u8数组中的所有字节异步编码到新分配的u8数组中。 |
-| encodeToStringAsync(src: Uint8Array): Promise\<string\>; | 使用Base64编码方案将指定的字节数组异步编码为String。 |
-| decodeAsync(src: Uint8Array \| string): Promise\<Uint8Array\>; | 使用Base64编码方案将Base64编码的字符串或输入u8数组异步解码为新分配的u8数组。 |
+| encodeSync(src: Uint8Array): Uint8Array; | 使用Base64编码方案将指定u8数组中的所有字节编码到新分配的u8数组中。 |
+| encodeToStringSync(src: Uint8Array): string; | 使用Base64编码方案将指定的字节数组编码为String。 |
+| decodeSync(src: Uint8Array \| string): Uint8Array; | 使用Base64编码方案将Base64编码的字符串或输入u8数组解码为新分配的u8数组。 |
+| encode(src: Uint8Array): Promise\<Uint8Array\>; | 使用Base64编码方案将指定u8数组中的所有字节异步编码到新分配的u8数组中。 |
+| encodeToString(src: Uint8Array): Promise\<string\>; | 使用Base64编码方案将指定的字节数组异步编码为String。 |
+| decode(src: Uint8Array \| string): Promise\<Uint8Array\>; | 使用Base64编码方案将Base64编码的字符串或输入u8数组异步解码为新分配的u8数组。 |
 | static createRationalFromString(rationalString: string): RationalNumber | 基于给定的字符串创建一个RationalNumber对象。 |
 | compareTo(another: RationalNumber): number | 将当前的RationalNumber对象与给定的对象进行比较。 |
 | equals(obj: object): number | 检查给定对象是否与当前 RationalNumber 对象相同。 |
-| value(): number | 将当前的RationalNumber对象进行取整数值或者浮点数值。 |
+| valueOf(): number | 将当前的RationalNumber对象进行取整数值或者浮点数值。 |
 | static getCommonDivisor(number1: number, number2: number,): number | 获得两个指定数的最大公约数。 |
 | getDenominator(): number | 获取当前的RationalNumber对象的分母。 |
 | getNumerator(): number | 获取当前的RationalNumber对象的分子。 |
@@ -166,8 +164,8 @@ base/compileruntime/js_util_module/
 | updateCapacity(newCapacity: number): void | 将缓冲区容量更新为指定容量，如果 newCapacity 小于或等于 0，则抛出此异常。 |
 | toString(): string | 返回对象的字符串表示形式，输出对象的字符串表示  |
 | values(): V[] | 获取当前缓冲区中所有值的列表，输出按升序返回当前缓冲区中所有值的列表，从最近访问到最近最少访问。 |
-| size(): number | 获取当前缓冲区中值的总数，输出返回当前缓冲区中值的总数。 |
-| capacity(): number | 获取当前缓冲区的容量，输出返回当前缓冲区的容量。 |
+| length: number | 代表当前缓冲区中值的总数，输出返回当前缓冲区中值的总数。 |
+| getCapacity(): number | 获取当前缓冲区的容量，输出返回当前缓冲区的容量。 |
 | clear(): void | 从当前缓冲区清除键值对，清除键值对后，调用afterRemoval()方法依次对其执行后续操作。 |
 | getCreateCount(): number | 获取createDefault()返回值的次数,输出返回createDefault()返回值的次数。 |
 | getMissCount(): number | 获取查询值不匹配的次数，输出返回查询值不匹配的次数。 |
@@ -209,7 +207,6 @@ base/compileruntime/js_util_module/
 | isBigUint64Array(value: Object): boolean | 检查输入的value是否是BigUint64Array数组类型。 |
 | isBooleanObject(value: Object): boolean | 检查输入的value是否是一个布尔对象类型。 |
 | isBoxedPrimitive(value: Object): boolean | 检查输入的value是否是Boolean或Number或String或Symbol对象类型。 |
-| isCryptoKey(value: Object): boolean | 检查输入的value是否是CryptoKey对象类型。 |
 | isDataView(value: Object): boolean | 检查输入的value是否是DataView类型。 |
 | isDate(value: Object): boolean | 检查输入的value是否是Date类型。 |
 | isExternal(value: Object): boolean | 检查输入的value是否是一个native External值类型。 |
@@ -220,7 +217,6 @@ base/compileruntime/js_util_module/
 | isInt8Array(value: Object): boolean | 检查输入的value是否是Int8Array数组类型。 |
 | isInt16Array(value: Object): boolean | 检查输入的value是否是Int16Array数组类型。 |
 | isInt32Array(value: Object): boolean | 检查输入的value是否是Int32Array数组类型。 |
-| isKeyObject(value: Object): boolean | 检查输入的value是否是KeyObject对象类型。 |
 | isMap(value: Object): boolean | 检查输入的value是否是Map类型。 |
 | isMapIterator(value: Object): boolean | 检查输入的value是否是Map的iterator类型。 |
 | isModuleNamespaceObject(value: Object): boolean | 检查输入的value是否是Module Namespace Object对象类型。 |
@@ -348,52 +344,52 @@ newPromiseObj.then(res => {
     expect(res).strictEqual('HelloWorld');
 })
 ```
-13.encode()
+13.encodeSync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var result = that.encode(array);
+var result = that.encodeSync(array);
 ```
-14.encodeToString()
+14.encodeToStringSync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64();
 var array = new Uint8Array([115,49,51]);
-var result = that.encodeToString(array);
+var result = that.encodeToStringSync(array);
 ```
-15.decode()
+15.decodeSync()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-var result = that.decode(buff);
+var result = that.decodeSync(buff);
 
 ```
-16.encodeAsync()
+16.encode()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-await that.encodeAsync(array).then(val=>{
+await that.encode(array).then(val=>{
 })
 done()
 ```
-17.encodeToStringAsync()
+17.encodeToString()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var array = new Uint8Array([115,49,51]);
-await that.encodeToStringAsync(array).then(val=>{
+await that.encodeToString(array).then(val=>{
 })
 done()
 ```
-18.decodeAsync()
+18.decode()
 ```
 import util from '@ohos.util'
 var that = new util.Base64()
 var buff = 'czEz';
-await that.decodeAsync(buff).then(val=>{
+await that.decode(buff).then(val=>{
 })
 done()
 ```
@@ -402,7 +398,7 @@ done()
 import util from '@ohos.util'
 var pro = new util.RationalNumber(0, 0);
 var res = pro.createRationalFromString("-1:2");
-var result1 = res.value();
+var result1 = res.valueOf();
 ```
 20.compareTo()
 ```
@@ -418,11 +414,11 @@ var pro = new util.RationalNumber(2, 1);
 var proc = new util.RationalNumber(3, 4);
 var res = pro.equals(proc);
 ```
-22.value()
+22.valueOf()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(2, 1);
-var res = pro.value();
+var res = pro.valueOf();
 ```
 23.getCommonDivisor()
 ```
@@ -459,16 +455,14 @@ var res = pro.isNaN();
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.isZero();
-
 ```
 29.toString()
 ```
 import util from '@ohos.util'
 var pro = new util.RationalNumber(-2, 1);
 var res = pro.toString();
-
 ```
-30.updateCapacity() 
+30.updateCapacity()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
@@ -492,21 +486,21 @@ pro.put(2,"anhu");
 pro.put("afaf","grfb");
 var result = pro.values();
 ```
-33.size()
+33.length
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.put(1,8);
-var result = pro.size();
+var result = pro.length;
 ```
-34.capacity()
+34.getCapacity()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-var result = pro.capacity();
+var result = pro.getCapacity();
 ```
-35.clear() 
+35.clear()
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
@@ -530,12 +524,14 @@ var result = pro.getMissCount();
 ```
 38.getRemovalCount()
 ```
+
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
 pro.put(2,10);
 pro.updateCapacity(2);
 pro.put(50,22);
 var result = pro.getRemovalCount();
+
 ```
 39.getMatchCount()
 ```
@@ -560,6 +556,7 @@ pro.put(2,10);
 var result = pro.isEmpty();
 ```
 42.get()
+
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
@@ -607,14 +604,13 @@ pro.put(2,10);
 var result = pro.entries();
 ```
 49.\[Symbol.iterator\]()
-
 ```
 import util from '@ohos.util'
 var pro = new util.LruBuffer();
-pro.put(2,10);
+pro .put(2,10);
 var result = pro[symbol.iterator]();
 ```
-50.afterRemoval()  
+50.afterRemoval()
 ```
 import util from '@ohos.util'
 var arr = [ ];
@@ -660,20 +656,26 @@ class Temperature {
     }
 }
 ```
+
 51.constructor()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 ```
+
 52.toString()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 var result = range.toString() // => [30,40]
 ```
+
 53.intersect()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -683,7 +685,9 @@ var tempMidS = new Temperature(39);
 var rangeFir = new Scope(tempMiDF, tempMidS);
 var result = range.intersect(rangeFir)  // => [35,39]
 ```
+
 54.intersect()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -692,21 +696,27 @@ var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
 var result = range.intersect(tempMiDF, tempMidS)  // => [35,39]
 ```
+
 55.getUpper()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 var result = range.getUpper() // => 40
 ```
+
 56.getLower()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
 var range = new Scope(tempLower, tempUpper);
 var result = range.getLower() // => 30
 ```
+
 57.expand()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -715,7 +725,9 @@ var tempMidS = new Temperature(39);
 var range = new Scope(tempLower, tempUpper);
 var result = range.expand(tempMiDF, tempMidS)  // => [30,40]
 ```
+
 58.expand()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -725,7 +737,9 @@ var range = new Scope(tempLower, tempUpper);
 var rangeFir = new Scope(tempMiDF, tempMidS);
 var result = range.expand(rangeFir) // => [30,40]
 ```
+
 59.expand()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -733,7 +747,9 @@ var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
 var result = range.expand(tempMiDF)  // => [30,40]
 ```
+
 60.contains()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -741,7 +757,9 @@ var tempMiDF = new Temperature(35);
 var range = new Scope(tempLower, tempUpper);
 var result = range.contains(tempMiDF) // => true
 ```
+
 61.contains()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -751,7 +769,9 @@ var tempMore = new Temperature(45);
 var rangeSec = new Scope(tempLess, tempMore);
 var result = range.contains(rangeSec) // => true
 ```
+
 62.clamp()
+
 ```
 var tempLower = new Temperature(30);
 var tempUpper = new Temperature(40);
@@ -815,50 +835,44 @@ import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isBoxedPrimitive(new Boolean(false));
 ```
-72.isCryptoKey()
-```
-import util from '@ohos.util'
-var proc = new util.Types();
-var result = proc.isCryptoKey(false);
-```
-73.isDataView()
+72.isDataView()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 const ab = new ArrayBuffer(20);
 var result = proc.isDataView(new DataView(ab));
 ```
-74.isDate()
+73.isDate()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isDate(new Date());
 ```
-75.isExternal()
+74.isExternal()
 ```
 import util from '@ohos.util'
 const data = util.createExternalType();
 var reult13 = proc.isExternal(data);
 ```
-76.isFloat32Array()
+75.isFloat32Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isFloat32Array(new Float32Array([]));
 ```
-77.isFloat64Array()
+76.isFloat64Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isFloat64Array(new Float64Array([]));
 ```
-78.isGeneratorFunction()
+77.isGeneratorFunction()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isGeneratorFunction(function* foo() {});
 ```
-79.isGeneratorObject()
+78.isGeneratorObject()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
@@ -866,67 +880,61 @@ function* foo() {}
 const generator = foo();
 var result = proc.isGeneratorObject(generator);
 ```
-80.isInt8Array()
+79.isInt8Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isInt8Array(new Int8Array([]));
 ```
-81.isInt16Array()
+80.isInt16Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isInt16Array(new Int16Array([]));
 ```
-82.isInt32Array()
+81.isInt32Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isInt32Array(new Int32Array([]));
 ```
-83.isKeyObject()
-```
-import util from '@ohos.util'
-var proc = new util.Types();
-var result = proc.isKeyObject(0);
-```
-84.isMap()
+82.isMap()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isMap(new Map());
 ```
-85.isMapIterator()
+83.isMapIterator()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isMapIterator(map.keys());
 ```
-86.isModuleNamespaceObject()
+84.isModuleNamespaceObject()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isModuleNamespaceObject(util);
 ```
-87.isNativeError()
+85.isNativeError()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isNativeError(new TypeError());
 ```
-88.isNumberObject()
+86.isNumberObject()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isNumberObject(new Number(0));
 ```
-89.isPromise()
+87.isPromise()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isPromise(Promise.resolve(42));
 ```
-90.isProxy()
+88.isProxy()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
@@ -934,81 +942,81 @@ const target = {};
 const proxy = new Proxy(target, {});
 var result = proc.isProxy(proxy);
 ```
-91.isRegExp()
+89.isRegExp()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isRegExp(new RegExp('abc'));
 ```
-92.isSet()
+90.isSet()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isSet(new Set());
 ```
-93.isSetIterator()
+91.isSetIterator()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 const set = new Set();
 var result = proc.isSetIterator(set.keys());
 ```
-94.isSharedArrayBuffer()
+92.isSharedArrayBuffer()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isSharedArrayBuffer(new ArrayBuffer([]));
 ```
-95.isStringObject()
+93.isStringObject()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isStringObject(new String('foo'));
 ```
-96.isSymbolObject()
+94.isSymbolObject()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 const symbols = Symbol('foo');
 var result = proc.isSymbolObject(Object(symbols));
 ```
-97.isTypedArray()
+95.isTypedArray()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isTypedArray(new Float64Array([]));
 ```
-98.isUint8Array()
+96.isUint8Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isUint8Array(new Uint8Array([]));
 ```
-99.isUint8ClampedArray()
+97.isUint8ClampedArray()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isUint8ClampedArray(new Uint8ClampedArray([]));
 ```
-100.isUint16Array()
+98.isUint16Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isUint16Array(new Uint16Array([]));
 ```
-101.isUint32Array()
+99.isUint32Array()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isUint32Array(new Uint32Array([]));
 ```
-102.isWeakMap()
+100.isWeakMap()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
 var result = proc.isWeakMap(new WeakMap());
 ```
-103.isWeakSet()
+101.isWeakSet()
 ```
 import util from '@ohos.util'
 var proc = new util.Types();
@@ -1016,10 +1024,8 @@ var result = proc.isWeakSet(new WeakSet());
 ```
 ## 相关仓
 
+
+
 [js_util_module子系统](https://gitee.com/OHOS_STD/js_util_module)
 
 [base/compileruntime/js_util_module/](base/compileruntime/js_util_module-readme.md)
-
-## 许可证
-
-Util在[Mozilla许可证](https://www.mozilla.org/en-US/MPL/)下可用，说明文档详见[说明文档](https://gitee.com/openharmony/js_util_module/blob/master/mozilla_docs.txt)。有关完整的许可证文本，有关完整的许可证文本，请参见[许可证](https://gitee.com/openharmony/js_util_module/blob/master/LICENSE)
