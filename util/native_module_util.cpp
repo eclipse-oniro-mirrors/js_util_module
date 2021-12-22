@@ -451,7 +451,6 @@ namespace OHOS::Util {
 
         return result;
     }
-
     static napi_value TextcoderInit(napi_env env, napi_value exports)
     {
         const char *textEncoderClassName = "TextEncoder";
@@ -523,7 +522,7 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->Encode(args[0]);
+        napi_value result = object->EncodeSync(args[0]);
         return result;
     }
 
@@ -544,7 +543,7 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeToString(args[0]);
+        napi_value result = object->EncodeToStringSync(args[0]);
         return result;
     }
 
@@ -572,10 +571,9 @@ namespace OHOS::Util {
         }
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->Decode(args[0]);
+        napi_value result = object->DecodeSync(args[0]);
         return result;
     }
-
     static napi_value EncodeAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -593,10 +591,9 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeAsync(args[0]);
+        napi_value result = object->Encode(args[0]);
         return result;
     }
-
     static napi_value EncodeToStringAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -614,10 +611,9 @@ namespace OHOS::Util {
         NAPI_ASSERT(env, valuetype0 == napi_uint8_array, "Wrong argument type. napi_uint8_array expected.");
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->EncodeToStringAsync(args[0]);
+        napi_value result = object->EncodeToString(args[0]);
         return result;
     }
-
     static napi_value DecodeAsync(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -642,7 +638,7 @@ namespace OHOS::Util {
         }
         Base64 *object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->DecodeAsync(args[0]);
+        napi_value result = object->Decode(args[0]);
         return result;
     }
 
@@ -787,18 +783,6 @@ namespace OHOS::Util {
         return rst;
     }
 
-    static napi_value IsCryptoKey(napi_env env, napi_callback_info info)
-    {
-        napi_value thisVar = nullptr;
-        size_t argc = 1;
-        napi_value args = nullptr;
-        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
-        Types* object = nullptr;
-        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value rst = object->IsCryptoKey(args);
-        return rst;
-    }
-
     static napi_value IsDataView(napi_env env, napi_callback_info info)
     {
         napi_value thisVar = nullptr;
@@ -924,20 +908,6 @@ namespace OHOS::Util {
         Types* object = nullptr;
         NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
         napi_value result = object->IsInt32Array(args);
-        return result;
-    }
-
-    static napi_value IsKeyObject(napi_env env, napi_callback_info info)
-    {
-        napi_value thisVar = nullptr;
-        size_t requireArgc = 1;
-        size_t argc = 1;
-        napi_value args = nullptr;
-        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &args, &thisVar, nullptr));
-        NAPI_ASSERT(env, argc >= requireArgc, "Wrong number of arguments");
-        Types* object = nullptr;
-        NAPI_CALL(env, napi_unwrap(env, thisVar, (void**)&object));
-        napi_value result = object->IsKeyObject(args);
         return result;
     }
 
@@ -1220,7 +1190,7 @@ namespace OHOS::Util {
         napi_value result = object->IsWeakSet(args);
         return result;
     }
-    
+
     static napi_value TypeofInit(napi_env env, napi_value exports)
     {
         const char* typeofClassName = "Types";
@@ -1234,7 +1204,6 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("isArrayBufferView", IsArrayBufferView),
             DECLARE_NAPI_FUNCTION("isArgumentsObject", IsArgumentsObject),
             DECLARE_NAPI_FUNCTION("isArrayBuffer", IsArrayBuffer),
-            DECLARE_NAPI_FUNCTION("isCryptoKey", IsCryptoKey),
             DECLARE_NAPI_FUNCTION("isDataView", IsDataView),
             DECLARE_NAPI_FUNCTION("isDate", IsDate),
             DECLARE_NAPI_FUNCTION("isExternal", IsExternal),
@@ -1245,7 +1214,6 @@ namespace OHOS::Util {
             DECLARE_NAPI_FUNCTION("isInt8Array", IsInt8Array),
             DECLARE_NAPI_FUNCTION("isInt16Array", IsInt16Array),
             DECLARE_NAPI_FUNCTION("isInt32Array", IsInt32Array),
-            DECLARE_NAPI_FUNCTION("isKeyObject", IsKeyObject),
             DECLARE_NAPI_FUNCTION("isMap", IsMap),
             DECLARE_NAPI_FUNCTION("isMapIterator", IsMapIterator),
             DECLARE_NAPI_FUNCTION("isModuleNamespaceObject", IsModuleNamespaceObject),
@@ -1281,12 +1249,12 @@ namespace OHOS::Util {
         const char *base64ClassName = "Base64";
         napi_value base64Class = nullptr;
         static napi_property_descriptor base64Desc[] = {
-            DECLARE_NAPI_FUNCTION("encode", EncodeBase64),
-            DECLARE_NAPI_FUNCTION("encodeToString", EncodeToString),
-            DECLARE_NAPI_FUNCTION("decode", DecodeBase64),
-            DECLARE_NAPI_FUNCTION("encodeAsync", EncodeAsync),
-            DECLARE_NAPI_FUNCTION("encodeToStringAsync", EncodeToStringAsync),
-            DECLARE_NAPI_FUNCTION("decodeAsync", DecodeAsync),
+            DECLARE_NAPI_FUNCTION("encodeSync", EncodeBase64),
+            DECLARE_NAPI_FUNCTION("encodeToStringSync", EncodeToString),
+            DECLARE_NAPI_FUNCTION("decodeSync", DecodeBase64),
+            DECLARE_NAPI_FUNCTION("encode", EncodeAsync),
+            DECLARE_NAPI_FUNCTION("encodeToString", EncodeToStringAsync),
+            DECLARE_NAPI_FUNCTION("decode", DecodeAsync),
         };
         NAPI_CALL(env, napi_define_class(env, base64ClassName, strlen(base64ClassName), Base64Constructor,
                                          nullptr, sizeof(base64Desc) / sizeof(base64Desc[0]), base64Desc,
